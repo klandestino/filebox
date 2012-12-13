@@ -47,6 +47,31 @@ class Filebox {
 		add_action( 'init', array( $this, 'maybe_add_taxonomy' ) );
 		// Add scripts and css
 		add_action( 'wp_enqueue_script', array( $this, 'enqueue_scripts' ) );
+
+		// Add action for ajax-calls
+
+		// List all files and folders
+		add_action( 'wp_ajax_filebox_list', array( $this, 'list_files_and_folders' ) );
+
+		// File actions
+
+		// Upload file
+		add_action( 'wp_ajax_filebox_upload_file', array( $this, 'upload_file' ) );
+		// Move file to folder
+		add_action( 'wp_ajax_filebox_move_file', array( $this, 'move_file' ) );
+		// Rename file
+		add_action( 'wp_ajax_filebox_rename_file', array( $this, 'rename_file' ) );
+		// File history
+		add_action( 'wp_ajax_filebox_history_file', array( $this, 'history_file' ) );
+
+		// Folder actions
+
+		// Add new folder
+		add_action( 'wp_ajax_filebox_add_folder', array( $this, 'add_folder' ) );
+		// Move folder
+		add_action( 'wp_ajax_filebox_move_folder', array( $this, 'move_folder' ) );
+		// Rename folder
+		add_action( 'wp_ajax_filebox_rename_folder', array( $this, 'rename_folder' ) );
 	}
 
 	/**
@@ -117,6 +142,534 @@ class Filebox {
 			'filebox',
 			FILEBOX_PLUGIN_URL . 'css/filebox.css'
 		);
+	}
+
+	/**
+	 * Gets a group name
+	 * @using groups_get_group
+	 * @return string
+	 */
+	public function get_group_name( $group_id ) {
+		$group = groups_get_group( array( 'group_id' => $group_id ) );
+		if ( ! $group ) return false;
+		return $group->name;
+	}
+
+	/**
+	 * Gets a folder name
+	 * @using get_term
+	 * @return string
+	 */
+	public function get_folder_name( $folder_id ) {
+		$folder = get_term( $folder_id, 'fileboxfolders' );
+
+		if( $folder ) {
+			return $folder->term;
+		}
+
+		return 'Error';
+	}
+
+	/**
+	 * Gets a file URL
+	 * @uses wp_get_attachment_url
+	 * @param int $file_id
+	 * @return string
+	 */
+	public function get_file_url( $file_id ) {
+		return wp_get_attachment_url( $file_id );
+	}
+
+	/**
+	 * Get group folder.
+	 * Creates group folder if it does not exist.
+	 * @param int $group_id
+	 * @return int Return false if there is no group folder and we did not succeed in creating one.
+	 */
+	public function get_group_folder( $group_id ) {
+		$group_name = $this->get_group_name( $group_id );
+
+		if( $group_name === false ) return false;
+
+		$folder_id = groups_get_groupmeta( $group_id, 'filebox_group_folder' );
+
+		if( $folder_id ) {
+			$folder = get_term( $folder_id, 'fileboxfolders' );
+
+			if( $folder ) {
+				if( $folder->term != $group_name ) {
+					wp_update_term( $folder_id, array(
+						'name' => $group_name
+					) );
+				}
+
+				return $folder_id;
+			}
+		}
+
+		/**
+		 * If folder been found, it's already returned.
+		 * Therefore we're at this point sure there are
+		 * no folder for specified group.
+		 */
+
+		$folder_id = wp_insert_term( $group_name, 'fileboxfolders' );
+
+		if( ! $folder_id ) return false;
+
+		groups_update_groupmeta( $group_id, 'filebox_group_folder', $folder_id );
+
+		return $folder_id;
+	}
+
+	/**
+	 * Gets a folder id for forum attachments
+	 * Creates folder if it doesn't exist.
+	 * @param int $group_id
+	 * @return int
+	 */
+	public function get_topics_folder( $group_id ) {
+		$parent = $this->get_group_folder( $group_id );
+
+		if( ! $parent ) return false;
+
+		$folder_id = groups_get_groupmeta( $group_id, 'filebox_topics_folder' );
+
+		if( $folder_id ) {
+			$folder = get_term( $folder_id, 'fileboxfolders' );
+
+			if( $folder ) {
+				if( $folder->term != $this->options[ 'topics_folder_name' ] ) {
+					wp_update_term( $folder_id, array(
+						'name' => $this->options[ 'topics_folder_name' ]
+					) );
+				}
+
+				return $folder_id;
+			}
+		}
+
+		/**
+		 * If folder been found, it's already returned.
+		 * Therefore we're at this point sure there are
+		 * no folder for specified group.
+		 */
+
+		$folder_id = wp_insert_term( $this->options[ 'topics_folder_name' ], 'fileboxfolders' );
+
+		if( ! $folder_id ) return false;
+
+		groups_update_groupmeta( $group_id, 'filebox_topics_folder', $folder_id );
+
+		return $folder_id;
+	}
+
+	/**
+	 * Get trash folder
+	 * Creates folder if it doesn't exist.
+	 * @param int $group_id
+	 * @return int
+	 */
+	public function get_trash_folder( $group_id ) {
+		$parent = $this->get_group_folder( $group_id );
+
+		if( ! $parent ) return false;
+
+		$folder_id = groups_get_groupmeta( $group_id, 'filebox_trash_folder' );
+
+		if( $folder_id ) {
+			$folder = get_term( $folder_id, 'fileboxfolders' );
+
+			if( $folder ) {
+				if( $folder->term != $this->options[ 'topics_trash_name' ] ) {
+					wp_update_term( $folder_id, array(
+						'name' => $this->options[ 'topics_trash_name' ]
+					) );
+				}
+
+				return $folder_id;
+			}
+		}
+
+		/**
+		 * If folder been found, it's already returned.
+		 * Therefore we're at this point sure there are
+		 * no folder for specified group.
+		 */
+
+		$folder_id = wp_insert_term( $this->options[ 'topics_trash_name' ], 'fileboxfolders' );
+
+		if( ! $folder_id ) return false;
+
+		groups_update_groupmeta( $group_id, 'filebox_trash_folder', $folder_id );
+
+		return $folder_id;
+	}
+
+	/**
+	 * Get all folders by group
+	 * @param int $group_id
+	 * @return array
+	 */
+	public function get_all_folders( $group_id ) {
+		$result = array( $this->get_group_folder( $group_id ) );
+
+		if( $result[ 0 ] ) {
+			$result = array_merge( $result, get_terms( 'fileboxfolders', array(
+				'fields' => 'ids',
+				'child_of' => $result[ 0 ]
+			) ) );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get all subfolders by folder
+	 * @param int $folder_id
+	 * @return array
+	 */
+	public function get_subfolders( $folder_id ) {
+		$response = array();
+
+		$folders = get_terms( 'fileboxfolders', array(
+			'parent' => $folder_id
+		) );
+
+		foreach( $folders as $folder ) {
+			$response[ $folder->term_id ] = $folder->name;
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Get all files from specified folder
+	 * @param int $folder_id
+	 * @return array
+	 */
+	function get_files( $folder_id ) {
+		$results = array();
+		$query = new WP_Query( array(
+			'post_type' => array( 'document', 'attachment' ),
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'fileboxfolders',
+					'fields' => 'id',
+					'terms' => $folder_id
+				)
+			),
+			'posts_per_page' => -1
+		) );
+
+		while( $files->have_posts() ) {
+			$files->the_post();
+			$results[ $files->post->ID ] = $files->post->post_title;
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Updates folder to contain specified list of files
+	 * @param int $folder_id
+	 * @param array $files
+	 * @return void
+	 */
+	public function update_folder( $folder_id, $files ) {
+		$current_files = $this->get_files( $folder_id );
+
+		// Move missmatch to trash
+		foreach( $current_files as $file_id ) {
+			if( ! in_array( $file_id, $files ) ) {
+				$this->move_file( array(
+					'file_id' => $file_id,
+					'folder_id' => $this->get_trash_folder( $this->get_group_by_file( $file_id ) )
+				), NULL );
+			}
+		}
+
+		// Include those who's left out
+		foreach( $files as $file_id ) {
+			if( ! array_key_exists( $file_id, $current_files ) ) {
+				$this->move_file( array(
+					'file_id' => $file_id,
+					'folder_id' => $folder_id
+				), NULL );
+			}
+		}
+	}
+
+	/**
+	 * Get group id by file
+	 * @param int $file_id
+	 * @return int
+	 */
+	public function get_group_by_file( $file_id ) {
+		return $this->get_group_by_folder( $this->get_folder_by_file( $file_id ) );
+	}
+
+	/**
+	 * Get folder id by file
+	 * @param int $file_id
+	 * @return int
+	 */
+	public function get_folder_by_file( $file_id ) {
+		$folder = get_object_terms( $file_id, 'fileboxfolders', array( 'fields' => 'ids' ) );
+
+		if( is_array( $folder ) ) {
+			return reset( $folder );
+		} else {
+			return $folder;
+		}
+	}
+
+	/**
+	 * Get group id by folder
+	 * @param int $folder_id
+	 * @return int
+	 */
+	public function get_group_by_folder( $folder_id ) {
+		global $bp, $wpdb;
+
+		$parents = $this->get_folder_ancestors( $folder_id );
+
+		if( count( $parents ) ) {
+			$folder_id = $parents[ 0 ];
+		}
+
+		$group_id = $wpdb->get_var( sprintf(
+			'SELECT `group_id` FROM `%s` WHERE `meta_key` = "filebox_group_folder" AND `meta_value` = "%d" LIMIT 1',
+			$wpdb->prepare( $bp->groups->table_name_groupmeta ),
+			$wpdb->prepare( $folder_id )
+		) );
+
+		return $group_id;
+	}
+
+	/**
+	 * If specified folder is group root folder
+	 * @param int $folder_id
+	 * @return int
+	 */
+	public function is_root_folder( $folder_id ) {
+		$group_id = $this->get_group_by_folder( $folder_id );
+		$root_id = $this->get_group_folder( $group_id );
+		return( $group_id == $root_id );
+	}
+
+	/**
+	 * Get folder ancestors
+	 * @param int $folder_id
+	 * @return array
+	 */
+	public function get_folder_ancestors( $folder_id ) {
+		$result = array();
+		$folder = get_term( $folder_id, 'fileboxfolders' );
+
+		if( $folder ) {
+			$parent = $folder->parent;
+
+			while( $parent ) {
+				$folder = get_term( $parent, 'fileboxfolders' );
+
+				if( $folder ) {
+					$result = array_merge( array( $parent ), $result );
+					$parent = $folder->parent;
+				} else {
+					$parent = 0;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get folder parent
+	 * @param int $folder_id
+	 * @return int
+	 */
+	public function get_parent_folder( $folder_id ) {
+		$folder = get_term( $folder_id, 'fileboxfolders' );
+
+		if( $folder ) {
+			return $folder->parent;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Get attachments by post id
+	 * @param int $post_id
+	 * @return array
+	 */
+	public function get_attachments( $post_id ) {
+		$result = array();
+		$query = new WP_Query( array(
+			'post_type' => 'attachment',
+			'post_status' => 'inherit',
+			'post_parent' => $post_id,
+		) );
+
+		while( $query->have_posts() ) {
+			$query->the_post();
+			$result[] = $query->post->ID;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Finds attachments in Buddypress group forum threads
+	 * and store a way to find them in a folder linked to
+	 * specified group
+	 * @param int $group_id
+	 */
+	public function index_group_forum_attachments( $group_id ) {
+		global $wpdb, $bbdb;
+		do_action( 'bbpress_init' );
+
+		$group_folder = $this->get_group_folder( $group_id );
+		$topics_folder = $this->get_topics_folder( $group_id );
+		$trash_folder = $this->get_trash_folder( $group_id );
+
+		$forum_id = groups_get_groupmeta( $group_id, 'forum_id' );
+
+		if( is_array( $forum_id ) ) {
+			$forum_id = reset( $forum_id );
+		}
+
+		if( $forum_id ) {
+			$topic_query = new WP_Query( array(
+				'post_type' => bbp_get_topic_post_type(),
+				'post_parent' => $forum_id,
+				'posts_per_page' => -1,
+				'post_status' => join( ',', array( bbp_get_public_status_id(), bbp_get_closed_status_id() ) ),
+			) );
+
+			while( $topic_query->have_posts() ) {
+				$topic_query->the_post();
+				$topic_id = bbp_get_topic_id( $topic_query->post->ID );
+
+				$attachments = $this->get_attachments( $topic_id );
+
+				$reply_query = new WP_Query( array(
+					'post_type' => bbp_get_reply_post_type(),
+					'post_parent' => $topic_id,
+					'posts_per_page' => -1
+				) );
+
+				while( $reply_query->have_posts() ) {
+					$reply_query->the_post();
+					$reply_id = bbp_get_reply_id( $reply_query->post->ID );
+
+					$attachments = array_merge( $attachments, $this->get_attachments( $reply_id ) );
+				}
+
+				$this->update_folder( $topics_folder, $attachments );
+			}
+		}
+	}
+
+	/**
+	 * Get a list of all files and folders
+	 * @param int|string|array $args array( folder_id => folder id, group_id => group id ) Uses $_POST as fallback.
+	 * @param boolean $show_all Show all files and folders
+	 * @param $output ARRAY_A, false = prints json
+	 * @return object|array|void
+	 */
+	public function list_files_and_folders( $args = null, $output = STRING ) {
+		$response = array(
+			'meta' => array(),
+			'folders' => array(),
+			'files' => array()
+		);
+
+		if( is_numeric( $args ) ) {
+			$args = array( 'folder_id' => ( int ) $args );
+		} elseif( ! is_array( $args ) ) {
+			$args = array();
+		}
+
+		foreach( array(
+			'folder_id' => 0,
+			'group_id' => 0,
+		) as $arg => $default ) {
+			if( ! array_key_exists( $arg, $args ) ) {
+				if( array_key_exists( $arg, $_POST ) ) {
+					$args[ $arg ] = $_POST[ $arg ];
+				} else {
+					$args[ $arg ] = $default;
+				}
+			}
+		}
+
+		if( $args[ 'group_id' ] ) {
+			// Borde köras vid förändringar egentligen:
+			$this->index_group_forum_attachments( $args[ 'group_id' ] );
+
+			$folder = $this->get_group_folder( $args[ 'group_id' ] );
+
+			if( $folder ) {
+				$response['meta'] = array(
+					'id' => $folder
+				);
+
+				$response[ 'folders' ] = $this->get_subfolders( $folder );
+				$response[ 'files' ] = $this->get_files( $folder );
+
+			}
+		} elseif( $args[ 'folder_id' ] ) {
+			$response[ 'folders' ] = $this->get_subfolders( $args[ 'id' ] );
+			$response[ 'files' ] = $this->get_files( $args[ 'id' ] );
+			$response[ 'meta' ] = array(
+				'id' => $args[ 'id' ]
+			);
+		}
+
+		if( array_key_exists( 'id', $response[ 'meta' ] ) ) {
+			$response[ 'meta' ][ 'parent' ] = $this->get_parent_folder( $response[ 'meta' ][ 'id' ] );
+			$response[ 'meta' ][ 'readonly' ] = $this->is_read_only( $response[ 'meta' ][ 'id' ] );
+			$response[ 'meta' ][ 'group' ] = $this->get_group_by_folder( $response[ 'meta' ][ 'id' ] );
+			$response[ 'meta' ][ 'breadcrumbs' ] = $this->get_folder_ancestors( $response[ 'meta' ][ 'id' ] );
+
+			$response[ 'meta' ][ 'topicfolder' ] = $this->get_topics_folder( $response[ 'meta' ][ 'group' ] );
+			$response[ 'meta' ][ 'trashcan' ] = $this->get_trash_folder( $response[ 'meta' ][ 'group' ] );
+		}
+
+		$response[ 'meta' ][ 'url' ] = array();
+		foreach( $response[ 'files' ] as $key => $val ) {
+			$response[ 'meta' ][ 'url' ][ $key ] = $this->get_file_url( $key );
+		}
+
+		asort( $response[ 'folders' ] );
+		asort( $response[ 'files' ] );
+
+		if( $output == ARRAY_A ) {
+			return $response;
+		} else {
+			echo json_encode( $response );
+			exit;
+		}
+	}
+
+	/**
+	 * Upload file
+	 * @param array $args
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function upload_file( $args = null, $output = STRING ) {
+	}
+
+	/**
+	 * Move file to specified dir
+	 * @param array $args
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 */
+	public function move_file( $args = null, $output = STRING ) {
 	}
 
 }

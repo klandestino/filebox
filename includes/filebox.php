@@ -710,12 +710,35 @@ class Filebox {
 	 */
 	public function move_file( $args = null, $output = STRING ) {
 		$response = array(
-			'id' => 0
+			'file_id' => 0,
+			'folder_id' => 0
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
+			'file_id' => 0,
 			'folder_id' => 0
 		) );
+
+		if(
+			get_post( $args[ 'file_id' ] )
+			&& term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
+		) {
+			$folder = wp_set_object_terms(
+				$args[ 'file_id' ],
+				$args[ 'folder_id' ],
+				'fileboxfolders'
+			);
+
+			if( is_array( $folder ) ) {
+				$folder = get_term( $args[ 'folder_id' ], 'fileboxfolders' );
+				// Add history
+				wp_update_post( array(
+					'ID' => $args[ 'file_id' ],
+					'post_excerpt' => sprintf( __( 'Moved to %s', 'filebox' ), $folder->term )
+				) );
+				$response = $args;
+			}
+		}
 
 		return $this->get_ajax_output( $output, $response );
 	}

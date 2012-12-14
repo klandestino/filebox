@@ -796,7 +796,7 @@ class Filebox {
 
 	/**
 	 * Move a folder
-	 * @param array $args
+	 * @param array $args array( folder_id => int, folder_parent => int )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */
@@ -830,18 +830,34 @@ class Filebox {
 
 	/**
 	 * Rename a folder
-	 * @param array $args
+	 * @param array $args array( folder_id => int, folder_name => string )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */
 	public function rename_folder( $args = null, $output = STRING ) {
 		$response = array(
-			'id' => 0
+			'folder_id' => 0,
+			'folder_name' => ''
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
-			'folder_id' => 0
+			'folder_id' => 0,
+			'folder_name' => ''
 		) );
+
+		if(
+			! empty( $args[ 'folder_name' ] )
+			&& $term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
+		) {
+			$folder = wp_update_term( $args[ 'folder_id' ], 'fileboxfolders', array(
+				'name' => $args[ 'folder_name' ]
+			) );
+
+			if( is_array( $folder ) ) {
+				$response[ 'folder_id' ] = $folder[ 'term_id' ];
+				$response[ 'folder_name' ] = $args[ 'folder_name' ];
+			}
+		}
 
 		return $this->get_ajax_output( $output, $response );
 	}

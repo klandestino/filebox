@@ -777,11 +777,17 @@ class Filebox {
 			'folder_parent' => 0,
 		) );
 
-		if( ! empty( $args[ 'folder_name' ] ) && $args[ 'folder_parent' ] ) {
-			if( term_exists( $args[ 'folder_parent' ], 'fileboxfolders' ) ) {
-				wp_insert_term( $args[ 'folder_name' ], 'fileboxfolders', array(
-					'parent' => $args[ 'folder_parent' ]
-				) );
+		if(
+			! empty( $args[ 'folder_name' ] )
+			&& term_exists( $args[ 'folder_parent' ], 'fileboxfolders' )
+		) {
+			$folder = wp_insert_term( $args[ 'folder_name' ], 'fileboxfolders', array(
+				'parent' => $args[ 'folder_parent' ]
+			) );
+
+			if( is_array( $folder ) ) {
+				$response[ 'folder_id' ] = $folder[ 'term_id' ];
+				$response[ 'folder_name' ] = $args[ 'folder_name' ];
 			}
 		}
 
@@ -796,12 +802,28 @@ class Filebox {
 	 */
 	public function move_folder( $args = null, $output = STRING ) {
 		$response = array(
-			'id' => 0
+			'folder_id' => 0,
+			'folder_parent' => 0
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
-			'folder_id' => 0
+			'folder_id' => 0,
+			'folder_parent' => 0
 		) );
+
+		if(
+			term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
+			&& term_exists( $args[ 'folder_parent' ], 'fileboxfolders' )
+		) {
+			$folder = wp_update_term( $args[ 'folder_id' ], 'fileboxfolders', array(
+				'parent' => $args[ 'folder_parent' ]
+			) );
+
+			if( is_array( $folder ) ) {
+				$response[ 'folder_id' ] = $folder[ 'term_id' ];
+				$response[ 'folder_parent' ] = $args[ 'folder_parent' ];
+			}
+		}
 
 		return $this->get_ajax_output( $output, $response );
 	}

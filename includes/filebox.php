@@ -578,6 +578,40 @@ class Filebox {
 	// ---------------------
 
 	/**
+	 * Get an ajax-friendly argument array
+	 * @param array $args
+	 * @param array $defaults
+	 * @return array
+	 */
+	public function get_ajax_arguments( $args, $defaults ) {
+		foreach( $defaults as $arg => $default ) {
+			if( ! array_key_exists( $arg, $args ) ) {
+				if( array_key_exists( $arg, $_POST ) ) {
+					$args[ $arg ] = $_POST[ $arg ];
+				} else {
+					$args[ $arg ] = $default;
+				}
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Get an ajax-friendly return
+	 * @param string $output ARRAY_A, STRING prints json and NULL is NULL
+	 * @return array|void
+	 */
+	public function get_ajax_output( $output, $response ) {
+		if( $output == ARRAY_A ) {
+			return $response;
+		} else {
+			echo json_encode( $response );
+			exit;
+		}
+	}
+
+	/**
 	 * Get a list of all files and folders
 	 * @param int|string|array $args array( folder_id => folder id, group_id => group id ) Uses $_POST as fallback.
 	 * @param boolean $show_all Show all files and folders
@@ -597,18 +631,10 @@ class Filebox {
 			$args = array();
 		}
 
-		foreach( array(
+		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0,
 			'group_id' => 0,
-		) as $arg => $default ) {
-			if( ! array_key_exists( $arg, $args ) ) {
-				if( array_key_exists( $arg, $_POST ) ) {
-					$args[ $arg ] = $_POST[ $arg ];
-				} else {
-					$args[ $arg ] = $default;
-				}
-			}
-		}
+		) );
 
 		if( $args[ 'group_id' ] ) {
 			// Borde köras vid förändringar egentligen:
@@ -651,12 +677,7 @@ class Filebox {
 		asort( $response[ 'folders' ] );
 		asort( $response[ 'files' ] );
 
-		if( $output == ARRAY_A ) {
-			return $response;
-		} else {
-			echo json_encode( $response );
-			exit;
-		}
+		return $this->get_ajax_output( $output, $response );
 	}
 
 	// --------------------------
@@ -670,6 +691,15 @@ class Filebox {
 	 * @return array|void
 	 */
 	public function upload_file( $args = null, $output = STRING ) {
+		$response = array(
+			'id' => 0
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_id' => 0
+		) );
+
+		return $this->get_ajax_output( $output, $response );
 	}
 
 	/**
@@ -679,6 +709,15 @@ class Filebox {
 	 * @return array|void
 	 */
 	public function move_file( $args = null, $output = STRING ) {
+		$response = array(
+			'id' => 0
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_id' => 0
+		) );
+
+		return $this->get_ajax_output( $output, $response );
 	}
 
 	/**
@@ -688,6 +727,15 @@ class Filebox {
 	 * @return array|void
 	 */
 	public function rename_file( $args = null, $output = STRING ) {
+		$response = array(
+			'id' => 0
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_id' => 0
+		) );
+
+		return $this->get_ajax_output( $output, $response );
 	}
 
 	/**
@@ -697,6 +745,15 @@ class Filebox {
 	 * @return array|void
 	 */
 	public function history_file( $args = null, $output = STRING ) {
+		$response = array(
+			'id' => 0
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_id' => 0
+		) );
+
+		return $this->get_ajax_output( $output, $response );
 	}
 
 	// ----------------------------
@@ -705,11 +762,30 @@ class Filebox {
 
 	/**
 	 * Add a folder
-	 * @param array $args
+	 * @param array $args array( folder_name => string, folder_parent => int )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
-	 * @return array|void
+	 * @return array|void array( folder_id => int, folder_name => string )
 	 */
 	public function add_folder( $args = null, $output = STRING ) {
+		$response = array(
+			'folder_id' => 0,
+			'folder_name' => ''
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_name' => '',
+			'folder_parent' => 0,
+		) );
+
+		if( ! empty( $args[ 'folder_name' ] ) && $args[ 'folder_parent' ] ) {
+			if( term_exists( $args[ 'folder_parent' ], 'fileboxfolders' ) ) {
+				wp_insert_term( $args[ 'folder_name' ], 'fileboxfolders', array(
+					'parent' => $args[ 'folder_parent' ]
+				) );
+			}
+		}
+
+		return $this->get_ajax_output( $output, $response );
 	}
 
 	/**
@@ -719,6 +795,15 @@ class Filebox {
 	 * @return array|void
 	 */
 	public function move_folder( $args = null, $output = STRING ) {
+		$response = array(
+			'id' => 0
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_id' => 0
+		) );
+
+		return $this->get_ajax_output( $output, $response );
 	}
 
 	/**
@@ -728,6 +813,15 @@ class Filebox {
 	 * @return array|void
 	 */
 	public function rename_folder( $args = null, $output = STRING ) {
+		$response = array(
+			'id' => 0
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_id' => 0
+		) );
+
+		return $this->get_ajax_output( $output, $response );
 	}
 
 }

@@ -573,12 +573,16 @@ class Filebox {
 		}
 	}
 
+	// ---------------------
+	// AJAX FRIENDLY METHODS
+	// ---------------------
+
 	/**
 	 * Get a list of all files and folders
 	 * @param int|string|array $args array( folder_id => folder id, group_id => group id ) Uses $_POST as fallback.
 	 * @param boolean $show_all Show all files and folders
-	 * @param $output ARRAY_A, false = prints json
-	 * @return object|array|void
+	 * @param $output ARRAY_A, STRING prints json and NULL is void
+	 * @return array|void
 	 */
 	public function list_files_and_folders( $args = null, $output = STRING ) {
 		$response = array(
@@ -655,6 +659,10 @@ class Filebox {
 		}
 	}
 
+	// --------------------------
+	// FILE AJAX FRIENDLY METHODS
+	// --------------------------
+
 	/**
 	 * Upload file
 	 * @param array $args
@@ -668,8 +676,58 @@ class Filebox {
 	 * Move file to specified dir
 	 * @param array $args
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
 	 */
 	public function move_file( $args = null, $output = STRING ) {
+	}
+
+	/**
+	 * Renames a file
+	 * @param array $args
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function rename_file( $args = null, $output = STRING ) {
+	}
+
+	/**
+	 * Get revision history for file
+	 * @param array $args
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function history_file( $args = null, $output = STRING ) {
+	}
+
+	// ----------------------------
+	// FOLDER AJAX FRIENDLY METHODS
+	// ----------------------------
+
+	/**
+	 * Add a folder
+	 * @param array $args
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function add_folder( $args = null, $output = STRING ) {
+	}
+
+	/**
+	 * Move a folder
+	 * @param array $args
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function move_folder( $args = null, $output = STRING ) {
+	}
+
+	/**
+	 * Rename a folder
+	 * @param array $args
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function rename_folder( $args = null, $output = STRING ) {
 	}
 
 }

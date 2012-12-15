@@ -692,12 +692,53 @@ class Filebox {
 	 */
 	public function upload_file( $args = null, $output = STRING ) {
 		$response = array(
-			'id' => 0
+			'file_id' => 0
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0
 		) );
+
+		if(
+			term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
+			&& array_key_exists( 'file_upload', $_FILES )
+		) {
+			$upload = wp_upload_bits( $_FILES[ 'file_upload' ][ 'name' ], null );
+
+			if( $upload[ 'error' ] ) {
+				$response[ 'error' ] = strip_tags( $upload[ 'error' ] );
+			} else {
+				$file_id = wp_insert_post( array(
+					'post_title' => $_FILES[ 'file_upload' ][ 'name' ],
+					'post_content' => '',
+					'post_excerpt' => __( 'Uploaded new file' ),
+					'post_type' => 'document'
+				) );
+
+				$attach_id = wp_insert_attachment( array(
+					'guid' => $upload[ 'url' ],
+					'post_mime_type' => $_FILES[ 'file_upload' ][ 'type' ],
+					'post_title' => $_FILES[ 'file_upload' ][ 'name' ],
+					'post_content' => '',
+					'post_status' => 'inherit'
+				), $upload[ 'file' ], $file_id );
+				wp_update_post( array(
+					'ID' => $file_id,
+					'post_content' => $attach_id
+				) );
+
+				require_once( ABSPATH . 'wp-admin/includes/image.php');
+
+				$attach_data = wp_generate_attachment_metadata(
+					$attach_id,
+					$_FILES[ 'file_upload' ][ 'tmp_name' ]
+				);
+				wp_update_attachment_metadata( $attach_id, $attach_data );
+
+				$response[ 'file_id' ] = $file_id;
+				$response[ 'file_name' ] = $_FILES[ 'file_upload' ][ 'name' ];
+			}
+		}
 
 		return $this->get_ajax_output( $output, $response );
 	}

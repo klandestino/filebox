@@ -686,7 +686,8 @@ class Filebox {
 
 	/**
 	 * Upload file
-	 * @param array $args
+	 * Requires an uploaded file in $_FILES
+	 * @param array $args array( folder_id => int )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */
@@ -714,6 +715,12 @@ class Filebox {
 					'post_excerpt' => __( 'Uploaded new file' ),
 					'post_type' => 'document'
 				) );
+
+				wp_set_object_terms(
+					$file_id,
+					$args[ 'folder_id' ],
+					'fileboxfolders'
+				);
 
 				$attach_id = wp_insert_attachment( array(
 					'guid' => $upload[ 'url' ],
@@ -745,7 +752,7 @@ class Filebox {
 
 	/**
 	 * Move file to specified dir
-	 * @param array $args
+	 * @param array $args array( file_id => int, folder_id => int )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */
@@ -786,7 +793,7 @@ class Filebox {
 
 	/**
 	 * Renames a file
-	 * @param array $args
+	 * @param array $args array( 'file_id' => int, file_name => string )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */

@@ -828,18 +828,34 @@ class Filebox {
 
 	/**
 	 * Get revision history for file
-	 * @param array $args
+	 * @param array $args array( file_id => int )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */
 	public function history_file( $args = null, $output = STRING ) {
 		$response = array(
-			'id' => 0
+			'file_history' => array()
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
-			'folder_id' => 0
+			'file_id' => 0
 		) );
+
+		if( $args[ 'file_id' ] ) {
+			$revisions = get_posts( array(
+				'post_parent' => $args[ 'file_id' ],
+				'post_type' => 'revision',
+				'post_status' => 'any',
+				'numberposts' => -1
+			) );
+
+			foreach( $revisions as $rev ) {
+				$response[ 'file_history' ][] = array(
+					'id' => $rev->ID,
+					'comment' => $rev->post_excerpt
+				);
+			}
+		}
 
 		return $this->get_ajax_output( $output, $response );
 	}

@@ -751,12 +751,29 @@ class Filebox {
 	 */
 	public function rename_file( $args = null, $output = STRING ) {
 		$response = array(
-			'id' => 0
+			'file_id' => 0,
+			'file_name' => ''
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
-			'folder_id' => 0
+			'file_id' => 0,
+			'file_name' => ''
 		) );
+
+		$file = get_post( $args[ 'file_id' ] );
+
+		if( $file && ! empty( $args[ 'file_name' ] ) ) {
+			wp_update_post( array(
+				'ID' => $file->ID,
+				'post_title' => $args[ 'file_name' ],
+				'post_excerpt' => sprintf(
+					__( 'Renamed from %s to %s', 'filebox' ),
+					$file->post_title,
+					$args[ 'file_name' ]
+				)
+			) );
+			$response = $args;
+		}
 
 		return $this->get_ajax_output( $output, $response );
 	}

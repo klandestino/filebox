@@ -44,7 +44,7 @@ add_action( 'bp_setup_components', create_function( '', "
 
 // Set buddypress component to be active through a bp-filter
 // This is a must do if we want the notifications to work.
-add_filter( 'bp_active_components', create_function( '', "
+add_filter( 'bp_active_components', create_function( '$components', "
 	return array_merge( \$components, array( 'filebox_notifier' => true ) );
 " ) );
 

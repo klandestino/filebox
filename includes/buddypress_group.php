@@ -43,13 +43,6 @@ class Filebox_Buddypress_Group extends BP_Group_Extension {
 	public function settings_screen( $create = false ) {
 		global $bp;
 
-		$perm = groups_get_groupmeta( $bp->groups->current_group->id, 'filebox_permissions' );
-		$perm_person = groups_get_groupmeta($bp->groups->current_group->id, 'filebox_permissions_person');
-
-		if( $perm != 'admins' && $perm != 'person' ) {
-			$perm = 'members';
-		}
-
 		Filebox::__template( 'filebox-group-settings' );
 
 		if ($create) {

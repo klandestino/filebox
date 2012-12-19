@@ -27,7 +27,7 @@ class Filebox {
 			'permissions_person' => ''
 		);
 
-		$options = get_option( 'filebox' );
+		$options = get_option( 'filebox', array() );
 
 		foreach( $default as $i => $opt ) {
 			if( ! array_key_exists( $i, $options ) ) {

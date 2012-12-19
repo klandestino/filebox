@@ -38,7 +38,7 @@ Filebox_Admin::__setup();
 
 // Setup and run buddypress extension if buddypress is installed
 add_action( 'bp_setup_components', create_function( '', "
-	require_once( FILEBOX_INCLUDE_DIR . '/buddypress.php' );
+	require_once( FILEBOX_INCLUDE_DIR . '/buddypress_notifier.php' );
 	Filebox_Buddypress_Notifier::__setup();
 " ) );
 

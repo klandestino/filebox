@@ -48,6 +48,12 @@ add_filter( 'bp_active_components', create_function( '', "
 	return array_merge( \$components, array( 'filebox_notifier' => true ) );
 " ) );
 
+// Add buddypress group extension
+add_action( 'bp_include', create_function( '', "
+	require_once( FILEBOX_INCLUDE_DIR . '/buddypress_group.php' );
+	bp_register_group_extension( 'Filebox_Buddypress_Group' );
+" ) );
+
 // Hook languages-loading function to wordpress init action
 add_action( 'init', create_function( '', "
 	load_plugin_textdomain( 'filebox', false, plugin_basename( FILEBOX_PLUGIN_DIR ) . '/languages/' );

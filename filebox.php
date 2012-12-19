@@ -39,9 +39,14 @@ Filebox_Admin::__setup();
 // Setup and run buddypress extension if buddypress is installed
 add_action( 'bp_setup_components', create_function( '', "
 	require_once( FILEBOX_INCLUDE_DIR . '/buddypress.php' );
-	Filebox_Buddypress::__setup();
+	Filebox_Buddypress_Notifier::__setup();
 " ) );
 
+// Set buddypress component to be active through a bp-filter
+// This is a must do if we want the notifications to work.
+add_filter( 'bp_active_components', create_function( '', "
+	return array_merge( \$components, array( 'filebox_notifier' => true ) );
+" ) );
 
 // Hook languages-loading function to wordpress init action
 add_action( 'init', create_function( '', "

@@ -23,6 +23,8 @@ class Filebox {
 	 */
 	public static function __options() {
 		$default = array(
+			'permissions' => 'members',
+			'permissions_person' => ''
 		);
 
 		$options = get_option( 'filebox' );
@@ -34,6 +36,35 @@ class Filebox {
 		}
 
 		return $options;
+	}
+
+	/**
+	 * Locates and loads a template by using Wordpress locate_template.
+	 * If no template is found, it loads a template from this plugins template
+	 * directory.
+	 * @uses locate_template
+	 * @param string $slug
+	 * @param string $name
+	 * @return void
+	 */
+	public static function __template( $slug, $name = '' ) {
+		$template_names = array(
+			$slug . '-' . $name . '.php',
+			$slug . '.php'
+		);
+
+		$located = locate_template( $template_names );
+
+		if ( empty( $located ) ) {
+			foreach( $template_names as $name ) {
+				if ( file_exists( FILEBOX_TEMPLATE_DIR . '/' . $name ) ) {
+					load_template( FILEBOX_TEMPLATE_DIR . '/' . $name, false );
+					return;
+				}
+			}
+		} else {
+			load_template( $located, false );
+		}
 	}
 
 	/**

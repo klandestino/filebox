@@ -22,48 +22,36 @@ class Filebox_Buddypress_Group extends BP_Group_Extension {
 		$this->name = __( 'Filebox', 'filebox' );
 	}
 
+	/**
+	 * Prints a create screen for group extension.
+	 * Returns false if user is not at the creation step
+	 * @return false|void
+	 */
 	public function create_screen() {
-		if ( !bp_is_group_creation_step( $this->slug ) )
+		if ( ! bp_is_group_creation_step( $this->slug ) ) {
 			return false;
+		}
 
-		$this->settingsScreen(true);
+		$this->settings_screen( true );
 	}
 
-	public function settingsScreen($create) {
+	/**
+	 * Prints a settings screen.
+	 * @param boolean $create True if settings will be set during a creation step.
+	 * @return void
+	 */
+	public function settings_screen( $create = false ) {
 		global $bp;
 
-		$perm = groups_get_groupmeta($bp->groups->current_group->id, 'wpfilebox-perm');
-		$permPerson = groups_get_groupmeta($bp->groups->current_group->id, 'wpfilebox-perm-person');
+		$perm = groups_get_groupmeta( $bp->groups->current_group->id, 'filebox_permissions' );
+		$perm_person = groups_get_groupmeta($bp->groups->current_group->id, 'filebox_permissions_person');
 
-		if ($perm != 'admins' && $perm != 'person') $perm = 'members';
-		?>
-			<h4>Who can upload files and make changes in the document archive?</h4>
-			
-			<p>
-			<label for="wpfileboxDocArchivePerm1"><input type="radio" id="wpfileboxDocArchivePerm1" name="wpfileboxDocArchivePerm" value="members" <?php if ($perm == 'members') echo('checked="checked" '); ?>/> All group members have full rights in the document archive.</label>
-				<label for="wpfileboxDocArchivePerm2"><input type="radio" id="wpfileboxDocArchivePerm2" name="wpfileboxDocArchivePerm" value="admins" <?php if ($perm == 'admins') echo('checked="checked" '); ?>/> Only group administrators may make changes.</label>
-				<label for="wpfileboxDocArchivePerm3"><input type="radio" id="wpfileboxDocArchivePerm3" name="wpfileboxDocArchivePerm" value="person" <?php if ($perm == 'person') echo('checked="checked" '); ?>/> This person only may make changes:</label>
-				<select name="wpfileboxDocArchivePermPerson">
-					<?php
-						$users = get_users(array(
-							'fields' => 'all'
-						));
-						foreach ($users as $user) {
-							$sortedUsers[$user->user_login] = $user->display_name;
-						}
-						asort($sortedUsers);
-						foreach ($sortedUsers as $user_login => $display_name) {
-							echo('<option value="' . $user_login . '"');
-							if ($permPerson == $user_login || (!$permPerson && $GLOBALS['current_user']->user_login == $user_login)) echo (' selected="selected"');
-							echo('>' . $display_name . '</option>');
-						}
-					?>
-				</select>
-			</p>
-			<p>
-				Note: All group members will be able to view and download everything in the document archive.
-			</p>
-		<?php
+		if( $perm != 'admins' && $perm != 'person' ) {
+			$perm = 'members';
+		}
+
+		Filebox::__template( 'filebox-group-settings' );
+
 		if ($create) {
 			wp_nonce_field( 'groups_create_save_' . $this->slug );	  
 		} else {

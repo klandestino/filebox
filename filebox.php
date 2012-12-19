@@ -42,15 +42,8 @@ add_action( 'bp_setup_components', create_function( '', "
 	Filebox_Buddypress::__setup();
 " ) );
 
-/**
- * Loads language files during wordpress init action
- * @see add_action
- * @see load_plugin_textdomain
- * @return void
- */
-function filebox_load_textdomain() {
-	load_plugin_textdomain( 'filebox', false, plugin_basename( FILEBOX_PLUGIN_DIR ) . '/languages/' );
-}
 
 // Hook languages-loading function to wordpress init action
-add_action( 'init', 'filebox_load_textdomain' );
+add_action( 'init', create_function( '', "
+	load_plugin_textdomain( 'filebox', false, plugin_basename( FILEBOX_PLUGIN_DIR ) . '/languages/' );
+" ) );

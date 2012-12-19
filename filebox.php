@@ -8,23 +8,6 @@ Author: Klandestino AB
 Author URI: http://www.klandestino.se/
 License: GPLv3 or later
 */
-/*
-	Filebox
-    Copyright (C) 2012  Klandestino AB <alfred@klandestino.se>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 if( ! empty( $network_plugin ) ) {
 	$plugin_file = $network_plugin;
@@ -54,7 +37,7 @@ Filebox::__setup();
 Filebox_Admin::__setup();
 
 // Setup and run buddypress extension if buddypress is installed
-add_action( 'bp_setup_components', create_function( "
+add_action( 'bp_setup_components', create_function( '', "
 	require_once( FILEBOX_INCLUDE_DIR . '/buddypress.php' );
 	Filebox_Buddypress::__setup();
 " ) );

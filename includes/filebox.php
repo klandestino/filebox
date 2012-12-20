@@ -23,8 +23,6 @@ class Filebox {
 	 */
 	public static function get_options() {
 		$default = array(
-			'permissions' => 'members',
-			'permissions_person' => ''
 		);
 
 		$options = get_option( 'filebox', array() );

@@ -1,4 +1,4 @@
-<?php $options = Filebox::get_options(); ?>
+<?php global $options; ?>
 
 <h4><?php _e( 'Who can upload files and make changes in the document archive?', 'filebox' ); ?></h4>
 

@@ -21,7 +21,7 @@ class Filebox {
 	 * @uses get_option
 	 * return array
 	 */
-	public static function __options() {
+	public static function get_options() {
 		$default = array(
 			'permissions' => 'members',
 			'permissions_person' => ''
@@ -47,7 +47,7 @@ class Filebox {
 	 * @param string $name
 	 * @return void
 	 */
-	public static function __template( $slug, $name = '' ) {
+	public static function get_template( $slug, $name = '' ) {
 		$template_names = array(
 			$slug . '-' . $name . '.php',
 			$slug . '.php'

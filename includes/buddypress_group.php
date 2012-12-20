@@ -150,10 +150,7 @@ class Filebox_Buddypress_Group extends BP_Group_Extension {
 	}
 
 	public function display() {
-		global $bp;
-		?>
-			<div class="wp-filebox" data-path="buddypress<?php echo $bp->groups->current_group->id; ?>:/"></div>
-		<?php
+		Filebox::get_template( 'filebox-group-display' );
 	}
 
 	/*

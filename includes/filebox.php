@@ -69,7 +69,7 @@ class Filebox {
 	 * Class constructor
 	 */
 	public function __construct() {
-		$this->options = self::__options();
+		$this->options = self::get_options();
 		// Maybe create post type (if documents is non-existent)
 		add_action( 'init', array( $this, 'maybe_add_post_type' ) );
 		// Maybe create taxonomy (if directories is non-existent)
@@ -391,7 +391,7 @@ class Filebox {
 			'posts_per_page' => -1
 		) );
 
-		while( $files->have_posts() ) {
+		while( $files->have_posts ) {
 			$files->the_post();
 			$results[ $files->post->ID ] = $files->post->post_title;
 		}
@@ -690,7 +690,7 @@ class Filebox {
 
 		if( array_key_exists( 'id', $response[ 'meta' ] ) ) {
 			$response[ 'meta' ][ 'parent' ] = $this->get_parent_folder( $response[ 'meta' ][ 'id' ] );
-			$response[ 'meta' ][ 'readonly' ] = $this->is_read_only( $response[ 'meta' ][ 'id' ] );
+			//$response[ 'meta' ][ 'readonly' ] = $this->is_read_only( $response[ 'meta' ][ 'id' ] );
 			$response[ 'meta' ][ 'group' ] = $this->get_group_by_folder( $response[ 'meta' ][ 'id' ] );
 			$response[ 'meta' ][ 'breadcrumbs' ] = $this->get_folder_ancestors( $response[ 'meta' ][ 'id' ] );
 

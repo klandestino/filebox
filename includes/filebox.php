@@ -222,7 +222,7 @@ class Filebox {
 
 		$folder_id = groups_get_groupmeta( $group_id, 'filebox_group_folder' );
 
-		if( $folder_id ) {
+		if( is_int( $folder_id ) && $folder_id ) {
 			$folder = get_term( $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
@@ -242,9 +242,33 @@ class Filebox {
 		 * no folder for specified group.
 		 */
 
+		// Check if there's already a term with group name
+		$folder = get_term_by( 'name', $group_name, 'fileboxfolders' );
+		$folder_id = 0;
+
+		if( $folder ) {
+			$folder_id = $folder->term_id;
+
+			// Is there any group using this term?
+			if( $this->get_group_by_folder( $folder->term_id ) ) {
+
+				// Then create another folder name
+				while( term_exists( $group_name, 'fileboxfolders' ) ) {
+					if( preg_match( '/-([0-9]+)$/', $group_name, $match ) ) {
+						$group_name = preg_replace( '/-[0-9]+$/', ( ( int ) $match[ 1 ] ) + 1, $group_name );
+					} else {
+						$group_name .= '-1';
+					}
+				}
+			}
+		}
+
 		$folder_id = wp_insert_term( $group_name, 'fileboxfolders' );
 
-		if( ! $folder_id ) return false;
+		// If it's a WP_Error or a zero then fail
+		if( ! ( is_int( $folder_id ) && $folder_id ) ) {
+			return false;
+		}
 
 		groups_update_groupmeta( $group_id, 'filebox_group_folder', $folder_id );
 
@@ -284,7 +308,11 @@ class Filebox {
 		 * no folder for specified group.
 		 */
 
-		$folder_id = wp_insert_term( $this->options[ 'topics_folder_name' ], 'fileboxfolders' );
+		$folder_id = wp_insert_term(
+			$this->options[ 'topics_folder_name' ],
+			'fileboxfolders',
+			array( 'parent' => $parent )
+	   );
 
 		if( ! $folder_id ) return false;
 
@@ -326,7 +354,11 @@ class Filebox {
 		 * no folder for specified group.
 		 */
 
-		$folder_id = wp_insert_term( $this->options[ 'topics_trash_name' ], 'fileboxfolders' );
+		$folder_id = wp_insert_term(
+			$this->options[ 'topics_trash_name' ],
+			'fileboxfolders',
+			array( 'parent' => $parent )
+		);
 
 		if( ! $folder_id ) return false;
 
@@ -467,10 +499,9 @@ class Filebox {
 			$folder_id = $parents[ 0 ];
 		}
 
-		$group_id = $wpdb->get_var( sprintf(
-			'SELECT `group_id` FROM `%s` WHERE `meta_key` = "filebox_group_folder" AND `meta_value` = "%d" LIMIT 1',
-			$wpdb->prepare( $bp->groups->table_name_groupmeta ),
-			$wpdb->prepare( $folder_id )
+		$group_id = $wpdb->get_var( $wpdb->prepare(
+			'SELECT `group_id` FROM `'. $bp->groups->table_name_groupmeta . '` WHERE `meta_key` = "filebox_group_folder" AND `meta_value` = %d LIMIT 0,1',
+			$folder_id
 		) );
 
 		return $group_id;

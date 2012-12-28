@@ -317,7 +317,8 @@ class Filebox {
 		$folder = get_terms( 'fileboxfolders', array(
 			'fields' => 'ids',
 			'name' => $this->options[ 'topics_folder_name' ],
-			'parent' => $parent
+			'parent' => $parent,
+			'hide_empty' => false
 		) );
 
 		if( $folder ) {
@@ -378,7 +379,8 @@ class Filebox {
 		$folder = get_terms( 'fileboxfolders', array(
 			'fields' => 'ids',
 			'name' => $this->options[ 'trash_folder_name' ],
-			'parent' => $parent
+			'parent' => $parent,
+			'hide_empty' => false
 		) );
 
 		if( $folder ) {
@@ -414,7 +416,8 @@ class Filebox {
 		if( $result[ 0 ] ) {
 			$result = array_merge( $result, get_terms( 'fileboxfolders', array(
 				'fields' => 'ids',
-				'child_of' => $result[ 0 ]
+				'child_of' => $result[ 0 ],
+				'hide_empty' => false
 			) ) );
 		}
 
@@ -430,7 +433,8 @@ class Filebox {
 		$response = array();
 
 		$folders = get_terms( 'fileboxfolders', array(
-			'parent' => $folder_id
+			'parent' => $folder_id,
+			'hide_empty' => false
 		) );
 
 		foreach( $folders as $folder ) {
@@ -660,11 +664,34 @@ class Filebox {
 				while( $reply_query->have_posts() ) {
 					$reply_query->the_post();
 					$reply_id = bbp_get_reply_id( $reply_query->post->ID );
-
 					$attachments = array_merge( $attachments, $this->get_attachments( $reply_id ) );
 				}
 
-				$this->update_folder( $topics_folder, $attachments );
+				foreach( $attachments as $attachment ) {
+					$post_query = new WP_Query( array(
+						'post_type' => 'document',
+						'meta_key' => 'filebox_forum_imported',
+						'meta_value' => $attachment
+					) );
+
+					if( ! $post_query->have_posts() ) {
+						$filename = get_attached_file( $attachment );
+						$finfo = new finfo( FILEINFO_MIME );
+						$file = $this->upload_file( array(
+							'folder_id' => $topics_folder,
+							'file_upload' => array(
+								'name' => substr( $filename, strrpos( $filename, '/' ) + 1 ),
+								'tmp_name' => $filename,
+								'type' => $finfo->file( $filename )
+							),
+							'comment' => __( 'Imported from group forum' )
+						), ARRAY_A );
+
+						if( $file[ 'file_id' ] ) {
+							update_post_meta( $file[ 'file_id' ], 'filebox_forum_imported', $attachment );
+						}
+					}
+				}
 			}
 		}
 	}
@@ -782,8 +809,8 @@ class Filebox {
 
 	/**
 	 * Upload file
-	 * Requires an uploaded file in $_FILES
-	 * @param array $args array( folder_id => int )
+	 * Requires an uploaded file in $_FILES if not defined in $args.
+	 * @param array $args array( folder_id => int, comment (optional) => string, file_upload (optional) => array( name => string, tmp_name => string, type => string ) )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */
@@ -798,33 +825,44 @@ class Filebox {
 
 		if(
 			term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
-			&& array_key_exists( 'file_upload', $_FILES )
+			&& (
+				array_key_exists( 'file_upload', $_FILES )
+				|| array_key_exists( 'file_upload', $args )
+			)
 		) {
-			$upload = wp_upload_bits( $_FILES[ 'file_upload' ][ 'name' ], null );
+			if( array_key_exists( 'file_upload', $args ) ) {
+				$file = $args[ 'file_upload' ];
+			} else {
+				$file = $_FILES[ 'file_upload' ];
+			}
+
+			$upload = wp_upload_bits( $file[ 'name' ], null, file_get_contents( $file[ 'tmp_name' ] ) );
 
 			if( $upload[ 'error' ] ) {
 				$response[ 'error' ] = strip_tags( $upload[ 'error' ] );
 			} else {
 				$file_id = wp_insert_post( array(
-					'post_title' => $_FILES[ 'file_upload' ][ 'name' ],
+					'post_title' => $file[ 'name' ],
 					'post_content' => '',
-					'post_excerpt' => __( 'Uploaded new file' ),
-					'post_type' => 'document'
+					'post_excerpt' => array_key_exists( 'comment', $args ) ? $args[ 'comment' ] : __( 'Uploaded new file' ),
+					'post_type' => 'document',
+					'post_status' => 'publish'
 				) );
 
 				wp_set_object_terms(
 					$file_id,
-					$args[ 'folder_id' ],
+					( int ) $args[ 'folder_id' ],
 					'fileboxfolders'
 				);
 
 				$attach_id = wp_insert_attachment( array(
 					'guid' => $upload[ 'url' ],
-					'post_mime_type' => $_FILES[ 'file_upload' ][ 'type' ],
-					'post_title' => $_FILES[ 'file_upload' ][ 'name' ],
+					'post_mime_type' => $file[ 'type' ],
+					'post_title' => $file[ 'name' ],
 					'post_content' => '',
 					'post_status' => 'inherit'
 				), $upload[ 'file' ], $file_id );
+
 				wp_update_post( array(
 					'ID' => $file_id,
 					'post_content' => $attach_id
@@ -834,12 +872,13 @@ class Filebox {
 
 				$attach_data = wp_generate_attachment_metadata(
 					$attach_id,
-					$_FILES[ 'file_upload' ][ 'tmp_name' ]
+					$file[ 'tmp_name' ]
 				);
+
 				wp_update_attachment_metadata( $attach_id, $attach_data );
 
 				$response[ 'file_id' ] = $file_id;
-				$response[ 'file_name' ] = $_FILES[ 'file_upload' ][ 'name' ];
+				$response[ 'file_name' ] = $file[ 'name' ];
 			}
 		}
 

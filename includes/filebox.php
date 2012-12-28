@@ -23,6 +23,8 @@ class Filebox {
 	 */
 	public static function get_options() {
 		$default = array(
+			'topics_folder_name' => __( 'Forum attachments' ),
+			'trash_folder_name' => __( 'Trash' )
 		);
 
 		$options = get_option( 'filebox', array() );
@@ -222,7 +224,7 @@ class Filebox {
 
 		$folder_id = groups_get_groupmeta( $group_id, 'filebox_group_folder' );
 
-		if( is_int( $folder_id ) && $folder_id ) {
+		if( is_numeric( $folder_id ) && $folder_id ) {
 			$folder = get_term( $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
@@ -247,32 +249,36 @@ class Filebox {
 		$folder_id = 0;
 
 		if( $folder ) {
-			$folder_id = $folder->term_id;
-
 			// Is there any group using this term?
 			if( $this->get_group_by_folder( $folder->term_id ) ) {
 
 				// Then create another folder name
 				while( term_exists( $group_name, 'fileboxfolders' ) ) {
 					if( preg_match( '/-([0-9]+)$/', $group_name, $match ) ) {
-						$group_name = preg_replace( '/-[0-9]+$/', ( ( int ) $match[ 1 ] ) + 1, $group_name );
+						$group_name = preg_replace( '/-[0-9]+$/', '-' . ( ( ( int ) $match[ 1 ] ) + 1 ), $group_name );
 					} else {
 						$group_name .= '-1';
 					}
 				}
+			} else {
+				$folder_id = $folder->term_id;
 			}
 		}
 
-		$folder_id = wp_insert_term( $group_name, 'fileboxfolders' );
+		if( ! $folder_id ) {
+			$folder = wp_insert_term( $group_name, 'fileboxfolders' );
 
-		// If it's a WP_Error or a zero then fail
-		if( ! ( is_int( $folder_id ) && $folder_id ) ) {
-			return false;
+			if( is_array( $folder ) ) {
+				$folder_id = $folder[ 'term_id' ];
+			}
 		}
 
-		groups_update_groupmeta( $group_id, 'filebox_group_folder', $folder_id );
-
-		return $folder_id;
+		if( $folder_id ) {
+			groups_update_groupmeta( $group_id, 'filebox_group_folder', $folder_id );
+			return $folder_id;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -288,7 +294,7 @@ class Filebox {
 
 		$folder_id = groups_get_groupmeta( $group_id, 'filebox_topics_folder' );
 
-		if( $folder_id ) {
+		if( is_numeric( $folder_id ) && $folder_id ) {
 			$folder = get_term( $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
@@ -308,17 +314,32 @@ class Filebox {
 		 * no folder for specified group.
 		 */
 
-		$folder_id = wp_insert_term(
-			$this->options[ 'topics_folder_name' ],
-			'fileboxfolders',
-			array( 'parent' => $parent )
-	   );
+		$folder = get_terms( 'fileboxfolders', array(
+			'fields' => 'ids',
+			'name' => $this->options[ 'topics_folder_name' ],
+			'parent' => $parent
+		) );
 
-		if( ! $folder_id ) return false;
+		if( $folder ) {
+			$folder_id = $folder[ 0 ];
+		} else {
+			$folder = wp_insert_term(
+				$this->options[ 'topics_folder_name' ],
+				'fileboxfolders',
+				array( 'parent' => $parent )
+			);
 
-		groups_update_groupmeta( $group_id, 'filebox_topics_folder', $folder_id );
+			if( is_array( $folder ) ) {
+				$folder_id = $folder[ 'term_id' ];
+			}
+		}
 
-		return $folder_id;
+		if( $folder_id ) {
+			groups_update_groupmeta( $group_id, 'filebox_topics_folder', $folder_id );
+			return $folder_id;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -334,13 +355,13 @@ class Filebox {
 
 		$folder_id = groups_get_groupmeta( $group_id, 'filebox_trash_folder' );
 
-		if( $folder_id ) {
+		if( is_numeric( $folder_id ) && $folder_id ) {
 			$folder = get_term( $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
-				if( $folder->term != $this->options[ 'topics_trash_name' ] ) {
+				if( $folder->term != $this->options[ 'trash_folder_name' ] ) {
 					wp_update_term( $folder_id, array(
-						'name' => $this->options[ 'topics_trash_name' ]
+						'name' => $this->options[ 'trash_folder_name' ]
 					) );
 				}
 
@@ -354,17 +375,32 @@ class Filebox {
 		 * no folder for specified group.
 		 */
 
-		$folder_id = wp_insert_term(
-			$this->options[ 'topics_trash_name' ],
-			'fileboxfolders',
-			array( 'parent' => $parent )
-		);
+		$folder = get_terms( 'fileboxfolders', array(
+			'fields' => 'ids',
+			'name' => $this->options[ 'trash_folder_name' ],
+			'parent' => $parent
+		) );
 
-		if( ! $folder_id ) return false;
+		if( $folder ) {
+			$folder_id = $folder[ 0 ];
+		} else {
+			$folder = wp_insert_term(
+				$this->options[ 'trash_folder_name' ],
+				'fileboxfolders',
+				array( 'parent' => $parent )
+			);
 
-		groups_update_groupmeta( $group_id, 'filebox_trash_folder', $folder_id );
+			if( is_array( $folder ) ) {
+				$folder_id = $folder[ 'term_id' ];
+			}
+		}
 
-		return $folder_id;
+		if( $folder_id ) {
+			groups_update_groupmeta( $group_id, 'filebox_trash_folder', $folder_id );
+			return $folder_id;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -662,10 +698,10 @@ class Filebox {
 	 * @param string $output ARRAY_A, STRING prints json and NULL is NULL
 	 * @return array|void
 	 */
-	public function get_ajax_output( $output, $response ) {
+	public function get_ajax_output( $output, $response = STRING ) {
 		if( $output == ARRAY_A ) {
 			return $response;
-		} else {
+		} elseif( $output == STING ) {
 			echo json_encode( $response );
 			exit;
 		}
@@ -693,7 +729,7 @@ class Filebox {
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0,
-			'group_id' => 0,
+			'group_id' => 0
 		) );
 
 		if( $args[ 'group_id' ] ) {
@@ -761,7 +797,7 @@ class Filebox {
 		) );
 
 		if(
-			term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
+			term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
 			&& array_key_exists( 'file_upload', $_FILES )
 		) {
 			$upload = wp_upload_bits( $_FILES[ 'file_upload' ][ 'name' ], null );
@@ -829,7 +865,7 @@ class Filebox {
 
 		if(
 			get_post( $args[ 'file_id' ] )
-			&& term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
+			&& term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
 		) {
 			$folder = wp_set_object_terms(
 				$args[ 'file_id' ],
@@ -838,12 +874,15 @@ class Filebox {
 			);
 
 			if( is_array( $folder ) ) {
-				$folder = get_term( $args[ 'folder_id' ], 'fileboxfolders' );
-				// Add history
-				wp_update_post( array(
-					'ID' => $args[ 'file_id' ],
-					'post_excerpt' => sprintf( __( 'Moved to %s', 'filebox' ), $folder->term )
-				) );
+				if( $post ) {
+					$folder = get_term( $args[ 'folder_id' ], 'fileboxfolders' );
+					// Add history
+					wp_update_post( array(
+						'ID' => $args[ 'file_id' ],
+						'post_excerpt' => sprintf( __( 'Moved to %s', 'filebox' ), $folder->term )
+					) );
+				}
+
 				$response = $args;
 			}
 		}
@@ -943,7 +982,7 @@ class Filebox {
 
 		if(
 			! empty( $args[ 'folder_name' ] )
-			&& term_exists( $args[ 'folder_parent' ], 'fileboxfolders' )
+			&& term_exists( ( int ) $args[ 'folder_parent' ], 'fileboxfolders' )
 		) {
 			$folder = wp_insert_term( $args[ 'folder_name' ], 'fileboxfolders', array(
 				'parent' => $args[ 'folder_parent' ]
@@ -976,8 +1015,8 @@ class Filebox {
 		) );
 
 		if(
-			term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
-			&& term_exists( $args[ 'folder_parent' ], 'fileboxfolders' )
+			term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
+			&& term_exists( ( int ) $args[ 'folder_parent' ], 'fileboxfolders' )
 		) {
 			$folder = wp_update_term( $args[ 'folder_id' ], 'fileboxfolders', array(
 				'parent' => $args[ 'folder_parent' ]
@@ -1011,7 +1050,7 @@ class Filebox {
 
 		if(
 			! empty( $args[ 'folder_name' ] )
-			&& $term_exists( $args[ 'folder_id' ], 'fileboxfolders' )
+			&& $term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
 		) {
 			$folder = wp_update_term( $args[ 'folder_id' ], 'fileboxfolders', array(
 				'name' => $args[ 'folder_name' ]

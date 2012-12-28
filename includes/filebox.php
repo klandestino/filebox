@@ -874,14 +874,12 @@ class Filebox {
 			);
 
 			if( is_array( $folder ) ) {
-				if( $post ) {
-					$folder = get_term( $args[ 'folder_id' ], 'fileboxfolders' );
-					// Add history
-					wp_update_post( array(
-						'ID' => $args[ 'file_id' ],
-						'post_excerpt' => sprintf( __( 'Moved to %s', 'filebox' ), $folder->term )
-					) );
-				}
+				$folder = get_term( $args[ 'folder_id' ], 'fileboxfolders' );
+				// Add history
+				wp_update_post( array(
+					'ID' => $args[ 'file_id' ],
+					'post_excerpt' => sprintf( __( 'Moved to %s', 'filebox' ), $folder->term )
+				) );
 
 				$response = $args;
 			}

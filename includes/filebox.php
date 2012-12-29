@@ -140,15 +140,22 @@ class Filebox {
 	 * @return void
 	 */
 	public function maybe_add_taxonomy() {
-		if( ! taxonomy_exists( 'fileboxfolders' ) ) {
+		//if( ! taxonomy_exists( 'fileboxfolders' ) ) {
 			register_taxonomy( 'fileboxfolders', array( 'document' ), array(
 				'labels' => array(
 					'name' => _x( 'Folders', 'taxonomy general name', 'filebox' ),
 					'singular_name' => _x( 'Folder', 'taxonomy singular name', 'filebox' )
 				),
-				'hierarchical' => true
+				'hierarchical' => true,
+				'public' => true,
+				'show_ui' => true,
+				'show_admin_column' => true,
+				'show_in_nav_menus' => false,
+				'rewrite' => false,
+				'query_var' => true,
+				'show_tagcloud' => false
 			) );
-		}
+		//}
 	}
 
 	/**
@@ -204,11 +211,17 @@ class Filebox {
 	/**
 	 * Gets a file URL
 	 * @uses wp_get_attachment_url
-	 * @param int $file_id
-	 * @return string
+	 * @param int $file_id Post ID
+	 * @return string Post attachment URL
 	 */
 	public function get_file_url( $file_id ) {
-		return wp_get_attachment_url( $file_id );
+		$attachments = get_children( array( 'parent' => $file_id, 'post_type' => 'attachment' ) );
+
+		if( is_array( $attachments ) ) {
+			return wp_get_attachment_url( reset( $attachments )->ID );
+		} else {
+			return '';
+		}
 	}
 
 	/**
@@ -245,7 +258,8 @@ class Filebox {
 		 */
 
 		// Check if there's already a term with group name
-		$folder = get_term_by( 'name', $group_name, 'fileboxfolders' );
+		$folder_name = $group_name;
+		$folder = get_term_by( 'name', $folder_name, 'fileboxfolders' );
 		$folder_id = 0;
 
 		if( $folder ) {
@@ -253,11 +267,11 @@ class Filebox {
 			if( $this->get_group_by_folder( $folder->term_id ) ) {
 
 				// Then create another folder name
-				while( term_exists( $group_name, 'fileboxfolders' ) ) {
-					if( preg_match( '/-([0-9]+)$/', $group_name, $match ) ) {
-						$group_name = preg_replace( '/-[0-9]+$/', '-' . ( ( ( int ) $match[ 1 ] ) + 1 ), $group_name );
+				while( term_exists( $folder_name, 'fileboxfolders' ) ) {
+					if( preg_match( '/-([0-9]+)$/', $folder_name, $match ) ) {
+						$folder_name = preg_replace( '/-[0-9]+$/', '-' . ( ( ( int ) $match[ 1 ] ) + 1 ), $folder_name );
 					} else {
-						$group_name .= '-1';
+						$folder_name .= '-1';
 					}
 				}
 			} else {
@@ -266,7 +280,9 @@ class Filebox {
 		}
 
 		if( ! $folder_id ) {
-			$folder = wp_insert_term( $group_name, 'fileboxfolders' );
+			$folder = wp_insert_term( $folder_name, 'fileboxfolders', array(
+				'description' => sprintf( __( '%s group folder', 'filebox' ), $group_name )
+			) );
 
 			if( is_array( $folder ) ) {
 				$folder_id = $folder[ 'term_id' ];
@@ -327,7 +343,10 @@ class Filebox {
 			$folder = wp_insert_term(
 				$this->options[ 'topics_folder_name' ],
 				'fileboxfolders',
-				array( 'parent' => $parent )
+				array(
+					'parent' => $parent,
+					'description' => sprintf( __( '%s forum attachments folder', 'filebox' ), $this->get_group_name( $group_id ) )
+				)
 			);
 
 			if( is_array( $folder ) ) {
@@ -389,7 +408,10 @@ class Filebox {
 			$folder = wp_insert_term(
 				$this->options[ 'trash_folder_name' ],
 				'fileboxfolders',
-				array( 'parent' => $parent )
+				array(
+					'parent' => $parent,
+					'description' => sprintf( __( '%s trash folder', 'filebox' ), $this->get_group_name( $group_id ) )
+				)
 			);
 
 			if( is_array( $folder ) ) {
@@ -438,12 +460,12 @@ class Filebox {
 		) );
 
 		foreach( $folders as $folder ) {
-			$response[ $folder->term_id ] = $folder->name;
+			$response[ $folder->term_id ] = $folder;
 		}
 
 		return $response;
-	}
 
+	}
 	/**
 	 * Get all files from specified folder
 	 * @param int $folder_id
@@ -451,21 +473,22 @@ class Filebox {
 	 */
 	function get_files( $folder_id ) {
 		$results = array();
-		$query = new WP_Query( array(
-			'post_type' => array( 'document', 'attachment' ),
+		$files = new WP_Query( array(
+			'post_type' => array( 'document' ),
 			'tax_query' => array(
 				array(
 					'taxonomy' => 'fileboxfolders',
 					'fields' => 'id',
-					'terms' => $folder_id
+					'terms' => $folder_id,
+					'include_children' => false
 				)
 			),
 			'posts_per_page' => -1
 		) );
 
-		while( $files->have_posts ) {
+		while( $files->have_posts() ) {
 			$files->the_post();
-			$results[ $files->post->ID ] = $files->post->post_title;
+			$results[ $files->post->ID ] = $files->post;
 		}
 
 		return $results;
@@ -736,7 +759,7 @@ class Filebox {
 
 	/**
 	 * Get a list of all files and folders
-	 * @param int|string|array $args array( folder_id => folder id, group_id => group id ) Uses $_POST as fallback.
+	 * @param int|string|array $args array( folder_id => folder id, group_id => group id, folder_slug => string ) Uses $_POST as fallback.
 	 * @param boolean $show_all Show all files and folders
 	 * @param $output ARRAY_A, STRING prints json and NULL is void
 	 * @return array|void
@@ -756,38 +779,51 @@ class Filebox {
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0,
-			'group_id' => 0
+			'group_id' => 0,
+			'folder_slug' => ''
 		) );
 
 		if( $args[ 'group_id' ] ) {
-			// Borde köras vid förändringar egentligen:
 			$this->index_group_forum_attachments( $args[ 'group_id' ] );
+			$group_folder_id = $this->get_group_folder( $args[ 'group_id' ] );
 
-			$folder = $this->get_group_folder( $args[ 'group_id' ] );
+			if( ! empty( $args[ 'folder_slug' ] ) && ! $args[ 'folder_id' ] ) {
+				$args[ 'folder_id' ] = get_terms( 'fileboxfolders', array(
+					'fields' => 'ids',
+					'slug' => $args[ 'folder_slug' ],
+					'child_of' => $group_folder_id,
+					'hide_empty' => false
+				) );
 
-			if( $folder ) {
-				$response['meta'] = array(
-					'id' => $folder
-				);
-
-				$response[ 'folders' ] = $this->get_subfolders( $folder );
-				$response[ 'files' ] = $this->get_files( $folder );
-
+				if( is_array( $args[ 'folder_id' ] ) ) {
+					$args[ 'folder_id' ] = reset( $args[ 'folder_id' ] );
+				} else {
+					$args[ 'folder_id' ] = 0;
+				}
+			} elseif( $args[ 'folder_id' ] ) {
+				$ancestors = $this->get_folder_ancestors( $args[ 'folder_id' ] );
+				if( ! in_array( $group_folder_id, $ancestors ) ) {
+					$args[ 'folder_id' ] = 0;
+				}
+			} else {
+				$args[ 'folder_id' ] = $group_folder_id;
 			}
-		} elseif( $args[ 'folder_id' ] ) {
-			$response[ 'folders' ] = $this->get_subfolders( $args[ 'id' ] );
-			$response[ 'files' ] = $this->get_files( $args[ 'id' ] );
-			$response[ 'meta' ] = array(
-				'id' => $args[ 'id' ]
-			);
+
+			if( $args[ 'folder_id' ] ) {
+				$response[ 'folders' ] = $this->get_subfolders( $args[ 'folder_id' ] );
+				$response[ 'files' ] = $this->get_files( $args[ 'folder_id' ] );
+				$response[ 'meta' ] = array(
+					'id' => $args[ 'folder_id' ]
+				);
+			}
 		}
 
 		if( array_key_exists( 'id', $response[ 'meta' ] ) ) {
 			$response[ 'meta' ][ 'parent' ] = $this->get_parent_folder( $response[ 'meta' ][ 'id' ] );
 			//$response[ 'meta' ][ 'readonly' ] = $this->is_read_only( $response[ 'meta' ][ 'id' ] );
-			$response[ 'meta' ][ 'group' ] = $this->get_group_by_folder( $response[ 'meta' ][ 'id' ] );
+			//$response[ 'meta' ][ 'group' ] = $this->get_group_by_folder( $response[ 'meta' ][ 'id' ] );
+			$response[ 'meta' ][ 'group' ] = $args[ 'group_id' ];
 			$response[ 'meta' ][ 'breadcrumbs' ] = $this->get_folder_ancestors( $response[ 'meta' ][ 'id' ] );
-
 			$response[ 'meta' ][ 'topicfolder' ] = $this->get_topics_folder( $response[ 'meta' ][ 'group' ] );
 			$response[ 'meta' ][ 'trashcan' ] = $this->get_trash_folder( $response[ 'meta' ][ 'group' ] );
 		}

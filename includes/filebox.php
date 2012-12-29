@@ -488,6 +488,10 @@ class Filebox {
 
 		while( $files->have_posts() ) {
 			$files->the_post();
+			$files->post->attachments = get_children( array(
+				'post_parent' => $doc->ID,
+				'post_type' => 'attachment'
+			) );
 			$results[ $files->post->ID ] = $files->post;
 		}
 
@@ -559,7 +563,7 @@ class Filebox {
 		$parents = $this->get_folder_ancestors( $folder_id );
 
 		if( count( $parents ) ) {
-			$folder_id = $parents[ 0 ];
+			$folder_id = $parents[ 0 ]->parent;
 		}
 
 		$group_id = $wpdb->get_var( $wpdb->prepare(
@@ -591,16 +595,13 @@ class Filebox {
 		$folder = get_term( $folder_id, 'fileboxfolders' );
 
 		if( $folder ) {
-			$parent = $folder->parent;
-
-			while( $parent ) {
-				$folder = get_term( $parent, 'fileboxfolders' );
+			while( $folder->parent ) {
+				$folder = get_term( $folder->parent, 'fileboxfolders' );
 
 				if( $folder ) {
-					$result = array_merge( array( $parent ), $result );
-					$parent = $folder->parent;
+					$result = array_merge( array( $folder ), $result );
 				} else {
-					$parent = 0;
+					$folder = ( object ) array( 'parent' => 0 );
 				}
 			}
 		}

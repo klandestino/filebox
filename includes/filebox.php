@@ -78,7 +78,9 @@ class Filebox {
 		add_action( 'init', array( $this, 'maybe_add_taxonomy' ) );
 		// Add image sizes
 		add_action( 'init', array( $this, 'add_image_sizes' ) );
-		// Add scripts and css
+		// Add scripts and styles
+		add_action( 'init', array( $this, 'register_scripts' ) );
+		// enqueue scripts and styles
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		// WP Document Revisions filters and actions
@@ -174,6 +176,29 @@ class Filebox {
 	}
 
 	/**
+	 * Register scripts and styles
+	 * @return void
+	 */
+	public function register_scripts() {
+		// Filebox general javascript methods
+		wp_register_script(
+			'filebox',
+			FILEBOX_PLUGIN_URL . 'js/filebox.js',
+			array( 'jquery' )
+		);
+		wp_localize_script( 'filebox', 'filebox', array(
+			'confirm_folder_delete' => __( 'You\'re about to delete this folder? You can not undo this. Do you want to continue?', 'filebox' ),
+			'confirm_file_trash' => __( 'You\'re about to trash this file? You can undo this. Do you want to continue?', 'filebox' )
+		) );
+
+		// General style
+		wp_register_style(
+			'filebox',
+			FILEBOX_PLUGIN_URL . 'css/filebox.css'
+		);
+	}
+
+	/**
 	 * Enqueue scripts and css
 	 * @return void
 	 */
@@ -184,21 +209,10 @@ class Filebox {
 			wp_enqueue_script( 'media-upload' );
 
 			// Filebox general javascript methods
-			wp_enqueue_script(
-				'filebox',
-				FILEBOX_PLUGIN_URL . 'js/filebox.js',
-				array( 'jquery' )
-			);
-			wp_localize_script( 'filebox', 'filebox', array(
-				'confirm_folder_delete' => __( 'You\'re about to delete this folder? You can not undo this. Do you want to continue?', 'filebox' ),
-				'confirm_file_trash' => __( 'You\'re about to trash this file? You can undo this. Do you want to continue?', 'filebox' )
-			) );
+			wp_enqueue_script( 'filebox' );
 
 			// General css
-			wp_enqueue_style(
-				'filebox',
-				FILEBOX_PLUGIN_URL . 'css/filebox.css'
-			);
+			wp_enqueue_style( 'filebox' );
 		}
 	}
 
@@ -268,13 +282,22 @@ class Filebox {
 	 * @return string
 	 */
 	public function get_folder_name( $folder_id ) {
-		$folder = get_term( $folder_id, 'fileboxfolders' );
+		$folder = $this->get_folder( $folder );
 
 		if( $folder ) {
 			return $folder->term;
 		}
 
 		return 'Error';
+	}
+
+	/**
+	 * Gets a folder
+	 * @param int $folder_id
+	 * @return object
+	 */
+	public function get_folder( $folder_id ) {
+		return get_term( $folder_id, 'fileboxfolders' );
 	}
 
 	/**
@@ -900,6 +923,7 @@ class Filebox {
 		}
 
 		if( array_key_exists( 'id', $response[ 'meta' ] ) ) {
+			$response[ 'meta' ][ 'current' ] = $this->get_folder( $response[ 'meta' ][ 'id' ] );
 			$response[ 'meta' ][ 'parent' ] = $this->get_parent_folder( $response[ 'meta' ][ 'id' ] );
 			//$response[ 'meta' ][ 'readonly' ] = $this->is_read_only( $response[ 'meta' ][ 'id' ] );
 			//$response[ 'meta' ][ 'group' ] = $this->get_group_by_folder( $response[ 'meta' ][ 'id' ] );
@@ -1154,12 +1178,14 @@ class Filebox {
 	public function add_folder( $args = null, $output = STRING ) {
 		$response = array(
 			'folder_id' => 0,
-			'folder_name' => ''
+			'folder_name' => '',
+			'folder_description' => ''
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_name' => '',
 			'folder_parent' => 0,
+			'folder_description' => ''
 		) );
 
 		if(
@@ -1167,12 +1193,14 @@ class Filebox {
 			&& term_exists( ( int ) $args[ 'folder_parent' ], 'fileboxfolders' )
 		) {
 			$folder = wp_insert_term( $args[ 'folder_name' ], 'fileboxfolders', array(
-				'parent' => $args[ 'folder_parent' ]
+				'parent' => $args[ 'folder_parent' ],
+				'description' => $args[ 'folder_description' ]
 			) );
 
 			if( is_array( $folder ) ) {
 				$response[ 'folder_id' ] = $folder[ 'term_id' ];
 				$response[ 'folder_name' ] = $args[ 'folder_name' ];
+				$response[ 'folder_description' ] = $args[ 'folder_description' ];
 			}
 		}
 

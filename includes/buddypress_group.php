@@ -120,6 +120,8 @@ class Filebox_Buddypress_Group extends BP_Group_Extension {
 	 * @return void
 	 */
 	public function edit_screen() {
+		global $filebox;
+
 		if ( ! bp_is_group_admin_screen( $this->slug ) ) {
 			return false;
 		}

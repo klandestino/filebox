@@ -1,6 +1,4 @@
 <?php
-require_once( ABSPATH . '/wp-admin/includes/media.php' );
-
 global $bp, $filebox;
 
 $args = array( 'group_id' => $bp->groups->current_group->id );
@@ -23,6 +21,9 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 	</ul>
 <?php endif; ?>
 
+<a href="<?php echo FILEBOX_PLUGIN_URL; ?>upload.php?folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_media" class="thickbox add_media button" title="<?php esc_attr_e( 'Upload', 'filebox' ) ?>" onclick="return false;" >
+	<?php _e( 'Upload', 'filebox' ); ?>
+</a>
 
 <table class="filebox-table">
 	<thead>
@@ -59,13 +60,11 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 		<?php foreach( array( 'folders', 'files' ) as $type ): ?>
 			<?php foreach( $documents[ $type ] as $doc ): ?>
 				<tr class="filebox-<?php echo $type; ?> filebox-description">
-					<td class="filebox-icon">
+					<td rowspan="2" class="filebox-icon">
 						<?php if( $type == 'folders' ): ?>
 							<img src="<?php echo wp_mime_type_icon( 'archive' ); ?>" width="46" height="60" />
-						<?php elseif( wp_attachment_is_image( $doc->ID ) ): ?>
-							<?php echo get_the_post_thumbnail( $doc->ID, 'thumbnail' ); ?>
-						<?php else: ?>
-							<img src="<?php echo wp_mime_type_icon( reset( $doc->attachments )->ID ); ?>" width="46" height="60" />
+						<?php else: $attachment = reset( $doc->attachments ); ?>
+							<?php echo wp_get_attachment_image( $attachment->ID, 'filebox-thumbnail', ! wp_attachment_is_image( $attachment->ID ) ); ?>
 						<?php endif; ?>
 					</td>
 					<th class="filebox-title">
@@ -80,10 +79,12 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 					<td class="filebox-size"><?php echo $type == 'folders' ? sprintf( __( '%d items', 'filebox' ), $doc->count ) : round( filesize( get_attached_file( reset( $doc->attachments )->ID ) ) / 1024, 1 ) . ' kB' ; ?></td>
 				</tr>
 				<tr class="filebox-<?php echo $type; ?> filebox-actions">
-					<td colspan="4" class="filebox-actions">
+					<td colspan="3" class="filebox-actions">
 						<ul class="filebox-actions">
-							<li>Show</li>
 							<li>Edit</li>
+							<li>Show history</li>
+							<li>Move to ...</li>
+							<li>Trash</li>
 						</ul>
 					</td>
 				</tr>
@@ -92,5 +93,3 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 
 	</tbody>
 </table>
-
-<?php #media_upload_form(); ?>

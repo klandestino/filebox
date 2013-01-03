@@ -76,8 +76,15 @@ class Filebox {
 		add_action( 'init', array( $this, 'maybe_add_post_type' ) );
 		// Maybe create taxonomy (if directories is non-existent)
 		add_action( 'init', array( $this, 'maybe_add_taxonomy' ) );
+		// Add image sizes
+		add_action( 'init', array( $this, 'add_image_sizes' ) );
 		// Add scripts and css
-		add_action( 'wp_enqueue_script', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		// WP Document Revisions filters and actions
+
+		// Fix thumbnail issue if wp-document-revisions is installed
+		add_filter( 'template_include', array( $this, 'get_correct_thumbnail' ) );
 
 		// Add action for ajax-calls
 
@@ -158,28 +165,82 @@ class Filebox {
 		//}
 	}
 
+	public function add_image_sizes() {
+		add_image_size( 'filebox-thumbnail', 46, 60, true );
+	}
+
 	/**
 	 * Enqueue scripts and css
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-		// Filebox general javascript methods
-		wp_enqueue_script(
-			'filebox',
-			FILEBOX_PLUGIN_URL . 'js/filebox.js',
-			array( 'jquery' )
-		);
-		// jQuery-plugin for file uploads
-		wp_enqueue_script(
-			'jquery-upload',
-			FILEBOX_PLUGIN_URL . 'js/jquery.upload-1.0.2.js',
-			array( 'jquery' )
-		);
-		// General css
-		wp_enqueue_style(
-			'filebox',
-			FILEBOX_PLUGIN_URL . 'css/filebox.css'
-		);
+		if( bp_is_group() ) {
+			// Media upload scripts
+			add_thickbox();
+			wp_enqueue_script( 'media-upload' );
+
+			// Filebox general javascript methods
+			wp_enqueue_script(
+				'filebox',
+				FILEBOX_PLUGIN_URL . 'js/filebox.js',
+				array( 'jquery' )
+			);
+
+			// General css
+			wp_enqueue_style(
+				'filebox',
+				FILEBOX_PLUGIN_URL . 'css/filebox.css'
+			);
+		}
+	}
+
+	/**
+	 * If WP Document Revisions is installed, thumbnail urls
+	 * are rewritten to something uncompatible. Therefore,
+	 * we'll check the request path and translate it to an
+	 * image if there is any.
+	 * @param string $template
+	 * @return string
+	 */
+	public function get_correct_thumbnail( $template ) {
+		global $post;
+
+		if( ! $post && strpos( $_SERVER[ 'REQUEST_URI' ], '/documents/' ) === 0 ) {
+			$dir = wp_upload_dir();
+			$filename = $dir[ 'basedir' ] . substr( $_SERVER[ 'REQUEST_URI' ], 10 );
+
+			if( is_file( $filename ) ) {
+				status_header( 200 );
+				$mime = wp_check_filetype( $filename );
+
+				if( $mime[ 'type' ] === false && function_exists( 'mime_content_type' ) ) {
+					$mime[ 'type' ] = mime_content_type( $filename );
+				}
+
+				if( $mime[ 'type' ] ) {
+					$mimetype = $mime[ 'type' ];
+				} else {
+					$mimetype = 'image/' . substr( $filename, strrpos( $filename, '.' ) + 1 );
+				}
+
+				$last_modified = gmdate( 'D, d M Y H:i:s', filemtime( $filename ) );
+				$etag = '"' . md5( $last_modified ) . '"';
+
+				header( 'Content-Type: ' . $mimetype );
+				header( 'Content-Length: ' . filesize( $filename ) );
+				header( "Last-Modified: $last_modified GMT" );
+				header( 'ETag: ' . $etag );
+				header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
+
+				ob_clean();
+				flush();
+				@set_time_limit( 0 );
+				readfile( $filename );
+				exit;
+			}
+		}
+
+		return $template;
 	}
 
 	/**
@@ -471,7 +532,7 @@ class Filebox {
 	 * @param int $folder_id
 	 * @return array
 	 */
-	function get_files( $folder_id ) {
+	public function get_files( $folder_id ) {
 		$results = array();
 		$files = new WP_Query( array(
 			'post_type' => array( 'document' ),
@@ -489,7 +550,7 @@ class Filebox {
 		while( $files->have_posts() ) {
 			$files->the_post();
 			$files->post->attachments = get_children( array(
-				'post_parent' => $doc->ID,
+				'post_parent' => $files->post->ID,
 				'post_type' => 'attachment'
 			) );
 			$results[ $files->post->ID ] = $files->post;
@@ -646,6 +707,17 @@ class Filebox {
 	}
 
 	/**
+	 * Returns true if current user is allowed to upload
+	 * or modify anything in specified folder.
+	 * @param int $folder_id
+	 * @param int $user_id optional
+	 * @return boolean
+	 */
+	public function is_allowed( $folder_id, $user_id = 0 ) {
+		return true;
+	}
+
+	/**
 	 * Finds attachments in Buddypress group forum threads
 	 * and store a way to find them in a folder linked to
 	 * specified group
@@ -752,7 +824,7 @@ class Filebox {
 	public function get_ajax_output( $output, $response = STRING ) {
 		if( $output == ARRAY_A ) {
 			return $response;
-		} elseif( $output == STING ) {
+		} elseif( $output == STRING ) {
 			echo json_encode( $response );
 			exit;
 		}
@@ -909,7 +981,7 @@ class Filebox {
 
 				$attach_data = wp_generate_attachment_metadata(
 					$attach_id,
-					$file[ 'tmp_name' ]
+					$upload[ 'file' ]
 				);
 
 				wp_update_attachment_metadata( $attach_id, $attach_data );

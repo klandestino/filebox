@@ -59,15 +59,15 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 
 		<?php foreach( array( 'folders', 'files' ) as $type ): ?>
 			<?php foreach( $documents[ $type ] as $doc ): ?>
-				<tr class="filebox-<?php echo $type; ?> filebox-description">
-					<td rowspan="2" class="filebox-icon">
+				<tr class="filebox-<?php echo $type; ?> filebox-title filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
+					<td rowspan="3" class="filebox-icon">
 						<?php if( $type == 'folders' ): ?>
 							<img src="<?php echo wp_mime_type_icon( 'archive' ); ?>" width="46" height="60" />
 						<?php else: $attachment = reset( $doc->attachments ); ?>
 							<?php echo wp_get_attachment_image( $attachment->ID, 'filebox-thumbnail', ! wp_attachment_is_image( $attachment->ID ) ); ?>
 						<?php endif; ?>
 					</td>
-					<th class="filebox-title">
+					<th>
 						<?php if( $type == 'folders' ): ?>
 							<a href="<?php echo esc_url( $folder_base_url . $doc->slug ); ?>"><?php echo esc_attr( $doc->name ); ?></a>
 						<?php else: ?>
@@ -78,13 +78,17 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 					<td class="filebox-owner"><?php echo $type == 'folders' ? '<em>' . $bp->groups->current_group->name . '</em>' : get_the_author( $doc->ID ); ?></td>
 					<td class="filebox-size"><?php echo $type == 'folders' ? sprintf( __( '%d items', 'filebox' ), $doc->count ) : round( filesize( get_attached_file( reset( $doc->attachments )->ID ) ) / 1024, 1 ) . ' kB' ; ?></td>
 				</tr>
-				<tr class="filebox-<?php echo $type; ?> filebox-actions">
-					<td colspan="3" class="filebox-actions">
-						<ul class="filebox-actions">
-							<li>Edit</li>
-							<li>Show history</li>
-							<li>Move to ...</li>
-							<li>Trash</li>
+				<tr class="filebox-<?php echo $type; ?> filebox-desc filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
+					<td colspan="3"><?php echo $type == 'folders' ? $doc->description : $doc->post_excerpt; ?></td>
+				</tr>
+				<tr class="filebox-<?php echo $type; ?> filebox-actions filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
+					<td colspan="3">
+						<ul>
+							<li><a class="filebox-action-edit" href="javascript://"><?php _e( 'Edit', 'filebox' ); ?></a></li>
+							<?php if( $type == 'files' ) ?><li><a class="filebox-action-upload" href="javascript://"><?php _e( 'Upload new version', 'filebox' ); ?></a></li>
+							<?php if( $type == 'files' ) ?><li><a class="filebox-action-history" href="javascript://"><?php _e( 'Show history', 'filebox' ); ?></a></li>
+							<li><a class="filebox-action-move" href="javascript://"><?php _e( 'Move', 'filebox' ); ?></a></li>
+							<li><a class="filebox-action-trash" href="javascript://"><?php _e( 'Trash', 'filebox' ); ?></a></li>
 						</ul>
 					</td>
 				</tr>

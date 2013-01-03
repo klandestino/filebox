@@ -101,6 +101,8 @@ class Filebox {
 		add_action( 'wp_ajax_filebox_rename_file', array( $this, 'rename_file' ) );
 		// File history
 		add_action( 'wp_ajax_filebox_history_file', array( $this, 'history_file' ) );
+		// Trash file
+		add_action( 'wp_ajax_filebox_trash_file', array( $this, 'trash_file' ) );
 
 		// Folder actions
 
@@ -110,6 +112,8 @@ class Filebox {
 		add_action( 'wp_ajax_filebox_move_folder', array( $this, 'move_folder' ) );
 		// Rename folder
 		add_action( 'wp_ajax_filebox_rename_folder', array( $this, 'rename_folder' ) );
+		// Delete folder
+		add_action( 'wp_ajax_filebox_delete_folder', array( $this, 'delete_folder' ) );
 	}
 
 	/**
@@ -185,6 +189,10 @@ class Filebox {
 				FILEBOX_PLUGIN_URL . 'js/filebox.js',
 				array( 'jquery' )
 			);
+			wp_localize_script( 'filebox', 'filebox', array(
+				'confirm_folder_delete' => __( 'You\'re about to delete this folder? You can not undo this. Do you want to continue?', 'filebox' ),
+				'confirm_file_trash' => __( 'You\'re about to trash this file? You can undo this. Do you want to continue?', 'filebox' )
+			) );
 
 			// General css
 			wp_enqueue_style(
@@ -1105,6 +1113,34 @@ class Filebox {
 		return $this->get_ajax_output( $output, $response );
 	}
 
+	/**
+	 * Trash a file
+	 * @param array $args array( file_id => int )
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function trash_file( $args = null, $output = STRING ) {
+		$response = array(
+			'file_id' => 0,
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'file_id' => 0
+		) );
+
+		if( $args[ 'file_id' ] ) {
+			wp_update_post( array(
+				'ID' => $args[ 'file_id' ],
+				'post_status' => 'trash'
+			) );
+
+			$response[ 'file_id' ] = $args[ 'file_id' ];
+		}
+
+		return $this->get_ajax_output( $output, $response );
+	}
+
+
 	// ----------------------------
 	// FOLDER AJAX FRIENDLY METHODS
 	// ----------------------------
@@ -1207,6 +1243,43 @@ class Filebox {
 				$response[ 'folder_name' ] = $args[ 'folder_name' ];
 			}
 		}
+
+		return $this->get_ajax_output( $output, $response );
+	}
+
+	/**
+	 * Deletes a folder and puts content in trash
+	 * @param array $args array( folder_id => int )
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function delete_folder( $args = null, $output = STRING ) {
+		$response = array(
+			'folder_id' => 0
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'folder_id' => 0
+		) );
+
+		$group_folder_id = $this->get_group_folder( $this->get_group_by_folder( $args[ 'folder_id' ] ) );
+
+		foreach( $this->get_files( $args[ 'folder_id' ] ) as $file ) {
+			wp_set_object_terms(
+				$file->ID,
+				$group_folder_id,
+				'fileboxfolders'
+			);
+
+			wp_update_post( array(
+				'ID' => $file->ID,
+				'post_status' => 'trash'
+			) );
+		}
+
+		wp_delete_term( $args[ 'folder_id' ], 'fileboxfolders' );
+
+		$response[ 'folder_id' ] = $args[ 'folder_id' ];
 
 		return $this->get_ajax_output( $output, $response );
 	}

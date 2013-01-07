@@ -849,7 +849,7 @@ class Filebox {
 								'tmp_name' => $filename,
 								'type' => $finfo->file( $filename )
 							),
-							'comment' => __( 'Imported from group forum' )
+							'comment' => __( 'Imported from group forum', 'filebox' )
 						), ARRAY_A );
 
 						if( $file[ 'file_id' ] ) {
@@ -930,18 +930,26 @@ class Filebox {
 			$group_folder_id = $this->get_group_folder( $args[ 'group_id' ] );
 
 			if( ! empty( $args[ 'folder_slug' ] ) && ! $args[ 'folder_id' ] ) {
-				$args[ 'folder_id' ] = get_terms( 'fileboxfolders', array(
-					'fields' => 'ids',
-					'slug' => $args[ 'folder_slug' ],
-					'child_of' => $group_folder_id,
-					'hide_empty' => false
-				) );
+				$folder_id = $group_folder_id;
 
-				if( is_array( $args[ 'folder_id' ] ) ) {
-					$args[ 'folder_id' ] = reset( $args[ 'folder_id' ] );
-				} else {
-					$args[ 'folder_id' ] = 0;
+				if( ! is_array( $args[ 'folder_slug' ] ) ) {
+					$args[ 'folder_slug' ] = array( $args[ 'folder_slug' ] );
 				}
+
+				foreach( $args[ 'folder_slug' ] as $slug ) {
+					$folder_id = get_terms( 'fileboxfolders', array(
+						'fields' => 'ids',
+						'slug' => $slug,
+						'parent' => $folder_id,
+						'hide_empty' => false
+					) );
+
+					if( is_array( $folder_id ) ) {
+						$folder_id = reset( $folder_id );
+					}
+				}
+
+				$args[ 'folder_id' ] = $folder_id;
 			} elseif( $args[ 'folder_id' ] ) {
 				$ancestors = $this->get_folder_ancestors( $args[ 'folder_id' ] );
 				if( ! in_array( $group_folder_id, $ancestors ) ) {

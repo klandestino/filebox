@@ -3,8 +3,8 @@ global $bp, $filebox;
 
 $args = array( 'group_id' => $bp->groups->current_group->id );
 
-if( preg_match( '/\/filebox\/(?:([^\/]+)\/?)+$/', $_SERVER[ 'REQUEST_URI' ], $match ) ) {
-	$args[ 'folder_slug' ] = end( $match );
+if( preg_match_all( '/(?:\/([^\/]+))/', $_SERVER[ 'REQUEST_URI' ], $match ) ) {
+	$args[ 'folder_slug' ] = array_slice( $match[ 1 ], array_search( 'filebox', $match[ 1 ], true ) + 1 );
 }
 
 $documents = $filebox->list_files_and_folders( $args, ARRAY_A );
@@ -16,10 +16,10 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 	<li><?php _e( 'Filebox', 'filebox' ); ?></li>
 		<?php foreach( $documents[ 'meta' ][ 'breadcrumbs' ] as $folder ): ?>
 			<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
-			<?php $folder_base_url .= '/' . $folder->slug; ?>
+			<?php $folder_base_url .= $folder->parent ? '/' . $folder->slug : ''; ?>
 		<?php endforeach; ?>
-		<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
 		<?php $folder_base_url .= '/' . $documents[ 'meta' ][ 'current' ]->slug; ?>
+		<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
 	</ul>
 <?php endif; ?>
 

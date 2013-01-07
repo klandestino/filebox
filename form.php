@@ -14,9 +14,10 @@ wp_enqueue_script( 'filebox' );
 wp_enqueue_style( 'media' );
 
 function filebox_upload_form() {
-	global $filebox, $folder_id;
+	global $filebox, $folder_id, $file_id;
 
 	$folder_id = array_key_exists( 'folder_id', $_GET ) ? $_GET[ 'folder_id' ] : 0;
+	$file_id = array_key_exists( 'file_id', $_GET ) ? $_GET[ 'file_id' ] : 0;
 
 	if( $filebox->is_allowed( $folder_id ) ) {
 		Filebox::get_template( 'filebox-upload-form' );

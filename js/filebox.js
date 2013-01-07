@@ -1,9 +1,15 @@
 jQuery( function( $ ) {
 
+	function get_id_and_type( element ) {
+		return {
+			id: /filebox-([0-9]+)/.exec( $( element ).closest( '.filebox-actions' ).attr( 'class' ) ),
+			type: /filebox-(folders|files)/.exec( $( element ).closest( '.filebox-actions' ).attr( 'class' ) )
+		};
+	}
+
 	function trash_file() {
-		var id = /filebox-([0-9]+)/.exec( $( this ).closest( '.filebox-actions' ).attr( 'class' ) );
-		var type = /filebox-(folders|files)/.exec( $( this ).closest( '.filebox-actions' ).attr( 'class' ) );
-		var action = '', conf = '', data = {};
+		var id_and_type = get_id_and_type( this );
+		var action = '', conf = '', data = {}, id = id_and_type.id, type = id_and_type.type;
 
 		if( id && type ) {
 			id = id[ 1 ];
@@ -41,7 +47,7 @@ jQuery( function( $ ) {
 			dataType: 'json',
 			data: $( this ).serialize(),
 			success: function( response ) {
-				window.location.reload();
+				//window.location.reload();
 			},
 			error: function( response ) {
 				console.log( response );

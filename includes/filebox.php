@@ -989,7 +989,7 @@ class Filebox {
 	/**
 	 * Upload file
 	 * Requires an uploaded file in $_FILES if not defined in $args.
-	 * @param array $args array( folder_id => int, comment (optional) => string, file_upload (optional) => array( name => string, tmp_name => string, type => string ) )
+	 * @param array $args array( folder_id => int, file_id => int, comment (optional) => string, file_upload (optional) => array( name => string, tmp_name => string, type => string ) )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
 	 */
@@ -999,12 +999,17 @@ class Filebox {
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
-			'folder_id' => 0
+			'folder_id' => 0,
+			'file_id' => 0
 		) );
 
+		$doc = $this->get_file( $args[ 'file_id' ] );
+
 		if(
-			term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
-			&& (
+			(
+				term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
+				|| $doc
+			) && (
 				array_key_exists( 'file_upload', $_FILES )
 				|| array_key_exists( 'file_upload', $args )
 			)
@@ -1020,12 +1025,16 @@ class Filebox {
 			if( $upload[ 'error' ] ) {
 				$response[ 'error' ] = strip_tags( $upload[ 'error' ] );
 			} else {
-				$file_id = wp_insert_post( array(
-					'post_title' => $file[ 'name' ],
-					'post_content' => '',
-					'post_type' => 'document',
-					'post_status' => 'publish'
-				) );
+				if( $doc ) {
+					$file_id = $doc->ID;
+				} else {
+					$file_id = wp_insert_post( array(
+						'post_title' => $file[ 'name' ],
+						'post_content' => '',
+						'post_type' => 'document',
+						'post_status' => 'publish'
+					) );
+				}
 
 				wp_set_object_terms(
 					$file_id,

@@ -4,7 +4,7 @@
 			<h3 class="media-title"><?php _e( 'Add files from your computer', 'filebox' ); ?></h3>
 
 			<?php
-			global $folder_id, $is_IE, $is_opera;
+			global $folder_id, $file_id, $is_IE, $is_opera;
 
 			if( ! _device_can_upload() ) {
 				echo '<p>';
@@ -31,7 +31,8 @@
 					$post_params = array(
 						'_wpnonce' => wp_create_nonce( 'filebox-upload' ),
 						'action' => 'filebox_upload_file',
-						'folder_id' => $folder_id
+						'folder_id' => $folder_id,
+						'file_id' => $file_id
 					);
 
 					$plupload_init = array(
@@ -112,9 +113,8 @@
 							} );
 
 							uploader.bind( 'UploadComplete', function() {
-								$( '#plupload-upload-ui' ).fadeOut( 'fast' );
-								$( '#max-upload-size' ).fadeOut( 'fast' );
-							});
+								window.location.reload();
+							} );
 
 							$( '#plupload-start-button' ).click( function() {
 								uploader.start();
@@ -129,7 +129,7 @@
 						<div id="drag-drop-area">
 							<div class="drag-drop-inside">
 								<p class="drag-drop-info"><?php _e( 'Drop files here', 'filebox' ); ?></p>
-								<p><?php _ex( 'or', 'Uploader: Drop files here - or - Select Files' ); ?></p>
+								<p><?php _e( 'or', 'filebox' ); ?></p>
 								<p class="drag-drop-buttons">
 									<input id="plupload-browse-button" type="button" value="<?php esc_attr_e( 'Select Files', 'filebox' ); ?>" class="button" />
 									<input id="plupload-start-button" style="display:none;" type="button" value="<?php esc_attr_e( 'Start Upload', 'filebox' ); ?>" class="button" />

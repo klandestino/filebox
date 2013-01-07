@@ -1250,25 +1250,29 @@ class Filebox {
 	public function rename_folder( $args = null, $output = STRING ) {
 		$response = array(
 			'folder_id' => 0,
-			'folder_name' => ''
+			'folder_name' => '',
+			'folder_description' => ''
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0,
-			'folder_name' => ''
+			'folder_name' => '',
+			'folder_description' => ''
 		) );
 
 		if(
 			! empty( $args[ 'folder_name' ] )
-			&& $term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
+			&& term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
 		) {
 			$folder = wp_update_term( $args[ 'folder_id' ], 'fileboxfolders', array(
-				'name' => $args[ 'folder_name' ]
+				'name' => $args[ 'folder_name' ],
+				'description' => $args[ 'folder_description' ]
 			) );
 
 			if( is_array( $folder ) ) {
 				$response[ 'folder_id' ] = $folder[ 'term_id' ];
 				$response[ 'folder_name' ] = $args[ 'folder_name' ];
+				$response[ 'folder_description' ] = $args[ 'folder_description' ];
 			}
 		}
 

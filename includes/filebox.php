@@ -23,8 +23,7 @@ class Filebox {
 	 */
 	public static function get_options() {
 		$default = array(
-			'topics_folder_name' => __( 'Forum attachments' ),
-			'trash_folder_name' => __( 'Trash' )
+			'topics_folder_name' => __( 'Forum attachments' )
 		);
 
 		$options = get_option( 'filebox', array() );
@@ -472,70 +471,6 @@ class Filebox {
 		}
 	}
 
-	/**
-	 * Get trash folder
-	 * Creates folder if it doesn't exist.
-	 * @param int $group_id
-	 * @return int
-	 */
-	public function get_trash_folder( $group_id ) {
-		$parent = $this->get_group_folder( $group_id );
-
-		if( ! $parent ) return false;
-
-		$folder_id = groups_get_groupmeta( $group_id, 'filebox_trash_folder' );
-
-		if( is_numeric( $folder_id ) && $folder_id ) {
-			$folder = get_term( $folder_id, 'fileboxfolders' );
-
-			if( $folder ) {
-				if( $folder->name != $this->options[ 'trash_folder_name' ] ) {
-					wp_update_term( $folder_id, array(
-						'name' => $this->options[ 'trash_folder_name' ]
-					) );
-				}
-
-				return $folder_id;
-			}
-		}
-
-		/**
-		 * If folder been found, it's already returned.
-		 * Therefore we're at this point sure there are
-		 * no folder for specified group.
-		 */
-
-		$folder = get_terms( 'fileboxfolders', array(
-			'fields' => 'ids',
-			'name' => $this->options[ 'trash_folder_name' ],
-			'parent' => $parent,
-			'hide_empty' => false
-		) );
-
-		if( $folder ) {
-			$folder_id = $folder[ 0 ];
-		} else {
-			$folder = wp_insert_term(
-				$this->options[ 'trash_folder_name' ],
-				'fileboxfolders',
-				array(
-					'parent' => $parent,
-					'description' => sprintf( __( '%s trash folder', 'filebox' ), $this->get_group_name( $group_id ) )
-				)
-			);
-
-			if( is_array( $folder ) ) {
-				$folder_id = $folder[ 'term_id' ];
-			}
-		}
-
-		if( $folder_id ) {
-			groups_update_groupmeta( $group_id, 'filebox_trash_folder', $folder_id );
-			return $folder_id;
-		} else {
-			return false;
-		}
-	}
 
 	/**
 	 * Get all folders by group
@@ -626,36 +561,6 @@ class Filebox {
 		}
 
 		return $results;
-	}
-
-	/**
-	 * Updates folder to contain specified list of files
-	 * @param int $folder_id
-	 * @param array $files
-	 * @return void
-	 */
-	public function update_folder( $folder_id, $files ) {
-		$current_files = $this->get_files( $folder_id );
-
-		// Move missmatch to trash
-		foreach( $current_files as $file_id ) {
-			if( ! in_array( $file_id, $files ) ) {
-				$this->move_file( array(
-					'file_id' => $file_id,
-					'folder_id' => $this->get_trash_folder( $this->get_group_by_file( $file_id ) )
-				), NULL );
-			}
-		}
-
-		// Include those who's left out
-		foreach( $files as $file_id ) {
-			if( ! array_key_exists( $file_id, $current_files ) ) {
-				$this->move_file( array(
-					'file_id' => $file_id,
-					'folder_id' => $folder_id
-				), NULL );
-			}
-		}
 	}
 
 	/**
@@ -798,7 +703,6 @@ class Filebox {
 
 		$group_folder = $this->get_group_folder( $group_id );
 		$topics_folder = $this->get_topics_folder( $group_id );
-		$trash_folder = $this->get_trash_folder( $group_id );
 
 		$forum_id = groups_get_groupmeta( $group_id, 'forum_id' );
 
@@ -976,7 +880,6 @@ class Filebox {
 			$response[ 'meta' ][ 'group' ] = $args[ 'group_id' ];
 			$response[ 'meta' ][ 'breadcrumbs' ] = $this->get_folder_ancestors( $response[ 'meta' ][ 'id' ] );
 			$response[ 'meta' ][ 'topicfolder' ] = $this->get_topics_folder( $response[ 'meta' ][ 'group' ] );
-			$response[ 'meta' ][ 'trashcan' ] = $this->get_trash_folder( $response[ 'meta' ][ 'group' ] );
 		}
 
 		$response[ 'meta' ][ 'url' ] = array();

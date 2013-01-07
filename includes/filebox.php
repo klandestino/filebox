@@ -104,6 +104,10 @@ class Filebox {
 		add_action( 'wp_ajax_filebox_history_file', array( $this, 'history_file' ) );
 		// Trash file
 		add_action( 'wp_ajax_filebox_trash_file', array( $this, 'trash_file' ) );
+		// Reset file
+		add_action( 'wp_ajax_filebox_reset_file', array( $this, 'reset_file' ) );
+		// Reset file
+		add_action( 'wp_ajax_filebox_delete_file', array( $this, 'delete_file' ) );
 
 		// Folder actions
 
@@ -205,7 +209,8 @@ class Filebox {
 		);
 		wp_localize_script( 'filebox', 'filebox', array(
 			'confirm_folder_delete' => __( 'You\'re about to delete this folder? You can not undo this. Do you want to continue?', 'filebox' ),
-			'confirm_file_trash' => __( 'You\'re about to trash this file? You can undo this. Do you want to continue?', 'filebox' )
+			'confirm_file_trash' => __( 'You\'re about to trash this file? You can undo this. Do you want to continue?', 'filebox' ),
+			'confirm_file_delete' => __( 'You\'re about to delete this file permanently? You can not undo this. Do you want to continue?', 'filebox' )
 		) );
 
 		// General style
@@ -564,6 +569,61 @@ class Filebox {
 	}
 
 	/**
+	 * Get trash count
+	 * @param int $group_id
+	 * @return int
+	 */
+	public function trash_count( $group_id ) {
+		$files = new WP_Query( array(
+			'post_type' => array( 'document' ),
+			'post_status' => 'trash',
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'fileboxfolders',
+					'fields' => 'id',
+					'terms' => $this->get_group_folder( $group_id ),
+					'include_children' => true
+				)
+			),
+			'posts_per_page' => -1
+		) );
+		return $files->found_posts;
+	}
+
+	/**
+	 * Get all files from trash
+	 * @param int $group_id
+	 * @return array
+	 */
+	public function get_trash( $group_id ) {
+		$results = array();
+		$files = new WP_Query( array(
+			'post_type' => array( 'document' ),
+			'post_status' => 'trash',
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'fileboxfolders',
+					'fields' => 'id',
+					'terms' => $this->get_group_folder( $group_id ),
+					'include_children' => true
+				)
+			),
+			'posts_per_page' => -1
+		) );
+
+		while( $files->have_posts() ) {
+			$files->the_post();
+			$files->post->attachments = get_children( array(
+				'post_parent' => $files->post->ID,
+				'post_type' => 'attachment'
+			) );
+			$results[ $files->post->ID ] = $files->post;
+		}
+
+		return $results;
+	}
+
+	/**
 	 * Get group id by file
 	 * @param int $file_id
 	 * @return int
@@ -829,16 +889,16 @@ class Filebox {
 			'folder_slug' => ''
 		) );
 
+		if( ! is_array( $args[ 'folder_slug' ] ) ) {
+			$args[ 'folder_slug' ] = array( $args[ 'folder_slug' ] );
+		}
+
 		if( $args[ 'group_id' ] ) {
 			$this->index_group_forum_attachments( $args[ 'group_id' ] );
 			$group_folder_id = $this->get_group_folder( $args[ 'group_id' ] );
 
 			if( ! empty( $args[ 'folder_slug' ] ) && ! $args[ 'folder_id' ] ) {
 				$folder_id = $group_folder_id;
-
-				if( ! is_array( $args[ 'folder_slug' ] ) ) {
-					$args[ 'folder_slug' ] = array( $args[ 'folder_slug' ] );
-				}
 
 				foreach( $args[ 'folder_slug' ] as $slug ) {
 					$folder_id = get_terms( 'fileboxfolders', array(
@@ -869,6 +929,8 @@ class Filebox {
 				$response[ 'meta' ] = array(
 					'id' => $args[ 'folder_id' ]
 				);
+			} elseif( $args[ 'folder_slug' ][ 0 ] == 'trash' ) {
+				$response[ 'files' ] = $this->get_trash( $args[ 'group_id' ] );
 			}
 		}
 
@@ -1164,6 +1226,64 @@ class Filebox {
 		return $this->get_ajax_output( $output, $response );
 	}
 
+	/**
+	 * Reset a file
+	 * @param array $args array( file_id => int )
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function reset_file( $args = null, $output = STRING ) {
+		$response = array(
+			'file_id' => 0,
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'file_id' => 0
+		) );
+
+		if( $args[ 'file_id' ] ) {
+			wp_update_post( array(
+				'ID' => $args[ 'file_id' ],
+				'post_status' => 'publish'
+			) );
+
+			$response[ 'file_id' ] = $args[ 'file_id' ];
+		}
+
+		return $this->get_ajax_output( $output, $response );
+	}
+
+	/**
+	 * Deletes a file
+	 * @param array $args array( file_id => int )
+	 * @param string $output ARRAY_A, STRING prints json, NULL is void
+	 * @return array|void
+	 */
+	public function delete_file( $args = null, $output = STRING ) {
+		$response = array(
+			'file_id' => 0,
+		);
+
+		$args = $this->get_ajax_arguments( $args, array(
+			'file_id' => 0
+		) );
+
+		if( $args[ 'file_id' ] ) {
+			$file = $this->get_file( $args[ 'file_id' ] );
+
+			if( $file ) {
+				foreach( $file->attachments as $attach ) {
+					wp_delete_post( $attach->ID, true );
+				}
+
+				wp_delete_post( $file->ID, true );
+				$response[ 'file_id' ] = $file->ID;
+			}
+		}
+
+		return $this->get_ajax_output( $output, $response );
+	}
+
 
 	// ----------------------------
 	// FOLDER AJAX FRIENDLY METHODS
@@ -1190,6 +1310,7 @@ class Filebox {
 
 		if(
 			! empty( $args[ 'folder_name' ] )
+			&& trim( strtolower( $args[ 'folder_name' ] ) ) != 'trash'
 			&& term_exists( ( int ) $args[ 'folder_parent' ], 'fileboxfolders' )
 		) {
 			$folder = wp_insert_term( $args[ 'folder_name' ], 'fileboxfolders', array(
@@ -1262,6 +1383,7 @@ class Filebox {
 
 		if(
 			! empty( $args[ 'folder_name' ] )
+			&& trim( strtolower( $args[ 'folder_name' ] ) ) != 'trash'
 			&& term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
 		) {
 			$folder = wp_update_term( $args[ 'folder_id' ], 'fileboxfolders', array(

@@ -153,8 +153,8 @@ class Filebox {
 	 * @return void
 	 */
 	public function maybe_add_taxonomy() {
-		if( ! taxonomy_exists( 'fileboxfolders' ) ) {
-			register_taxonomy( 'fileboxfolders', array( 'document' ), array(
+		//if( ! taxonomy_exists( 'fileboxfolders' ) ) {
+			register_taxonomy( 'fileboxfolders', array( 'document', 'revision' ), array(
 				'labels' => array(
 					'name' => _x( 'Folders', 'taxonomy general name', 'filebox' ),
 					'singular_name' => _x( 'Folder', 'taxonomy singular name', 'filebox' )
@@ -168,14 +168,14 @@ class Filebox {
 				'query_var' => true,
 				'show_tagcloud' => false
 			) );
-		}
+		//}
 
-		// Commit messages - same as wp document revisions is using
-		if( ! taxonomy_exists( 'workflow_state' ) ) {
-			register_taxonomy( 'workflow_state', array( 'document' ), array(
+		// Commit messages
+		//if( ! taxonomy_exists( 'fileboxcommits' ) ) {
+			register_taxonomy( 'fileboxcommits', array( 'document', 'revision' ), array(
 				'labels' => array(
-					'name' => _x( 'Workflow states', 'taxonomy general name', 'filebox' ),
-					'singular_name' => _x( 'Workflow state', 'taxonomy singular name', 'filebox' )
+					'name' => _x( 'Revision comments', 'taxonomy general name', 'filebox' ),
+					'singular_name' => _x( 'Revision comment', 'taxonomy singular name', 'filebox' )
 				),
 				'hierarchical' => false,
 				'public' => true,
@@ -186,7 +186,7 @@ class Filebox {
 				'query_var' => true,
 				'show_tagcloud' => false
 			) );
-		}
+		//}
 	}
 
 	public function add_image_sizes() {
@@ -299,10 +299,10 @@ class Filebox {
 	 * @return string
 	 */
 	public function get_folder_name( $folder_id ) {
-		$folder = $this->get_folder( $folder );
+		$folder = $this->get_folder( $folder_id );
 
 		if( $folder ) {
-			return $folder->term;
+			return $folder->name;
 		}
 
 		return 'Error';
@@ -351,7 +351,7 @@ class Filebox {
 			$folder = get_term( $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
-				if( $folder->term != $group_name ) {
+				if( $folder->name != $group_name ) {
 					wp_update_term( $folder_id, array(
 						'name' => $group_name
 					) );
@@ -424,7 +424,7 @@ class Filebox {
 			$folder = get_term( $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
-				if( $folder->term != $this->options[ 'topics_folder_name' ] ) {
+				if( $folder->name != $this->options[ 'topics_folder_name' ] ) {
 					wp_update_term( $folder_id, array(
 						'name' => $this->options[ 'topics_folder_name' ]
 					) );
@@ -489,7 +489,7 @@ class Filebox {
 			$folder = get_term( $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
-				if( $folder->term != $this->options[ 'trash_folder_name' ] ) {
+				if( $folder->name != $this->options[ 'trash_folder_name' ] ) {
 					wp_update_term( $folder_id, array(
 						'name' => $this->options[ 'trash_folder_name' ]
 					) );
@@ -1036,8 +1036,10 @@ class Filebox {
 				// Commit message
 				wp_set_object_terms(
 					$file_id,
-					array_key_exists( 'comment', $args ) ? $args[ 'comment' ] : __( 'Uploaded new file' ),
-					'workflow_state'
+					array_key_exists( 'comment', $args )
+						? $args[ 'comment' ]
+						: __( 'Uploaded new file', 'filebox' ),
+					'fileboxcommits'
 				);
 
 				$attach_id = wp_insert_attachment( array(
@@ -1103,8 +1105,8 @@ class Filebox {
 				// Add commit message
 				wp_set_object_terms(
 					$args[ 'file_id' ],
-					sprintf( __( 'Moved to %s', 'filebox' ), $folder->term ),
-					'workflow_state'
+					__( 'Moved to folder', 'filebox' ),
+					'fileboxcommits'
 				);
 
 				$response = $args;
@@ -1143,11 +1145,11 @@ class Filebox {
 			) );
 
 			// Commit message
-			wp_set_object_terms( $file->ID, sprintf(
-				__( 'Renamed from %s to %s', 'filebox' ),
-				$file->post_title,
-				$args[ 'file_name' ]
-			), 'workflow_state' );
+			wp_set_object_terms(
+				$file->ID,
+				__( 'Renamed file', 'filebox' ),
+				'fileboxcommits'
+			);
 
 			$response = $args;
 		}
@@ -1171,26 +1173,44 @@ class Filebox {
 		) );
 
 		if( $args[ 'file_id' ] ) {
-			$revisions = get_posts( array(
+			$file = $this->get_file( $args[ 'file_id' ] );
+			$folder = wp_get_post_terms( $args[ 'file_id' ], 'fileboxfolders' );
+			$workflow = wp_get_post_terms( $args[ 'file_id' ], 'fileboxcommits' );
+
+			if( $file && $folder && $workflow ) {
+				$response[ 'file_history' ][] = array(
+					'id' => $file->ID,
+					'date' => $file->post_date,
+					'title' => $file->post_title,
+					'description' => $file->post_excerpt,
+					'comment' => reset( $workflow )->name,
+					'folder' => reset( $folder )->name
+				);
+			}
+
+			$revisions = get_children( array(
 				'post_parent' => $args[ 'file_id' ],
 				'post_type' => 'revision',
-				'post_status' => 'any',
-				'numberposts' => -1
+				'post_status' => 'inherit',
+				'numberposts' => -1,
+				'orderby' => 'post_date',
+				'order' => 'DESC'
 			) );
 
 			foreach( $revisions as $rev ) {
-				$comment = get_term( $rev->ID, 'workflow_state' );
+				$folder = wp_get_post_terms( $rev->ID, 'fileboxfolders' );
+				$workflow = wp_get_post_terms( $rev->ID, 'fileboxcommits' );
 
-				if( $comment ) {
-					$comment = $comment->term;
-				} else {
-					$comment = '';
-				}
-
-				$response[ 'file_history' ][] = array(
-					'id' => $rev->ID,
-					'comment' => $comment
-				);
+				//if( $folder && $workflow ) {
+					$response[ 'file_history' ][] = array(
+						'id' => $rev->ID,
+						'date' => $rev->post_date,
+						'title' => $rev->post_title,
+						'description' => $rev->post_excerpt,
+						'comment' => reset( $workflow )->name,
+						'folder' => reset( $folder )->name
+					);
+				//}
 			}
 		}
 

@@ -39,6 +39,21 @@ function filebox_file_form() {
 	}
 }
 
+function filebox_file_history() {
+	global $filebox, $file, $file_id, $history;
+
+	$folder_id = array_key_exists( 'folder_id', $_GET ) ? $_GET[ 'folder_id' ] : 0;
+	$file_id = array_key_exists( 'file_id', $_GET ) ? $_GET[ 'file_id' ] : 0;
+	$file = $filebox->get_file( $file_id );
+	$history = $filebox->history_file( array( 'file_id' => $file_id ), ARRAY_A );
+
+	if( $file && $filebox->is_allowed( $folder_id ) ) {
+		Filebox::get_template( 'filebox-file-history' );
+	} else {
+		echo '<p>Not allowed</p>';
+	}
+}
+
 function filebox_folder_form() {
 	global $filebox, $folder, $folder_id, $folder_parent;
 
@@ -63,6 +78,9 @@ if( array_key_exists( 'form', $_GET ) ) {
 			break;
 		case 'file':
 			wp_iframe( 'filebox_file_form' );
+			break;
+		case 'history':
+			wp_iframe( 'filebox_file_history' );
 			break;
 		case 'folder':
 			wp_iframe( 'filebox_folder_form' );

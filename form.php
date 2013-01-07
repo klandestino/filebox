@@ -25,6 +25,20 @@ function filebox_upload_form() {
 	}
 }
 
+function filebox_file_form() {
+	global $filebox, $file, $file_id;
+
+	$folder_id = array_key_exists( 'folder_id', $_GET ) ? $_GET[ 'folder_id' ] : 0;
+	$file_id = array_key_exists( 'file_id', $_GET ) ? $_GET[ 'file_id' ] : 0;
+	$file = $filebox->get_file( $file_id );
+
+	if( $file && $filebox->is_allowed( $folder_id ) ) {
+		Filebox::get_template( 'filebox-file-form' );
+	} else {
+		echo '<p>Not allowed</p>';
+	}
+}
+
 function filebox_folder_form() {
 	global $filebox, $folder, $folder_id, $folder_parent;
 
@@ -46,6 +60,9 @@ if( array_key_exists( 'form', $_GET ) ) {
 	switch( $_GET[ 'form' ] ) {
 		case 'upload':
 			wp_iframe( 'filebox_upload_form' );
+			break;
+		case 'file':
+			wp_iframe( 'filebox_file_form' );
 			break;
 		case 'folder':
 			wp_iframe( 'filebox_folder_form' );

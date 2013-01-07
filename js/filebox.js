@@ -35,7 +35,7 @@ jQuery( function( $ ) {
 		}
 	}
 
-	function add_folder() {
+	function iframe_form() {
 		$.ajax( ajaxurl, {
 			type: 'POST',
 			dataType: 'json',
@@ -52,6 +52,6 @@ jQuery( function( $ ) {
 	}
 
 	$( '.filebox-action-trash' ).click( trash_file );
-	$( '.filebox-folder-form' ).submit( add_folder );
+	$( '.filebox-iframe-form' ).submit( iframe_form );
 
 } );

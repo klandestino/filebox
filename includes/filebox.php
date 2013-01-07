@@ -148,12 +148,12 @@ class Filebox {
 
 	/**
 	 * Adds taxonomy if it doesn't exist.
-	 * Taxonomy is used to simulate directories
+	 * Taxonomy is used to simulate directories and commit messages
 	 * @uses register_taxonomy
 	 * @return void
 	 */
 	public function maybe_add_taxonomy() {
-		//if( ! taxonomy_exists( 'fileboxfolders' ) ) {
+		if( ! taxonomy_exists( 'fileboxfolders' ) ) {
 			register_taxonomy( 'fileboxfolders', array( 'document' ), array(
 				'labels' => array(
 					'name' => _x( 'Folders', 'taxonomy general name', 'filebox' ),
@@ -168,7 +168,25 @@ class Filebox {
 				'query_var' => true,
 				'show_tagcloud' => false
 			) );
-		//}
+		}
+
+		// Commit messages - same as wp document revisions is using
+		if( ! taxonomy_exists( 'workflow_state' ) ) {
+			register_taxonomy( 'workflow_state', array( 'document' ), array(
+				'labels' => array(
+					'name' => _x( 'Workflow states', 'taxonomy general name', 'filebox' ),
+					'singular_name' => _x( 'Workflow state', 'taxonomy singular name', 'filebox' )
+				),
+				'hierarchical' => false,
+				'public' => true,
+				'show_ui' => true,
+				'show_admin_column' => true,
+				'show_in_nav_menus' => false,
+				'rewrite' => false,
+				'query_var' => true,
+				'show_tagcloud' => false
+			) );
+		}
 	}
 
 	public function add_image_sizes() {
@@ -278,7 +296,6 @@ class Filebox {
 
 	/**
 	 * Gets a folder name
-	 * @using get_term
 	 * @return string
 	 */
 	public function get_folder_name( $folder_id ) {
@@ -293,6 +310,7 @@ class Filebox {
 
 	/**
 	 * Gets a folder
+	 * @using get_term
 	 * @param int $folder_id
 	 * @return object
 	 */
@@ -558,6 +576,26 @@ class Filebox {
 		return $response;
 
 	}
+
+	/**
+	 * Get file by id
+	 * @param int $file_id
+	 * @return object
+	 */
+	public function get_file( $file_id ) {
+		$file = get_post( $file_id );
+
+		if( $file ) {
+			$file->attachments = get_children( array(
+				'post_parent' => $files->post->ID,
+				'post_type' => 'attachment'
+			) );
+			return $file;
+		}
+
+		return null;
+	}
+
 	/**
 	 * Get all files from specified folder
 	 * @param int $folder_id
@@ -985,7 +1023,6 @@ class Filebox {
 				$file_id = wp_insert_post( array(
 					'post_title' => $file[ 'name' ],
 					'post_content' => '',
-					'post_excerpt' => array_key_exists( 'comment', $args ) ? $args[ 'comment' ] : __( 'Uploaded new file' ),
 					'post_type' => 'document',
 					'post_status' => 'publish'
 				) );
@@ -994,6 +1031,13 @@ class Filebox {
 					$file_id,
 					( int ) $args[ 'folder_id' ],
 					'fileboxfolders'
+				);
+
+				// Commit message
+				wp_set_object_terms(
+					$file_id,
+					array_key_exists( 'comment', $args ) ? $args[ 'comment' ] : __( 'Uploaded new file' ),
+					'workflow_state'
 				);
 
 				$attach_id = wp_insert_attachment( array(
@@ -1055,11 +1099,13 @@ class Filebox {
 
 			if( is_array( $folder ) ) {
 				$folder = get_term( $args[ 'folder_id' ], 'fileboxfolders' );
-				// Add history
-				wp_update_post( array(
-					'ID' => $args[ 'file_id' ],
-					'post_excerpt' => sprintf( __( 'Moved to %s', 'filebox' ), $folder->term )
-				) );
+
+				// Add commit message
+				wp_set_object_terms(
+					$args[ 'file_id' ],
+					sprintf( __( 'Moved to %s', 'filebox' ), $folder->term ),
+					'workflow_state'
+				);
 
 				$response = $args;
 			}
@@ -1077,12 +1123,14 @@ class Filebox {
 	public function rename_file( $args = null, $output = STRING ) {
 		$response = array(
 			'file_id' => 0,
-			'file_name' => ''
+			'file_name' => '',
+			'file_description' => ''
 		);
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'file_id' => 0,
-			'file_name' => ''
+			'file_name' => '',
+			'file_description' => ''
 		) );
 
 		$file = get_post( $args[ 'file_id' ] );
@@ -1091,12 +1139,16 @@ class Filebox {
 			wp_update_post( array(
 				'ID' => $file->ID,
 				'post_title' => $args[ 'file_name' ],
-				'post_excerpt' => sprintf(
-					__( 'Renamed from %s to %s', 'filebox' ),
-					$file->post_title,
-					$args[ 'file_name' ]
-				)
+				'post_excerpt' => $args[ 'file_description' ]
 			) );
+
+			// Commit message
+			wp_set_object_terms( $file->ID, sprintf(
+				__( 'Renamed from %s to %s', 'filebox' ),
+				$file->post_title,
+				$args[ 'file_name' ]
+			), 'workflow_state' );
+
 			$response = $args;
 		}
 
@@ -1127,9 +1179,17 @@ class Filebox {
 			) );
 
 			foreach( $revisions as $rev ) {
+				$comment = get_term( $rev->ID, 'workflow_state' );
+
+				if( $comment ) {
+					$comment = $comment->term;
+				} else {
+					$comment = '';
+				}
+
 				$response[ 'file_history' ][] = array(
 					'id' => $rev->ID,
-					'comment' => $rev->post_excerpt
+					'comment' => $comment
 				);
 			}
 		}

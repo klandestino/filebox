@@ -1,4 +1,4 @@
-<form id="folder-form" action="" method="post" class="filebox-folder-form">
+<form id="folder-form" action="" method="post" class="filebox-folder-form filebox-iframe-form">
 	<?php global $folder_id, $folder_parent, $folder; ?>
 	<?php wp_nonce_field( 'filebox-folder' ); ?>
 	<input type="hidden" name="action" value="<?php echo is_object( $folder ) ? 'filebox_rename_folder' : 'filebox_add_folder'; ?>" />

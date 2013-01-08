@@ -1,6 +1,20 @@
 <?php
 global $bp, $filebox;
 
+function get_file_size( $id ) {
+	$bytes = filesize( get_attached_file( $id ) );
+
+	if( $bytes < 1024 ) {
+		return $bytes . ' B';
+	} elseif( $bytes < 1048576 ) {
+		return round( $bytes / 1024, 1 ) . ' KB';
+	} elseif( $bytes < 1073741824 ) {
+		return round( ( $bytes / 1024 ) / 1024, 1 ) . ' MB';
+	} else {
+		return round( ( ( $bytes / 1024 ) / 1024 ) / 1024, 1 ) . ' GB';
+	}
+}
+
 $args = array( 'group_id' => $bp->groups->current_group->id );
 
 if( preg_match_all( '/(?:\/([^\/]+))/', $_SERVER[ 'REQUEST_URI' ], $match ) ) {
@@ -16,12 +30,12 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 	<li><?php _e( 'Filebox', 'filebox' ); ?></li>
 	<?php if( array_key_exists( 'breadcrumbs', $documents[ 'meta' ] ) ): ?>
 		<?php foreach( $documents[ 'meta' ][ 'breadcrumbs' ] as $folder ): ?>
-			<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
 			<?php $folder_base_url .= $folder->parent ? '/' . $folder->slug : ''; ?>
+			<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
 	<?php $folder_base_url .= $documents[ 'meta' ][ 'current' ]->parent ? '/' . $documents[ 'meta' ][ 'current' ]->slug : ''; ?>
+	<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
 	<?php if( $trash_count || array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
 		<li class="trash"> | <a class="trash<?php echo array_key_exists( 'trash', $documents[ 'meta' ] ) ? ' selected' : ''; ?>" href="<?php echo esc_url( bp_get_group_permalink( $bp->groups->current_group ) . 'filebox/trash' ); ?>"><?php echo sprintf( __( 'Trash (%d)', 'filebox' ), $trash_count ); ?></a></li>
 	<?php endif; ?>
@@ -30,12 +44,12 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 <?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
 	<ul class="filebox-buttons">
 		<li>
-			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_media" class="thickbox add_media button" title="<?php esc_attr_e( 'Upload', 'filebox' ) ?>" onclick="return false;" >
+			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_media" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >
 				<?php _e( 'Add files', 'filebox' ); ?>
 			</a>
 		</li>
 		<li>
-			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_folder" class="thickbox add_media button" title="<?php esc_attr_e( 'Upload', 'filebox' ) ?>" onclick="return false;" >
+			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_folder" class="thickbox add_media button" title="<?php esc_attr_e( 'Add folder', 'filebox' ) ?>" onclick="return false;" >
 				<?php _e( 'Add folder', 'filebox' ); ?>
 			</a>
 		</li>
@@ -72,7 +86,7 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 					</th>
 					<td class="filebox-changed"><?php echo $type == 'folders' ? '' : $doc->post_date; ?></td>
 					<td class="filebox-owner"><?php echo $type == 'folders' ? '<em>' . $bp->groups->current_group->name . '</em>' : get_the_author( $doc->ID ); ?></td>
-					<td class="filebox-size"><?php echo $type == 'folders' ? sprintf( __( '%d files', 'filebox' ), $doc->count ) : round( filesize( get_attached_file( reset( $doc->attachments )->ID ) ) / 1024, 1 ) . ' kB' ; ?></td>
+					<td class="filebox-size"><?php echo $type == 'folders' ? sprintf( __( '%d files', 'filebox' ), $doc->count ) : get_file_size( reset( $doc->attachments )->ID ) ; ?></td>
 				</tr>
 				<tr class="filebox-<?php echo $type; ?> filebox-desc filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
 					<td colspan="3"><?php echo $type == 'folders' ? $doc->description : $doc->post_excerpt; ?></td>

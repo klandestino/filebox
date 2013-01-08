@@ -60,13 +60,36 @@ function filebox_folder_form() {
 
 	$folder_id = array_key_exists( 'folder_id', $_GET ) ? $_GET[ 'folder_id' ] : 0;
 	$folder_parent = array_key_exists( 'folder_parent', $_GET ) ? $_GET[ 'folder_parent' ] : 0;
-	$folder = $filebox->get_folder( $folder_id );
+
+	if( $folder_id ) {
+		$folder = $filebox->get_folder( $folder_id );
+	}
 
 	if(
 		( $folder_id && $filebox->is_allowed( $folder_id ) )
 		|| ( $folder_parent && $filebox->is_allowed( $folder_parent ) )
 	) {
 		Filebox::get_template( 'filebox-folder-form' );
+	} else {
+		echo '<p>Not allowed</p>';
+	}
+}
+
+function filebox_move_form() {
+	global $filebox, $folder_list, $folder, $file, $folder_parent;
+
+	$folder_id = array_key_exists( 'folder_id', $_GET ) ? $_GET[ 'folder_id' ] : 0;
+	$folder = $filebox->get_folder( $folder_id );
+	$file_id = array_key_exists( 'file_id', $_GET ) ? $_GET[ 'file_id' ] : 0;
+
+	$folder_list = $filebox->get_all_folders( $filebox->get_group_by_folder( $folder_id ) );
+
+	if( $file_id ) {
+		$file = $filebox->get_file( $file_id );
+	}
+
+	if( $folder_id && $filebox->is_allowed( $folder_id ) ) {
+		Filebox::get_template( 'filebox-move-form' );
 	} else {
 		echo '<p>Not allowed</p>';
 	}
@@ -85,6 +108,9 @@ if( array_key_exists( 'form', $_GET ) ) {
 			break;
 		case 'folder':
 			wp_iframe( 'filebox_folder_form' );
+			break;
+		case 'move':
+			wp_iframe( 'filebox_move_form' );
 			break;
 	}
 }

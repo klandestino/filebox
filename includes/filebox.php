@@ -483,13 +483,13 @@ class Filebox {
 	 * @return array
 	 */
 	public function get_all_folders( $group_id ) {
-		$result = array( $this->get_group_folder( $group_id ) );
+		$result = array( $this->get_folder( $this->get_group_folder( $group_id ) ) );
 
 		if( $result[ 0 ] ) {
 			$result = array_merge( $result, get_terms( 'fileboxfolders', array(
-				'fields' => 'ids',
-				'child_of' => $result[ 0 ],
-				'hide_empty' => false
+				'child_of' => $result[ 0 ]->term_id,
+				'hide_empty' => false,
+				'pad_counts' => true
 			) ) );
 		}
 
@@ -506,7 +506,8 @@ class Filebox {
 
 		$folders = get_terms( 'fileboxfolders', array(
 			'parent' => $folder_id,
-			'hide_empty' => false
+			'hide_empty' => false,
+			'pad_counts' => true
 		) );
 
 		foreach( $folders as $folder ) {
@@ -527,7 +528,7 @@ class Filebox {
 
 		if( $file ) {
 			$file->attachments = get_children( array(
-				'post_parent' => $files->post->ID,
+				'post_parent' => $file_id,
 				'post_type' => 'attachment'
 			) );
 			return $file;
@@ -658,7 +659,7 @@ class Filebox {
 		$parents = $this->get_folder_ancestors( $folder_id );
 
 		if( count( $parents ) ) {
-			$folder_id = $parents[ 0 ]->parent;
+			$folder_id = $parents[ 0 ]->term_id;
 		}
 
 		$group_id = $wpdb->get_var( $wpdb->prepare(
@@ -836,6 +837,10 @@ class Filebox {
 	 * @return array
 	 */
 	public function get_ajax_arguments( $args, $defaults ) {
+		if( ! is_array( $args ) ) {
+			$args = array();
+		}
+
 		foreach( $defaults as $arg => $default ) {
 			if( ! array_key_exists( $arg, $args ) ) {
 				if( array_key_exists( $arg, $_POST ) ) {
@@ -1069,7 +1074,7 @@ class Filebox {
 		) {
 			$folder = wp_set_object_terms(
 				$args[ 'file_id' ],
-				$args[ 'folder_id' ],
+				( int ) $args[ 'folder_id' ],
 				'fileboxfolders'
 			);
 

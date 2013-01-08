@@ -1,0 +1,88 @@
+ul.filebox-breadcrumbs {
+	float: left;
+	list-style: none;
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+
+ul.filebox-breadcrumbs li {
+	display: inline;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.filebox-breadcrumbs li.title {
+	font-weight: bold;
+}
+
+ul.filebox-breadcrumbs li.current a {
+	font-weight: bold;
+}
+
+ul.filebox-breadcrumbs li.trash a {
+	color: red;
+}
+
+ul.filebox-buttons {
+	float: right;
+	list-style: none;
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+
+ul.filebox-buttons li {
+	display: inline;
+	list-style: none;
+	margin: 0 0 0 10px;
+	padding: 0;
+}
+
+table.filebox-folder-file-list {
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+
+table.filebox-folder-file-list tr {
+	margin: 0;
+	padding: 0;
+	background: none;
+}
+
+table.filebox-folder-file-list tr.even {
+	background-color: #f3f3f3;
+}
+
+table.filebox-folder-file-list thead th {
+	color: #333;
+	text-transform: uppercase;
+	border-bottom: 1px solid #eee;
+}
+
+table.filebox-folder-file-list th,
+table.filebox-folder-file-list td {
+	margin: 0;
+	padding: 4px;
+}
+
+table.filebox-folder-file-list ul.actions {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+table.filebox-folder-file-list ul.actions li {
+	display: inline;
+	list-style: none;
+	margin: 0;
+	padding: 0 10px 0 0;
+}
+
+table.filebox-folder-file-list td.filebox-icon {
+	width: 50px;
+}
+
+table.filebox-folder-file-list tbody th.filebox-title {
+	font-size: 16px;
+}

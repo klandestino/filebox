@@ -27,36 +27,36 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 ?>
 
 <ul class="filebox-breadcrumbs">
-	<li><?php _e( 'Filebox', 'filebox' ); ?></li>
+	<li class="title"><?php _e( 'Filebox', 'filebox' ); ?></li>
 	<?php if( array_key_exists( 'breadcrumbs', $documents[ 'meta' ] ) ): ?>
 		<?php foreach( $documents[ 'meta' ][ 'breadcrumbs' ] as $folder ): ?>
 			<?php $folder_base_url .= $folder->parent ? '/' . $folder->slug : ''; ?>
-			<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
+			<li class="folder">» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
 		<?php endforeach; ?>
 	<?php endif; ?>
 	<?php $folder_base_url .= $documents[ 'meta' ][ 'current' ]->parent ? '/' . $documents[ 'meta' ][ 'current' ]->slug : ''; ?>
-	<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
+	<li class="folder<?php echo $documents[ 'meta' ][ 'id' ] ? ' current' : ''; ?>">» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
 	<?php if( $trash_count || array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
-		<li class="trash"> | <a class="trash<?php echo array_key_exists( 'trash', $documents[ 'meta' ] ) ? ' selected' : ''; ?>" href="<?php echo esc_url( bp_get_group_permalink( $bp->groups->current_group ) . 'filebox/trash' ); ?>"><?php echo sprintf( __( 'Trash (%d)', 'filebox' ), $trash_count ); ?></a></li>
+		<li class="trash<?php echo array_key_exists( 'trash', $documents[ 'meta' ] ) ? ' current' : ''; ?>"> | <a href="<?php echo esc_url( bp_get_group_permalink( $bp->groups->current_group ) . 'filebox/trash' ); ?>"><?php echo sprintf( __( 'Trash (%d)', 'filebox' ), $trash_count ); ?></a></li>
 	<?php endif; ?>
 </ul>
 
 <?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
 	<ul class="filebox-buttons">
-		<li>
-			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_media" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >
+		<li class="upload">
+			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >
 				<?php _e( 'Add files', 'filebox' ); ?>
 			</a>
 		</li>
-		<li>
-			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_folder" class="thickbox add_media button" title="<?php esc_attr_e( 'Add folder', 'filebox' ) ?>" onclick="return false;" >
+		<li class="folder">
+			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add folder', 'filebox' ) ?>" onclick="return false;" >
 				<?php _e( 'Add folder', 'filebox' ); ?>
 			</a>
 		</li>
 	</ul>
 <?php endif; ?>
 
-<table class="filebox-table">
+<table class="filebox-folder-file-list" cellspacing="0">
 	<thead>
 		<tr>
 			<th class="filebox-checkall"></th>
@@ -67,17 +67,18 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach( array( 'folders', 'files' ) as $type ): ?>
-			<?php foreach( $documents[ $type ] as $doc ): ?>
-				<tr class="filebox-<?php echo $type; ?> filebox-title filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
+		<?php $even = true;
+			foreach( array( 'folders', 'files' ) as $type ): ?>
+			<?php foreach( $documents[ $type ] as $doc ): $even = ! $even; ?>
+				<tr class="filebox-<?php echo $type; ?> <?php echo $even ? 'even' : 'odd'; ?> filebox-title filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
 					<td rowspan="3" class="filebox-icon">
 						<?php if( $type == 'folders' ): ?>
-							<img src="<?php echo wp_mime_type_icon( 'archive' ); ?>" width="46" height="60" />
+							<img src="<?php echo FILEBOX_PLUGIN_URL . 'images/folder-' . ( $doc->count ? 'files' : 'empty' ); ?>.png" width="46" height="60" />
 						<?php else: $attachment = reset( $doc->attachments ); ?>
 							<?php echo wp_get_attachment_image( $attachment->ID, 'filebox-thumbnail', ! wp_attachment_is_image( $attachment->ID ) ); ?>
 						<?php endif; ?>
 					</td>
-					<th>
+					<th class="filebox-title">
 						<?php if( $type == 'folders' ): ?>
 							<a href="<?php echo esc_url( $folder_base_url . '/'. $doc->slug ); ?>"><?php echo esc_attr( $doc->name ); ?></a>
 						<?php else: ?>
@@ -88,12 +89,12 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 					<td class="filebox-owner"><?php echo $type == 'folders' ? '<em>' . $bp->groups->current_group->name . '</em>' : get_the_author( $doc->ID ); ?></td>
 					<td class="filebox-size"><?php echo $type == 'folders' ? sprintf( __( '%d files', 'filebox' ), $doc->count ) : get_file_size( reset( $doc->attachments )->ID ) ; ?></td>
 				</tr>
-				<tr class="filebox-<?php echo $type; ?> filebox-desc filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
-					<td colspan="3"><?php echo $type == 'folders' ? $doc->description : $doc->post_excerpt; ?></td>
+				<tr class="filebox-<?php echo $type; ?> <?php echo $even ? 'even' : 'odd'; ?> filebox-desc filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
+					<td colspan="4"><?php echo $type == 'folders' ? $doc->description : $doc->post_excerpt; ?></td>
 				</tr>
-				<tr class="filebox-<?php echo $type; ?> filebox-actions filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
-					<td colspan="3">
-						<ul>
+				<tr class="filebox-<?php echo $type; ?> <?php echo $even ? 'even' : 'odd'; ?> filebox-actions filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
+					<td colspan="4">
+						<ul class="actions">
 							<?php if( $type == 'files' ): ?>
 								<?php if( $doc->post_status == 'trash' ): ?>
 									<li><a class="filebox-action-reset" href="javascript://"><?php _e( 'Reset', 'filebox' ); ?></a></li>

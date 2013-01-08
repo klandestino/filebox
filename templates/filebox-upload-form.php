@@ -81,6 +81,18 @@
 						jQuery( function( $ ) {
 							var uploader = new plupload.Uploader( _wpUploaderInit );
 
+							function get_nice_size( size ) {
+								if( size < 1024 ) {
+									return size + ' B';
+								} else if( size < 1048576 ) {
+									return Math.round( size / 1024 ) + ' KB';
+								} else if( size < 1073741824 ) {
+									return Math.round( ( size / 1024 ) / 1024 ) + ' MB';
+								} else {
+									return Math.round( ( ( size / 1024 ) / 1024 ) / 1024 ) + ' GB';
+								}
+							}
+
 							uploader.bind( 'FilesAdded', function( up, files ) {
 								$.each( files, function( i, file ) {
 									$( '#media-items' ).append(
@@ -89,16 +101,24 @@
 												'<div class="percent"></div>' +
 												'<div class="bar"></div>' +
 											'</div>' +
-											'<div class="filename original">' + file.name + ' (' + Math.round( file.size / 1024 ) + ' kB)</div>' +
+											'<div class="filename original">' + file.name + ' (' + get_nice_size( file.size ) + ')</div>' +
 										'</div>'
 									);
 								} );
 								up.refresh();
-								$( '#plupload-start-button' ).fadeIn( 'fast' );
+
+								setTimeout( function() {
+									uploader.start();
+								}, 1000 );
 							} );
 
 							uploader.bind( 'Error', function( up, err ) {
-								$( '#upload-error' ).append( '<p>' + err.message + ( err.file ? '</p><p>' + err.file.name : '' ) + '</p>' );
+								$( '#upload-error' ).append( '<p>' + err.message + ( err.file ? ': ' + err.file.name : '' ) + '</p>' );
+
+								if( err.file ) {
+									$( '#media-item-' + err.file.id ).remove();
+								}
+
 								up.refresh();
 							});
 
@@ -132,7 +152,6 @@
 								<p><?php _e( 'or', 'filebox' ); ?></p>
 								<p class="drag-drop-buttons">
 									<input id="plupload-browse-button" type="button" value="<?php esc_attr_e( 'Select Files', 'filebox' ); ?>" class="button" />
-									<input id="plupload-start-button" style="display:none;" type="button" value="<?php esc_attr_e( 'Start Upload', 'filebox' ); ?>" class="button" />
 								</p>
 							</div>
 						</div>
@@ -149,10 +168,6 @@
 
 					<div id="upload-error"></div>
 					<div id="media-items"></div>
-
-					<p class="savebutton ml-submit">
-						<?php #submit_button( __( 'Save all changes' ), 'button', 'save', false ); ?>
-					</p>
 				<?php }
 			} ?>
 		</form>

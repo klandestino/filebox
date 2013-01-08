@@ -89,7 +89,7 @@ jQuery( function( $ ) {
 			dataType: 'json',
 			data: $( this ).serialize(),
 			success: function( response ) {
-				//window.location.reload();
+				window.location.reload();
 			},
 			error: function( response ) {
 				console.log( response );

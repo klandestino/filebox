@@ -14,29 +14,33 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 
 <ul class="filebox-breadcrumbs">
 	<li><?php _e( 'Filebox', 'filebox' ); ?></li>
-	<?php foreach( $documents[ 'meta' ][ 'breadcrumbs' ] as $folder ): ?>
-		<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
-		<?php $folder_base_url .= $folder->parent ? '/' . $folder->slug : ''; ?>
-	<?php endforeach; ?>
-	<?php $folder_base_url .= '/' . $documents[ 'meta' ][ 'current' ]->slug; ?>
-	<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
-	<?php if( $trash_count ): ?>
-		<li class="trash"> | <a class="trash" href="<?php echo esc_url( bp_get_group_permalink( $bp->groups->current_group ) . 'filebox/trash' ); ?>"><?php echo sprintf( __( 'Trash (%d)', 'filebox' ), $trash_count ); ?></a></li>
+	<?php if( array_key_exists( 'breadcrumbs', $documents[ 'meta' ] ) ): ?>
+		<?php foreach( $documents[ 'meta' ][ 'breadcrumbs' ] as $folder ): ?>
+			<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
+			<?php $folder_base_url .= $folder->parent ? '/' . $folder->slug : ''; ?>
+		<?php endforeach; ?>
+	<?php endif; ?>
+	<li>» <a href="<?php echo esc_url( $folder_base_url ); ?>" class="<?php echo $documents[ 'meta' ][ 'id' ] == $documents[ 'meta' ][ 'current' ] ? 'selected' : ''; ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
+	<?php $folder_base_url .= $documents[ 'meta' ][ 'current' ]->parent ? '/' . $documents[ 'meta' ][ 'current' ]->slug : ''; ?>
+	<?php if( $trash_count || array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
+		<li class="trash"> | <a class="trash<?php echo array_key_exists( 'trash', $documents[ 'meta' ] ) ? ' selected' : ''; ?>" href="<?php echo esc_url( bp_get_group_permalink( $bp->groups->current_group ) . 'filebox/trash' ); ?>"><?php echo sprintf( __( 'Trash (%d)', 'filebox' ), $trash_count ); ?></a></li>
 	<?php endif; ?>
 </ul>
 
-<ul class="filebox-buttons">
-	<li>
-		<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_media" class="thickbox add_media button" title="<?php esc_attr_e( 'Upload', 'filebox' ) ?>" onclick="return false;" >
-			<?php _e( 'Add files', 'filebox' ); ?>
-		</a>
-	</li>
-	<li>
-		<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_folder" class="thickbox add_media button" title="<?php esc_attr_e( 'Upload', 'filebox' ) ?>" onclick="return false;" >
-			<?php _e( 'Add folder', 'filebox' ); ?>
-		</a>
-	</li>
-</ul>
+<?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
+	<ul class="filebox-buttons">
+		<li>
+			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_media" class="thickbox add_media button" title="<?php esc_attr_e( 'Upload', 'filebox' ) ?>" onclick="return false;" >
+				<?php _e( 'Add files', 'filebox' ); ?>
+			</a>
+		</li>
+		<li>
+			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" id="content-add_folder" class="thickbox add_media button" title="<?php esc_attr_e( 'Upload', 'filebox' ) ?>" onclick="return false;" >
+				<?php _e( 'Add folder', 'filebox' ); ?>
+			</a>
+		</li>
+	</ul>
+<?php endif; ?>
 
 <table class="filebox-table">
 	<thead>

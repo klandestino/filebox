@@ -927,26 +927,18 @@ class Filebox {
 				$response[ 'folders' ] = $this->get_subfolders( $args[ 'folder_id' ] );
 				$response[ 'files' ] = $this->get_files( $args[ 'folder_id' ] );
 				$response[ 'meta' ] = array(
-					'id' => $args[ 'folder_id' ]
+					'id' => $args[ 'folder_id' ],
+					'current' => $this->get_folder( $args[ 'folder_id' ] ),
+					'breadcrumbs' => $this->get_folder_ancestors( $args[ 'folder_id' ] )
 				);
 			} elseif( $args[ 'folder_slug' ][ 0 ] == 'trash' ) {
 				$response[ 'files' ] = $this->get_trash( $args[ 'group_id' ] );
+				$response[ 'meta' ] = array(
+					'id' => 0,
+					'trash' => true,
+					'current' => $this->get_folder( $group_folder_id )
+				);
 			}
-		}
-
-		if( array_key_exists( 'id', $response[ 'meta' ] ) ) {
-			$response[ 'meta' ][ 'current' ] = $this->get_folder( $response[ 'meta' ][ 'id' ] );
-			$response[ 'meta' ][ 'parent' ] = $this->get_parent_folder( $response[ 'meta' ][ 'id' ] );
-			//$response[ 'meta' ][ 'readonly' ] = $this->is_read_only( $response[ 'meta' ][ 'id' ] );
-			//$response[ 'meta' ][ 'group' ] = $this->get_group_by_folder( $response[ 'meta' ][ 'id' ] );
-			$response[ 'meta' ][ 'group' ] = $args[ 'group_id' ];
-			$response[ 'meta' ][ 'breadcrumbs' ] = $this->get_folder_ancestors( $response[ 'meta' ][ 'id' ] );
-			$response[ 'meta' ][ 'topicfolder' ] = $this->get_topics_folder( $response[ 'meta' ][ 'group' ] );
-		}
-
-		$response[ 'meta' ][ 'url' ] = array();
-		foreach( $response[ 'files' ] as $key => $val ) {
-			$response[ 'meta' ][ 'url' ][ $key ] = $this->get_file_url( $key );
 		}
 
 		asort( $response[ 'folders' ] );

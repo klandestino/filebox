@@ -641,7 +641,7 @@ class Filebox {
 	 * @return int
 	 */
 	public function get_folder_by_file( $file_id ) {
-		$folder = get_object_terms( $file_id, 'fileboxfolders', array( 'fields' => 'ids' ) );
+		$folder = wp_get_object_terms( $file_id, 'fileboxfolders', array( 'fields' => 'ids' ) );
 
 		if( is_array( $folder ) ) {
 			return reset( $folder );
@@ -828,6 +828,12 @@ class Filebox {
 		}
 	}
 
+	/**
+	 * Sets message-term and folder-term on latest revision
+	 * @param int $file_id
+	 * @param string $message
+	 * @return void
+	 */
 	public function record_change( $file_id, $message ) {
 		$revisions = get_children( array(
 			'post_parent' => $file_id,
@@ -849,6 +855,30 @@ class Filebox {
 		}
 
 		wp_set_object_terms( $file_id, $message, 'fileboxcommits' );
+	}
+
+	/**
+	 * Adds a notification to all group members
+	 * @param int $file_id
+	 * @param int $group_id
+	 * @param string $type
+	 * @return void
+	 */
+	public function add_notification( $file_id, $group_id, $type ) {
+		$me = get_current_user_id();
+		$members = array(
+			groups_get_group_members( $group_id ),
+			groups_get_group_mods( $group_id ),
+			groups_get_group_admins( $group_id )
+		);
+
+		foreach( $members as $list ) {
+			foreach( $list as $member ) {
+				if( $member->user_id != $me ) {
+					bp_core_add_notification( $file_id, $member->user_id, 'filebox_notifier', $type, $group_id );
+				}
+			}
+		}
 	}
 
 	// ---------------------
@@ -1068,6 +1098,10 @@ class Filebox {
 
 				$response[ 'file_id' ] = $file_id;
 				$response[ 'file_name' ] = $file[ 'name' ];
+
+				if( ! array_key_exists( 'comment', $args ) ) {
+					$this->add_notification( $file_id, $this->get_group_by_file( $file_id ), $doc ? 'file_updated' : 'file_uploaded' );
+				}
 			}
 		}
 

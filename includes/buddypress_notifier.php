@@ -59,6 +59,28 @@ function filebox_notifier_messages_format( $action, $item_id, $secondary_item_id
 	$text = '';
 	$link = '';
 
+	$file = get_post( $item_id );
+	$group = groups_get_group( array( 'group_id' => $secondary_item_id ) );
+	$link = bp_get_group_permalink() . $group->slug . '/filebox';
+
+	switch( $action ) {
+		case 'file_updated':
+			if( $total_items > 1 ) {
+				$text = sprintf( __( '%1$d files has been updated in %2$s' ), $total_items, $group->name );
+			} else {
+				$text = sprintf( __( '%1$s has been updated in %2$s' ), $file->post_title, $group->name );
+			}
+			break;
+
+		case 'file_uploaded':
+			if( $total_items > 1 ) {
+				$text = sprintf( __( '%1$d new files has been added in %2$s' ), $total_items, $group->name );
+			} else {
+				$text = sprintf( __( 'File %1$s has been added in %2$s' ), $file->post_title, $group->name );
+			}
+			break;
+	}
+
 	switch( $format ) {
 		case 'string':
 			$return = sprintf(

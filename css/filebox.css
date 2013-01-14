@@ -38,30 +38,36 @@ ul.filebox-buttons li {
 	padding: 0;
 }
 
-table.filebox-folder-file-list {
+table.filebox-folder-file-list,
+div.filebox-file-history table.history {
 	clear: both;
 	margin: 0;
 	padding: 0;
 }
 
-table.filebox-folder-file-list tr {
+table.filebox-folder-file-list tr,
+div.filebox-file-history table.history tr {
 	margin: 0;
 	padding: 0;
 	background: none;
 }
 
-table.filebox-folder-file-list tr.even {
+table.filebox-folder-file-list tr.even,
+div.filebox-file-history table.history tr.even {
 	background-color: #f3f3f3;
 }
 
-table.filebox-folder-file-list thead th {
+table.filebox-folder-file-list thead th,
+div.filebox-file-history table.history thead th {
 	color: #333;
 	text-transform: uppercase;
 	border-bottom: 1px solid #eee;
 }
 
 table.filebox-folder-file-list th,
-table.filebox-folder-file-list td {
+table.filebox-folder-file-list td,
+div.filebox-file-history table.history th,
+div.filebox-file-history table.history td {
 	margin: 0;
 	padding: 4px;
 }
@@ -85,4 +91,29 @@ table.filebox-folder-file-list td.filebox-icon {
 
 table.filebox-folder-file-list tbody th.filebox-title {
 	font-size: 16px;
+}
+
+.filebox-action-trash,
+.filebox-action-delete {
+	color: red;
+}
+
+div.filebox-file-history div.image {
+	float: left;
+	margin: 0 10px 10px 0;
+}
+
+div.filebox-file-history div.details h2 {
+	font-weight: bold;
+	color: black;
+}
+
+form.filebox-iframe-form label {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+form.filebox-iframe-form input.text {
+	border: 1px solid black;
+	width: 98%;
 }

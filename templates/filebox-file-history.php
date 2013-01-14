@@ -7,7 +7,7 @@
 		<h2><?php echo $file->post_title; ?></h2>
 		<p><?php echo $file->post_excerpt; ?></p>
 	</div>
-	<table class="history">
+	<table cellspacing="0" cellpadding="0" class="history">
 		<thead>
 			<tr>
 				<th><?php _e( 'Changed', 'filebox' ); ?></th>
@@ -19,8 +19,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach( $history[ 'file_history' ] as $commit ): ?>
-				<tr>
+			<?php $even = true;
+			foreach( $history[ 'file_history' ] as $commit ): $even = ! $even; ?>
+				<tr class="<?php echo $even ? 'even' : 'odd'; ?>">
 					<td><?php echo $commit[ 'date' ]; ?></td>
 					<td><?php echo $commit[ 'comment' ]; ?></td>
 					<td><?php echo get_the_author( $commit[ 'id' ] ); ?></td>

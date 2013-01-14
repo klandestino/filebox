@@ -12,6 +12,7 @@ require_once( ABSPATH . '/wp-includes/media-template.php' );
 wp_enqueue_script( 'plupload-all' );
 wp_enqueue_script( 'filebox' );
 wp_enqueue_style( 'media' );
+wp_enqueue_style( 'filebox' );
 
 function filebox_upload_form() {
 	global $filebox, $folder_id, $file_id;

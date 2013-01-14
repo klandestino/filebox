@@ -22,7 +22,7 @@
 			<?php $even = true;
 			foreach( $history[ 'file_history' ] as $commit ): $even = ! $even; ?>
 				<tr class="<?php echo $even ? 'even' : 'odd'; ?>">
-					<td><?php echo $commit[ 'date' ]; ?></td>
+					<td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $commit[ 'date' ] ) ); ?></td>
 					<td><?php echo $commit[ 'comment' ]; ?></td>
 					<td><?php echo $commit[ 'author' ]->display_name; ?></td>
 					<th><a href="<?php echo $commit[ 'link' ] ?>"><?php echo $commit[ 'title' ]; ?></a></th>

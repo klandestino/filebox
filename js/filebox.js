@@ -104,4 +104,8 @@ jQuery( function( $ ) {
 	$( '.filebox-action-reset' ).click( reset_file );
 	$( '.filebox-iframe-form' ).submit( iframe_form );
 
+	if( typeof( tb_position ) != 'undefined' ) {
+		tb_position();
+	}
+
 } );

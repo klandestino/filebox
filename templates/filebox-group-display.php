@@ -85,7 +85,7 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 							<a href="<?php echo esc_url( get_permalink( $doc->ID ) ); ?>"><?php echo esc_attr( $doc->post_title ); ?></a>
 						<?php endif; ?>
 					</th>
-					<td class="filebox-changed"><?php echo $type == 'folders' ? '' : $doc->post_date; ?></td>
+					<td class="filebox-changed"><?php echo $type == 'folders' ? '' : date_i18n( get_option( 'date_format' ), strtotime( $doc->post_modified ) ); ?></td>
 					<td class="filebox-owner"><?php echo $type == 'folders' ? '<em>' . $bp->groups->current_group->name . '</em>' : $doc->user->display_name; ?></td>
 					<td class="filebox-size"><?php echo $type == 'folders' ? sprintf( __( '%d files', 'filebox' ), $doc->count ) : get_file_size( reset( $doc->attachments )->ID ) ; ?></td>
 				</tr>

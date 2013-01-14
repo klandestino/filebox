@@ -1173,7 +1173,7 @@ class Filebox {
 			if( $file && $folder && $workflow ) {
 				$response[ 'file_history' ][] = array(
 					'id' => $file->ID,
-					'date' => $file->post_date,
+					'date' => $file->post_modified,
 					'title' => $file->post_title,
 					'description' => $file->post_excerpt,
 					'author' => get_userdata( $file->post_author ),
@@ -1198,7 +1198,7 @@ class Filebox {
 
 				$response[ 'file_history' ][] = array(
 					'id' => $rev->ID,
-					'date' => $rev->post_date,
+					'date' => $rev->post_modified,
 					'title' => $rev->post_title,
 					'description' => $rev->post_excerpt,
 					'author' => get_userdata( $rev->post_author ),

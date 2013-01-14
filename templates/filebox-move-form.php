@@ -1,8 +1,8 @@
 <?php global $folder, $file, $folder_list; ?>
 <form id="move-form" action="" method="post" class="filebox-move-form filebox-iframe-form">
+	<input type="hidden" name="action" value="<?php echo $file ? 'filebox_move_file' : 'filebox_move_folder'; ?>" />
 	<?php wp_nonce_field( 'filebox-folder' ); ?>
 
-	<input type="hidden" name="action" value="<?php echo $file ? 'filebox_move_file' : 'filebox_move_folder'; ?>" />
 	<?php if( $file ): ?>
 		<input type="hidden" name="file_id" value="<?php echo $file->ID; ?>" />
 		<div class="image">
@@ -20,10 +20,10 @@
 		</div>
 	<?php endif; ?>
 
-	<ul id="move-to">
+	<ul class="folder-list">
 		<?php $indent = 0; $last = null; ?>
 		<?php foreach( $folder_list as $folder_item ): ?>
-			<li class="folder-<?php echo $folder_item->term_id; ?>"><?php
+			<li class="folder folder-<?php echo $folder_item->term_id; ?>"><?php
 				if( $last ) {
 					if( ! $folder_item->parent ) {
 						$indent = 0;

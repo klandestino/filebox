@@ -98,12 +98,14 @@ table.filebox-folder-file-list tbody th.filebox-title {
 	color: red;
 }
 
-div.filebox-file-history div.image {
+div.filebox-file-history div.image,
+form.filebox-move-form div.image {
 	float: left;
 	margin: 0 10px 10px 0;
 }
 
-div.filebox-file-history div.details h2 {
+div.filebox-file-history div.details h2,
+form.filebox-move-form div.details h2 {
 	font-weight: bold;
 	color: black;
 }
@@ -116,4 +118,13 @@ form.filebox-iframe-form label {
 form.filebox-iframe-form input.text {
 	border: 1px solid black;
 	width: 98%;
+}
+
+form.filebox-move-form ul.folder-list {
+	clear: both;
+}
+
+form.filebox-move-form li.folder label {
+	font-weight: normal;
+	text-transform: none;
 }

@@ -527,6 +527,7 @@ class Filebox {
 		$file = get_post( $file_id );
 
 		if( $file ) {
+			$file->user = get_userdata( $file->post_author );
 			$file->attachments = get_children( array(
 				'post_parent' => $file_id,
 				'post_type' => 'attachment'
@@ -559,6 +560,7 @@ class Filebox {
 
 		while( $files->have_posts() ) {
 			$files->the_post();
+			$files->post->user = get_userdata( $files->post->post_author );
 			$files->post->attachments = get_children( array(
 				'post_parent' => $files->post->ID,
 				'post_type' => 'attachment'
@@ -1174,6 +1176,7 @@ class Filebox {
 					'date' => $file->post_date,
 					'title' => $file->post_title,
 					'description' => $file->post_excerpt,
+					'author' => get_userdata( $file->post_author ),
 					'comment' => reset( $workflow )->name,
 					'folder' => reset( $folder )->name
 				);
@@ -1187,21 +1190,25 @@ class Filebox {
 				'orderby' => 'post_date',
 				'order' => 'DESC'
 			) );
+			$version = count( $revisions );
 
 			foreach( $revisions as $rev ) {
 				$folder = wp_get_post_terms( $rev->ID, 'fileboxfolders' );
 				$workflow = wp_get_post_terms( $rev->ID, 'fileboxcommits' );
 
-				//if( $folder && $workflow ) {
-					$response[ 'file_history' ][] = array(
-						'id' => $rev->ID,
-						'date' => $rev->post_date,
-						'title' => $rev->post_title,
-						'description' => $rev->post_excerpt,
-						'comment' => reset( $workflow )->name,
-						'folder' => reset( $folder )->name
-					);
-				//}
+				$response[ 'file_history' ][] = array(
+					'id' => $rev->ID,
+					'date' => $rev->post_date,
+					'title' => $rev->post_title,
+					'description' => $rev->post_excerpt,
+					'author' => get_userdata( $rev->post_author ),
+					'comment' => is_array( $workflow ) ? reset( $workflow )->name : '',
+					'folder' => is_array( $folder ) ? reset( $folder )->name : '',
+					'version' => $version,
+					'link' => get_permalink( $file->ID ) . '?revision=' . $version
+				);
+
+				$version--;
 			}
 		}
 

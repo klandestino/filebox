@@ -826,6 +826,29 @@ class Filebox {
 		}
 	}
 
+	public function record_change( $file_id, $message ) {
+		$revisions = get_children( array(
+			'post_parent' => $file_id,
+			'post_type' => 'revision',
+			'post_status' => 'inherit',
+			'numberposts' => 1,
+			'orderby' => 'post_date',
+			'order' => 'DESC'
+		) );
+
+		if( is_array( $revisions ) ) {
+			$terms = wp_get_object_terms( $file_id, array( 'fileboxcommits', 'fileboxfolders' ) );
+
+			if( is_array( $terms ) ) {
+				foreach( $terms as $term ) {
+					wp_set_object_terms( reset( $revisions )->ID, ( int ) $term->term_id, $term->taxonomy );
+				}
+			 }
+		}
+
+		wp_set_object_terms( $file_id, $message, 'fileboxcommits' );
+	}
+
 	// ---------------------
 	// AJAX FRIENDLY METHODS
 	// ---------------------
@@ -1012,15 +1035,6 @@ class Filebox {
 					'fileboxfolders'
 				);
 
-				// Commit message
-				wp_set_object_terms(
-					$file_id,
-					array_key_exists( 'comment', $args )
-						? $args[ 'comment' ]
-						: __( 'Uploaded new file', 'filebox' ),
-					'fileboxcommits'
-				);
-
 				$attach_id = wp_insert_attachment( array(
 					'guid' => $upload[ 'url' ],
 					'post_mime_type' => $file[ 'type' ],
@@ -1033,6 +1047,13 @@ class Filebox {
 					'ID' => $file_id,
 					'post_content' => $attach_id
 				) );
+
+				$this->record_change(
+					$file_id,
+					array_key_exists( 'comment', $args )
+						? $args[ 'comment' ]
+						: __( 'Uploaded new file', 'filebox' )
+				);
 
 				require_once( ABSPATH . 'wp-admin/includes/image.php');
 
@@ -1072,24 +1093,20 @@ class Filebox {
 			get_post( $args[ 'file_id' ] )
 			&& term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
 		) {
-			$folder = wp_set_object_terms(
+			wp_update_post( array( 'ID' => $args[ 'file_id' ] ) );
+
+			$this->record_change(
+				$args[ 'file_id' ],
+				__( 'Moved to folder', 'filebox' )
+			);
+
+			wp_set_object_terms(
 				$args[ 'file_id' ],
 				( int ) $args[ 'folder_id' ],
 				'fileboxfolders'
 			);
 
-			if( is_array( $folder ) ) {
-				$folder = get_term( $args[ 'folder_id' ], 'fileboxfolders' );
-
-				// Add commit message
-				wp_set_object_terms(
-					$args[ 'file_id' ],
-					__( 'Moved to folder', 'filebox' ),
-					'fileboxcommits'
-				);
-
-				$response = $args;
-			}
+			$response = $args;
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1123,12 +1140,7 @@ class Filebox {
 				'post_excerpt' => $args[ 'file_description' ]
 			) );
 
-			// Commit message
-			wp_set_object_terms(
-				$file->ID,
-				__( 'Renamed file', 'filebox' ),
-				'fileboxcommits'
-			);
+			$this->record_change( $file->ID, __( 'Renamed file', 'filebox' ) );
 
 			$response = $args;
 		}

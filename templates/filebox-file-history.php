@@ -19,17 +19,18 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php $even = true;
+			<?php $even = true; $version = count( $history[ 'file_history' ] );
 			foreach( $history[ 'file_history' ] as $commit ): $even = ! $even; ?>
 				<tr class="<?php echo $even ? 'even' : 'odd'; ?>">
 					<td><?php echo $commit[ 'date' ]; ?></td>
 					<td><?php echo $commit[ 'comment' ]; ?></td>
 					<td><?php echo get_the_author( $commit[ 'id' ] ); ?></td>
-					<td><?php echo $commit[ 'title' ]; ?></td>
+					<th><a href="<?php echo get_permalink( $file->ID ) . '?revision=' . $version; ?>"><?php echo $commit[ 'title' ]; ?></a></td>
 					<td><?php echo $commit[ 'description' ]; ?></td>
 					<td><?php echo $commit[ 'folder' ]; ?></td>
 				</tr>
-			<?php endforeach; ?>
+			<?php $version--;
+			endforeach; ?>
 		</tbody>
 	</table>
 </div>

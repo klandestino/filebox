@@ -299,43 +299,34 @@ class Filebox {
 	}
 
 	/**
-	 * Gets a folder name
-	 * @return string
+	 * Get group id by file
+	 * @param int $file_id
+	 * @return int
 	 */
-	public function get_folder_name( $folder_id ) {
-		$folder = $this->get_folder( $folder_id );
-
-		if( $folder ) {
-			return $folder->name;
-		}
-
-		return 'Error';
+	public function get_group_by_file( $file_id ) {
+		return $this->get_group_by_folder( $this->get_folder_by_file( $file_id ) );
 	}
 
 	/**
-	 * Gets a folder
-	 * @using get_term
+	 * Get group id by folder
 	 * @param int $folder_id
-	 * @return object
+	 * @return int
 	 */
-	public function get_folder( $folder_id ) {
-		return get_term( $folder_id, 'fileboxfolders' );
-	}
+	public function get_group_by_folder( $folder_id ) {
+		global $bp, $wpdb;
 
-	/**
-	 * Gets a file URL
-	 * @uses wp_get_attachment_url
-	 * @param int $file_id Post ID
-	 * @return string Post attachment URL
-	 */
-	public function get_file_url( $file_id ) {
-		$attachments = get_children( array( 'parent' => $file_id, 'post_type' => 'attachment' ) );
+		$parents = $this->get_folder_ancestors( $folder_id );
 
-		if( is_array( $attachments ) ) {
-			return wp_get_attachment_url( reset( $attachments )->ID );
-		} else {
-			return '';
+		if( count( $parents ) ) {
+			$folder_id = $parents[ 0 ]->term_id;
 		}
+
+		$group_id = $wpdb->get_var( $wpdb->prepare(
+			'SELECT `group_id` FROM `'. $bp->groups->table_name_groupmeta . '` WHERE `meta_key` = "filebox_group_folder" AND `meta_value` = %d LIMIT 0,1',
+			$folder_id
+		) );
+
+		return $group_id;
 	}
 
 	/**
@@ -476,6 +467,51 @@ class Filebox {
 		}
 	}
 
+	/**
+	 * Gets a folder
+	 * @using get_term
+	 * @param int $folder_id
+	 * @return object
+	 */
+	public function get_folder( $folder_id ) {
+		return get_term( $folder_id, 'fileboxfolders' );
+	}
+
+	/**
+	 * Gets a folder name
+	 * @return string
+	 */
+	public function get_folder_name( $folder_id ) {
+		$folder = $this->get_folder( $folder_id );
+
+		if( $folder ) {
+			return $folder->name;
+		}
+
+		return 'Error';
+	}
+
+	/**
+	 * Gets a folders URL
+	 * @param $folder_id
+	 * @return string
+	 */
+	public function get_folder_url( $folder_id ) {
+		$url = bp_get_group_permalink( groups_get_group( array( 'group_id' => $this->get_group_by_folder( $folder_id ) ) ) );
+		$url .= 'filebox';
+
+		$folders = array_merge(
+			$this->get_folder_ancestors( $folder_id ),
+			array( $this->get_folder( $folder_id ) )
+		);
+		array_shift( $folders );
+
+		foreach( $folders as $folder ) {
+			$url .= '/' . $folder->slug;
+		}
+
+		return $url;
+	}
 
 	/**
 	 * Get all folders by group
@@ -515,7 +551,71 @@ class Filebox {
 		}
 
 		return $response;
+	}
 
+	/**
+	 * Get folder id by file
+	 * @param int $file_id
+	 * @return int
+	 */
+	public function get_folder_by_file( $file_id ) {
+		$folder = wp_get_object_terms( $file_id, 'fileboxfolders', array( 'fields' => 'ids' ) );
+
+		if( is_array( $folder ) ) {
+			return reset( $folder );
+		} else {
+			return $folder;
+		}
+	}
+
+	/**
+	 * If specified folder is group root folder
+	 * @param int $folder_id
+	 * @return int
+	 */
+	public function is_root_folder( $folder_id ) {
+		$group_id = $this->get_group_by_folder( $folder_id );
+		$root_id = $this->get_group_folder( $group_id );
+		return( $group_id == $root_id );
+	}
+
+	/**
+	 * Get folder ancestors
+	 * @param int $folder_id
+	 * @return array
+	 */
+	public function get_folder_ancestors( $folder_id ) {
+		$result = array();
+		$folder = get_term( $folder_id, 'fileboxfolders' );
+
+		if( $folder ) {
+			while( $folder->parent ) {
+				$folder = get_term( $folder->parent, 'fileboxfolders' );
+
+				if( $folder ) {
+					$result = array_merge( array( $folder ), $result );
+				} else {
+					$folder = ( object ) array( 'parent' => 0 );
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get folder parent
+	 * @param int $folder_id
+	 * @return int
+	 */
+	public function get_parent_folder( $folder_id ) {
+		$folder = get_term( $folder_id, 'fileboxfolders' );
+
+		if( $folder ) {
+			return $folder->parent;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -572,6 +672,22 @@ class Filebox {
 	}
 
 	/**
+	 * Gets a file URL
+	 * @uses wp_get_attachment_url
+	 * @param int $file_id Post ID
+	 * @return string Post attachment URL
+	 */
+	public function get_file_url( $file_id ) {
+		$attachments = get_children( array( 'parent' => $file_id, 'post_type' => 'attachment' ) );
+
+		if( is_array( $attachments ) ) {
+			return wp_get_attachment_url( reset( $attachments )->ID );
+		} else {
+			return '';
+		}
+	}
+
+	/**
 	 * Get trash count
 	 * @param int $group_id
 	 * @return int
@@ -624,102 +740,6 @@ class Filebox {
 		}
 
 		return $results;
-	}
-
-	/**
-	 * Get group id by file
-	 * @param int $file_id
-	 * @return int
-	 */
-	public function get_group_by_file( $file_id ) {
-		return $this->get_group_by_folder( $this->get_folder_by_file( $file_id ) );
-	}
-
-	/**
-	 * Get folder id by file
-	 * @param int $file_id
-	 * @return int
-	 */
-	public function get_folder_by_file( $file_id ) {
-		$folder = wp_get_object_terms( $file_id, 'fileboxfolders', array( 'fields' => 'ids' ) );
-
-		if( is_array( $folder ) ) {
-			return reset( $folder );
-		} else {
-			return $folder;
-		}
-	}
-
-	/**
-	 * Get group id by folder
-	 * @param int $folder_id
-	 * @return int
-	 */
-	public function get_group_by_folder( $folder_id ) {
-		global $bp, $wpdb;
-
-		$parents = $this->get_folder_ancestors( $folder_id );
-
-		if( count( $parents ) ) {
-			$folder_id = $parents[ 0 ]->term_id;
-		}
-
-		$group_id = $wpdb->get_var( $wpdb->prepare(
-			'SELECT `group_id` FROM `'. $bp->groups->table_name_groupmeta . '` WHERE `meta_key` = "filebox_group_folder" AND `meta_value` = %d LIMIT 0,1',
-			$folder_id
-		) );
-
-		return $group_id;
-	}
-
-	/**
-	 * If specified folder is group root folder
-	 * @param int $folder_id
-	 * @return int
-	 */
-	public function is_root_folder( $folder_id ) {
-		$group_id = $this->get_group_by_folder( $folder_id );
-		$root_id = $this->get_group_folder( $group_id );
-		return( $group_id == $root_id );
-	}
-
-	/**
-	 * Get folder ancestors
-	 * @param int $folder_id
-	 * @return array
-	 */
-	public function get_folder_ancestors( $folder_id ) {
-		$result = array();
-		$folder = get_term( $folder_id, 'fileboxfolders' );
-
-		if( $folder ) {
-			while( $folder->parent ) {
-				$folder = get_term( $folder->parent, 'fileboxfolders' );
-
-				if( $folder ) {
-					$result = array_merge( array( $folder ), $result );
-				} else {
-					$folder = ( object ) array( 'parent' => 0 );
-				}
-			}
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Get folder parent
-	 * @param int $folder_id
-	 * @return int
-	 */
-	public function get_parent_folder( $folder_id ) {
-		$folder = get_term( $folder_id, 'fileboxfolders' );
-
-		if( $folder ) {
-			return $folder->parent;
-		} else {
-			return false;
-		}
 	}
 
 	/**
@@ -857,30 +877,6 @@ class Filebox {
 		wp_set_object_terms( $file_id, $message, 'fileboxcommits' );
 	}
 
-	/**
-	 * Adds a notification to all group members
-	 * @param int $file_id
-	 * @param int $group_id
-	 * @param string $type
-	 * @return void
-	 */
-	public function add_notification( $file_id, $group_id, $type ) {
-		$me = get_current_user_id();
-		$members = array(
-			groups_get_group_members( $group_id ),
-			groups_get_group_mods( $group_id ),
-			groups_get_group_admins( $group_id )
-		);
-
-		foreach( $members as $list ) {
-			foreach( $list as $member ) {
-				if( $member->user_id != $me ) {
-					bp_core_add_notification( $file_id, $member->user_id, 'filebox_notifier', $type, $group_id );
-				}
-			}
-		}
-	}
-
 	// ---------------------
 	// AJAX FRIENDLY METHODS
 	// ---------------------
@@ -924,7 +920,9 @@ class Filebox {
 	}
 
 	/**
-	 * Get a list of all files and folders
+	 * Get a list of all files and folders.
+	 * $args can be filtered by filebox_list_files_and_folders_args filter.
+	 * $response can be filtered by filebox_list_files_and_folders_response filter.
 	 * @param int|string|array $args array( folder_id => folder id, group_id => group id, folder_slug => string ) Uses $_POST as fallback.
 	 * @param boolean $show_all Show all files and folders
 	 * @param $output ARRAY_A, STRING prints json and NULL is void
@@ -952,6 +950,8 @@ class Filebox {
 		if( ! is_array( $args[ 'folder_slug' ] ) ) {
 			$args[ 'folder_slug' ] = array( $args[ 'folder_slug' ] );
 		}
+
+		$args = apply_filters( 'filebox_list_files_and_folders_args', $args );
 
 		if( $args[ 'group_id' ] ) {
 			$this->index_group_forum_attachments( $args[ 'group_id' ] );
@@ -991,6 +991,8 @@ class Filebox {
 					'current' => $this->get_folder( $args[ 'folder_id' ] ),
 					'breadcrumbs' => $this->get_folder_ancestors( $args[ 'folder_id' ] )
 				);
+
+				do_action( 'filebox_list_files_and_folders', $response[ 'meta' ][ 'current' ] );
 			} elseif( $args[ 'folder_slug' ][ 0 ] == 'trash' ) {
 				$response[ 'files' ] = $this->get_trash( $args[ 'group_id' ] );
 				$response[ 'meta' ] = array(
@@ -1004,6 +1006,8 @@ class Filebox {
 		asort( $response[ 'folders' ] );
 		asort( $response[ 'files' ] );
 
+		$response = apply_filters( 'filebox_list_files_and_folders_response', $response, $args );
+
 		return $this->get_ajax_output( $output, $response );
 	}
 
@@ -1014,6 +1018,9 @@ class Filebox {
 	/**
 	 * Upload file
 	 * Requires an uploaded file in $_FILES if not defined in $args.
+	 * $args can be filtered by filebox_upload_file_args filter.
+	 * $response can be filtered by filebox_upload_file_response filter.
+	 * Action filebox_upload_file will be executed just after file has been saved.
 	 * @param array $args array( folder_id => int, file_id => int, comment (optional) => string, file_upload (optional) => array( name => string, tmp_name => string, type => string ) )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
@@ -1027,6 +1034,8 @@ class Filebox {
 			'folder_id' => 0,
 			'file_id' => 0
 		) );
+
+		$args = apply_filters( 'filebox_upload_file_args', $args );
 
 		$doc = $this->get_file( $args[ 'file_id' ] );
 
@@ -1099,17 +1108,26 @@ class Filebox {
 				$response[ 'file_id' ] = $file_id;
 				$response[ 'file_name' ] = $file[ 'name' ];
 
-				if( ! array_key_exists( 'comment', $args ) ) {
-					$this->add_notification( $file_id, $this->get_group_by_file( $file_id ), $doc ? 'file_updated' : 'file_uploaded' );
-				}
+				do_action(
+					'filebox_file_upload',
+					$this->get_file( $file_id ),
+					$this->get_folder( $args[ 'folder_id' ] ),
+					groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) ),
+					$doc ? true : false
+				);
 			}
 		}
+
+		$response = apply_filters( 'filebox_upload_file_response', $response, $args );
 
 		return $this->get_ajax_output( $output, $response );
 	}
 
 	/**
-	 * Move file to specified dir
+	 * Move file to specified dir.
+	 * $args can be filtered by filebox_move_file_args filter.
+	 * $response can be filtered by filebox_upload_file_response filter.
+	 * Action filebox_move_file is executed when file has been moved.
 	 * @param array $args array( file_id => int, folder_id => int )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
@@ -1124,6 +1142,8 @@ class Filebox {
 			'file_id' => 0,
 			'folder_id' => 0
 		) );
+
+		$args = apply_filters( 'filebox_move_file_args', $args );
 
 		if(
 			get_post( $args[ 'file_id' ] )
@@ -1142,14 +1162,26 @@ class Filebox {
 				'fileboxfolders'
 			);
 
+			do_action(
+				'filebox_move_file',
+				$this->get_file( $args[ 'file_id' ] ),
+				$this->get_folder( $args[ 'folder_id' ] ),
+				groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
+			);
+
 			$response = $args;
 		}
+
+		$response = apply_filters( 'filebox_move_file_response', $response, $args );
 
 		return $this->get_ajax_output( $output, $response );
 	}
 
 	/**
-	 * Renames a file
+	 * Renames a file.
+	 * $args can be filtered by filebox_rename_file_args filter.
+	 * $response can be filtered by filebox_rename_file_response filter.
+	 * Action filebox_rename_file is executed when file has been renamed.
 	 * @param array $args array( 'file_id' => int, file_name => string )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
@@ -1167,6 +1199,8 @@ class Filebox {
 			'file_description' => ''
 		) );
 
+		$args = apply_filters( 'filebox_rename_file_args', $args );
+
 		$file = get_post( $args[ 'file_id' ] );
 
 		if( $file && ! empty( $args[ 'file_name' ] ) ) {
@@ -1178,8 +1212,17 @@ class Filebox {
 
 			$this->record_change( $file->ID, __( 'Renamed file', 'filebox' ) );
 
+			do_action(
+				'filebox_rename_file',
+				$this->get_file( $file->ID ),
+				$this->get_folder_by_file( $file->ID ),
+				groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
+			);
+
 			$response = $args;
 		}
+
+		$response = apply_filters( 'filebox_rename_file_response', $response, $args );
 
 		return $this->get_ajax_output( $output, $response );
 	}

@@ -23,19 +23,16 @@ if( preg_match_all( '/(?:\/([^\/]+))/', $_SERVER[ 'REQUEST_URI' ], $match ) ) {
 
 $documents = $filebox->list_files_and_folders( $args, ARRAY_A );
 $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
-$folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'filebox';
 ?>
 
 <ul class="filebox-breadcrumbs">
 	<li class="title"><?php _e( 'Filebox', 'filebox' ); ?></li>
 	<?php if( array_key_exists( 'breadcrumbs', $documents[ 'meta' ] ) ): ?>
 		<?php foreach( $documents[ 'meta' ][ 'breadcrumbs' ] as $folder ): ?>
-			<?php $folder_base_url .= $folder->parent ? '/' . $folder->slug : ''; ?>
-			<li class="folder">» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
+			<li class="folder">» <a href="<?php echo esc_url( $filebox->get_folder_url( $folder->term_id ) ); ?>"><?php echo esc_attr( $folder->name ); ?></a></li>
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php $folder_base_url .= $documents[ 'meta' ][ 'current' ]->parent ? '/' . $documents[ 'meta' ][ 'current' ]->slug : ''; ?>
-	<li class="folder<?php echo $documents[ 'meta' ][ 'id' ] ? ' current' : ''; ?>">» <a href="<?php echo esc_url( $folder_base_url ); ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
+	<li class="folder<?php echo $documents[ 'meta' ][ 'id' ] ? ' current' : ''; ?>">» <a href="<?php echo esc_url( $filebox->get_folder_url( $documents[ 'meta' ][ 'current' ]->term_id ) ); ?>"><?php echo esc_attr( $documents[ 'meta' ][ 'current' ]->name ); ?></a></li>
 	<?php if( $trash_count || array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
 		<li class="trash<?php echo array_key_exists( 'trash', $documents[ 'meta' ] ) ? ' current' : ''; ?>"> | <a href="<?php echo esc_url( bp_get_group_permalink( $bp->groups->current_group ) . 'filebox/trash' ); ?>"><?php echo sprintf( __( 'Trash (%d)', 'filebox' ), $trash_count ); ?></a></li>
 	<?php endif; ?>
@@ -80,7 +77,7 @@ $folder_base_url = bp_get_group_permalink( $bp->groups->current_group ) . 'fileb
 					</td>
 					<th class="filebox-title">
 						<?php if( $type == 'folders' ): ?>
-							<a href="<?php echo esc_url( $folder_base_url . '/'. $doc->slug ); ?>"><?php echo esc_attr( $doc->name ); ?></a>
+							<a href="<?php echo esc_url( $filebox->get_folder_url( $doc->term_id ) ); ?>"><?php echo esc_attr( $doc->name ); ?></a>
 						<?php else: ?>
 							<a href="<?php echo esc_url( get_permalink( $doc->ID ) ); ?>"><?php echo esc_attr( $doc->post_title ); ?></a>
 						<?php endif; ?>

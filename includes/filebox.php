@@ -1314,7 +1314,8 @@ class Filebox {
 					'description' => $file->post_excerpt,
 					'author' => get_userdata( $file->post_author ),
 					'comment' => reset( $workflow )->name,
-					'folder' => reset( $folder )->name
+					'folder' => reset( $folder )->name,
+					'link' => get_permalink( $file->ID )
 				);
 			}
 
@@ -1332,17 +1333,19 @@ class Filebox {
 				$folder = wp_get_post_terms( $rev->ID, 'fileboxfolders' );
 				$workflow = wp_get_post_terms( $rev->ID, 'fileboxcommits' );
 
-				$response[ 'file_history' ][] = array(
-					'id' => $rev->ID,
-					'date' => $rev->post_modified,
-					'title' => $rev->post_title,
-					'description' => $rev->post_excerpt,
-					'author' => get_userdata( $rev->post_author ),
-					'comment' => is_array( $workflow ) ? reset( $workflow )->name : '',
-					'folder' => is_array( $folder ) ? reset( $folder )->name : '',
-					'version' => $version,
-					'link' => get_permalink( $file->ID ) . '?revision=' . $version
-				);
+				if( $workflow && $folder ) {
+					$response[ 'file_history' ][] = array(
+						'id' => $rev->ID,
+						'date' => $rev->post_modified,
+						'title' => $rev->post_title,
+						'description' => $rev->post_excerpt,
+						'author' => get_userdata( $rev->post_author ),
+						'comment' => is_array( $workflow ) ? reset( $workflow )->name : '',
+						'folder' => is_array( $folder ) ? reset( $folder )->name : '',
+						'version' => $version,
+						'link' => get_permalink( $file->ID ) . '?revision=' . $version
+					);
+				}
 
 				$version--;
 			}

@@ -86,6 +86,9 @@ class Filebox {
 		add_action( 'bbp_new_topic', array( &$this, 'handle_new_forum_topic' ), 1000, 4 );
 		add_action( 'bbp_new_reply', array( &$this, 'handle_new_forum_reply' ), 1000, 5 );
 
+		// Security action for documents so non-members can't view group files
+		add_filter( 'template_include', array( &$this, 'handle_file_loading' ) );
+
 		/**
 		 * WP Document Revisions filters and actions
 		 */
@@ -293,6 +296,35 @@ class Filebox {
 				@set_time_limit( 0 );
 				readfile( $filename );
 				exit;
+			}
+		}
+
+		return $template;
+	}
+
+	/**
+	 * Is a loaded post is a document from a group, then apply security check
+	 * @param string $template;
+	 * @return string
+	 */
+	public function handle_file_loading( $template ) {
+		global $post, $wp, $wp_query;
+
+		if( is_object( $post ) ) {
+			if( property_exists( $post, 'post_type' ) && property_exists( $post, 'ID' ) ) {
+				if( $post->post_type == 'document' ) {
+					$group_id = $this->get_group_by_file( $post->ID );
+
+					if( $group_id ) {
+						if( ! $this->is_allowed( $group_id ) ) {
+							$post->post_type = '';
+							$wp_query->posts = array();
+							$wp_query->queried_object = null;
+							$wp->handle_404();
+							return get_404_template();
+						}
+					}
+				}
 			}
 		}
 

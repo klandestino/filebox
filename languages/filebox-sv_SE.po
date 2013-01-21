@@ -1,0 +1,317 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Filebox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-21 20:51+0100\n"
+"PO-Revision-Date: 2013-01-21 21:12+0100\n"
+"Last-Translator: spurge <olof@klandestino.se>\n"
+"Language-Team: Klandestino\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+#: templates/filebox-file-form.php:8
+msgid "File title"
+msgstr "Filnamn"
+
+#: templates/filebox-file-form.php:13
+msgid "File description"
+msgstr "Filbeskrivning"
+
+#: templates/filebox-file-form.php:17
+msgid "Save file"
+msgstr "Spara fil"
+
+#: templates/filebox-file-history.php:13
+msgid "Changed/author"
+msgstr "Ändrad/författare"
+
+#: templates/filebox-file-history.php:14
+msgid "Comment/folder"
+msgstr "Kommentar/katalog"
+
+#: templates/filebox-file-history.php:15
+msgid "Title/description"
+msgstr "Titel/beskrivning"
+
+#: templates/filebox-folder-form.php:9
+msgid "Folder name"
+msgstr "Katalognamn"
+
+#: templates/filebox-folder-form.php:14
+msgid "Folder description"
+msgstr "Katalogbeskrivning"
+
+#: templates/filebox-folder-form.php:18
+msgid "Save folder"
+msgstr "Spara katalog"
+
+#: templates/filebox-group-display.php:40
+#: includes/group.php:29
+msgid "Filebox"
+msgstr "Dokument"
+
+#: templates/filebox-group-display.php:48
+#, php-format
+msgid "Trash (%d)"
+msgstr "Papperskorg (%d)"
+
+#: templates/filebox-group-display.php:55
+#: templates/filebox-group-display.php:56
+msgid "Add files"
+msgstr "Lägg till filer"
+
+#: templates/filebox-group-display.php:60
+#: templates/filebox-group-display.php:61
+msgid "Add folder"
+msgstr "Lägg till katalog"
+
+#: templates/filebox-group-display.php:71
+msgid "Title"
+msgstr "Titel"
+
+#: templates/filebox-group-display.php:72
+msgid "Changed"
+msgstr "Ändrad"
+
+#: templates/filebox-group-display.php:73
+msgid "Owner"
+msgstr "Författare"
+
+#: templates/filebox-group-display.php:74
+msgid "Size"
+msgstr "Storlek"
+
+#: templates/filebox-group-display.php:98
+#, php-format
+msgid "%d files"
+msgstr "%d filer"
+
+#: templates/filebox-group-display.php:109
+msgid "Reset"
+msgstr "Återställ"
+
+#: templates/filebox-group-display.php:110
+msgid "Delete permanently"
+msgstr "Ta bort permanent"
+
+#: templates/filebox-group-display.php:113
+msgid "File history"
+msgstr "Filhistorik"
+
+#: templates/filebox-group-display.php:113
+msgid "Show history"
+msgstr "Visa historik"
+
+#: templates/filebox-group-display.php:115
+#: templates/filebox-group-display.php:123
+msgid "Edit"
+msgstr "Ändra"
+
+#: templates/filebox-group-display.php:116
+msgid "Upload new version"
+msgstr "Ladda upp ny version"
+
+#: templates/filebox-group-display.php:117
+msgid "Move file"
+msgstr "Flytta fil"
+
+#: templates/filebox-group-display.php:117
+#: templates/filebox-group-display.php:124
+#: templates/filebox-move-form.php:74
+msgid "Move"
+msgstr "Flytta"
+
+#: templates/filebox-group-display.php:118
+msgid "Trash"
+msgstr "Släng"
+
+#: templates/filebox-group-display.php:123
+msgid "Edit folder"
+msgstr "Ändra katalog"
+
+#: templates/filebox-group-display.php:124
+msgid "Move folder"
+msgstr "Flytta katalog"
+
+#: templates/filebox-group-display.php:125
+msgid "Delete"
+msgstr "Radera"
+
+#: templates/filebox-group-settings.php:3
+msgid "Permissions"
+msgstr "Rättigheter"
+
+#: templates/filebox-group-settings.php:5
+msgid "Which members of this group are allowed to upload files and make changes?"
+msgstr "Vilka medlemmar i denna grupp ska kunna ladda upp filer och göra ändringar?"
+
+#: templates/filebox-group-settings.php:6
+msgid "Note: All group members will be able to view and download everything in the document archive."
+msgstr "Notis: alla gruppmedlemmar kommer kunna se och ladda ner alla dokument."
+
+#: templates/filebox-group-settings.php:11
+msgid "All group members have full access to the document archive."
+msgstr "Alla gruppmedlemmar har full access till dokumentarkivet."
+
+#: templates/filebox-group-settings.php:16
+msgid "Only group administrators can upload files and make changes."
+msgstr "Bara gruppadministratörer kan ladda upp filer och göra ändringar."
+
+#: templates/filebox-group-settings.php:21
+msgid "Group administrators and moderators can upload files and make changes."
+msgstr "Gruppadministratörer och moderatorer kan ladda upp filer och göra ändringar."
+
+#: templates/filebox-group-settings.php:25
+msgid "This person only may make changes:"
+msgstr ""
+
+#: templates/filebox-upload-form.php:4
+msgid "Add files from your computer"
+msgstr "Lägg till filer från din dator"
+
+#: templates/filebox-upload-form.php:11
+msgid "The web browser on your device cannot be used to upload files. You may be able to use the <a href=\"http://wordpress.org/extend/mobile/\">native app for your device</a> instead."
+msgstr "Webbläsaren på din enhet kan inte användas för att ladda upp filer. "
+
+#: templates/filebox-upload-form.php:49
+msgid "Allowed Files"
+msgstr "Tillåtna filer"
+
+#: templates/filebox-upload-form.php:170
+msgid "Drop files here"
+msgstr "Släpp filer här"
+
+#: templates/filebox-upload-form.php:171
+msgid "or"
+msgstr "eller"
+
+#: templates/filebox-upload-form.php:173
+msgid "Select Files"
+msgstr "Välj filer"
+
+#: templates/filebox-upload-form.php:180
+#, php-format
+msgid "Maximum upload file size: %d%s."
+msgstr "Maxstorlek på filer: %d%s."
+
+#: templates/filebox-upload-form.php:185
+msgid "Your browser has some limitations uploading large files with the multi-file uploader. Please use the browser uploader for files over 100MB."
+msgstr "Din webbläsare har begränsningar gällande uppladdning av stora filer med en multi-fil-uppladdare. Använd istället webbläsarens egna uppladdar för filer över 100MB."
+
+#: includes/filebox.php:26
+msgid "Imported forum attachments"
+msgstr "Importerade filer från forumet"
+
+#: includes/filebox.php:150
+msgid "Documents"
+msgstr "Dokument"
+
+#: includes/filebox.php:151
+msgid "Document"
+msgstr "Dokument"
+
+#: includes/filebox.php:177
+msgid "Folders"
+msgstr "Kataloger"
+
+#: includes/filebox.php:178
+msgid "Folder"
+msgstr "Katalog"
+
+#: includes/filebox.php:195
+msgid "Revision comments"
+msgstr "Versionskommentarer"
+
+#: includes/filebox.php:196
+msgid "Revision comment"
+msgstr "Versionskommentar"
+
+#: includes/filebox.php:226
+msgid "You're about to delete this folder? You can not undo this. Do you want to continue?"
+msgstr "Du håller på att ta bort den här katalogen. Detta kan du inte ångra. Vill du fortsätta?"
+
+#: includes/filebox.php:227
+msgid "You're about to trash this file? You can undo this. Do you want to continue?"
+msgstr "Du håller på att slänga den här filen i papperskorgen. Detta kan du ångra. Vill du fortsätta?"
+
+#: includes/filebox.php:228
+msgid "You're about to delete this file permanently? You can not undo this. Do you want to continue?"
+msgstr "Du håller på att radera den här filen permanent. Detta kan du inte ångra. Vill du fortsätta?"
+
+#: includes/filebox.php:433
+#, php-format
+msgid "%s group folder"
+msgstr "%s gruppkatalog"
+
+#: includes/filebox.php:487
+#, php-format
+msgid "%s forum attachments folder"
+msgstr "%s katalog för importerade filer från forumet"
+
+#: includes/filebox.php:967
+msgid "Imported from group forum"
+msgstr "Importerad från gruppforum"
+
+#: includes/filebox.php:1238
+msgid "Uploaded new file"
+msgstr "Laddade upp ny fil"
+
+#: includes/filebox.php:1298
+msgid "Moved to folder"
+msgstr "Flyttad till katalog"
+
+#: includes/filebox.php:1355
+msgid "Renamed file"
+msgstr "Ändrade filnamn"
+
+#: includes/group.php:156
+msgid "Settings saved successfully"
+msgstr "Inställningarna sparades"
+
+#: includes/group.php:158
+msgid "There was an error saving, please try again"
+msgstr "Det blev fel, försök igen"
+
+#: includes/notifier_component.php:23
+msgid "Filebox Notifier"
+msgstr "Dokumentnotifiering"
+
+#: includes/notifier_component.php:73
+#, php-format
+msgid "%1$d files updated in %2$s (%3$s)"
+msgstr "%1$d filer uppdaterade i %2$s (%3$s)"
+
+#: includes/notifier_component.php:75
+#, php-format
+msgid "%1$d files updated in %3$s"
+msgstr "%1$d filer uppdaterade i %3$s"
+
+#: includes/notifier_component.php:78
+#, php-format
+msgid "%1$s updated in %3$s"
+msgstr "%1$s uppdaterad i %3$s"
+
+#: includes/notifier_component.php:85
+#, php-format
+msgid "%1$d files added in %2$s (%3$s)"
+msgstr "%1$d filer uppladdade till %2$s (%3$s)"
+
+#: includes/notifier_component.php:87
+#, php-format
+msgid "%1$d files added in %3$s"
+msgstr "%1$d filer uppladdade till %3$s"
+
+#: includes/notifier_component.php:90
+#, php-format
+msgid "%1$s added in %3$s"
+msgstr "%1$s uppladdades till %3$s"
+

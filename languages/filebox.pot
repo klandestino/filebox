@@ -1,0 +1,326 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-21 20:51+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/filebox-file-form.php:8
+msgid "File title"
+msgstr ""
+
+#: templates/filebox-file-form.php:13
+msgid "File description"
+msgstr ""
+
+#: templates/filebox-file-form.php:17
+msgid "Save file"
+msgstr ""
+
+#: templates/filebox-file-history.php:13
+msgid "Changed/author"
+msgstr ""
+
+#: templates/filebox-file-history.php:14
+msgid "Comment/folder"
+msgstr ""
+
+#: templates/filebox-file-history.php:15
+msgid "Title/description"
+msgstr ""
+
+#: templates/filebox-folder-form.php:9
+msgid "Folder name"
+msgstr ""
+
+#: templates/filebox-folder-form.php:14
+msgid "Folder description"
+msgstr ""
+
+#: templates/filebox-folder-form.php:18
+msgid "Save folder"
+msgstr ""
+
+#: templates/filebox-group-display.php:40 includes/group.php:29
+msgid "Filebox"
+msgstr ""
+
+#: templates/filebox-group-display.php:48
+#, php-format
+msgid "Trash (%d)"
+msgstr ""
+
+#: templates/filebox-group-display.php:55
+#: templates/filebox-group-display.php:56
+msgid "Add files"
+msgstr ""
+
+#: templates/filebox-group-display.php:60
+#: templates/filebox-group-display.php:61
+msgid "Add folder"
+msgstr ""
+
+#: templates/filebox-group-display.php:71
+msgid "Title"
+msgstr ""
+
+#: templates/filebox-group-display.php:72
+msgid "Changed"
+msgstr ""
+
+#: templates/filebox-group-display.php:73
+msgid "Owner"
+msgstr ""
+
+#: templates/filebox-group-display.php:74
+msgid "Size"
+msgstr ""
+
+#: templates/filebox-group-display.php:98
+#, php-format
+msgid "%d files"
+msgstr ""
+
+#: templates/filebox-group-display.php:109
+msgid "Reset"
+msgstr ""
+
+#: templates/filebox-group-display.php:110
+msgid "Delete permanently"
+msgstr ""
+
+#: templates/filebox-group-display.php:113
+msgid "File history"
+msgstr ""
+
+#: templates/filebox-group-display.php:113
+msgid "Show history"
+msgstr ""
+
+#: templates/filebox-group-display.php:115
+#: templates/filebox-group-display.php:123
+msgid "Edit"
+msgstr ""
+
+#: templates/filebox-group-display.php:116
+msgid "Upload new version"
+msgstr ""
+
+#: templates/filebox-group-display.php:117
+msgid "Move file"
+msgstr ""
+
+#: templates/filebox-group-display.php:117
+#: templates/filebox-group-display.php:124 templates/filebox-move-form.php:74
+msgid "Move"
+msgstr ""
+
+#: templates/filebox-group-display.php:118
+msgid "Trash"
+msgstr ""
+
+#: templates/filebox-group-display.php:123
+msgid "Edit folder"
+msgstr ""
+
+#: templates/filebox-group-display.php:124
+msgid "Move folder"
+msgstr ""
+
+#: templates/filebox-group-display.php:125
+msgid "Delete"
+msgstr ""
+
+#: templates/filebox-group-settings.php:3
+msgid "Permissions"
+msgstr ""
+
+#: templates/filebox-group-settings.php:5
+msgid ""
+"Which members of this group are allowed to upload files and make changes?"
+msgstr ""
+
+#: templates/filebox-group-settings.php:6
+msgid ""
+"Note: All group members will be able to view and download everything in the "
+"document archive."
+msgstr ""
+
+#: templates/filebox-group-settings.php:11
+msgid "All group members have full access to the document archive."
+msgstr ""
+
+#: templates/filebox-group-settings.php:16
+msgid "Only group administrators can upload files and make changes."
+msgstr ""
+
+#: templates/filebox-group-settings.php:21
+msgid "Group administrators and moderators can upload files and make changes."
+msgstr ""
+
+#: templates/filebox-group-settings.php:25
+msgid "This person only may make changes:"
+msgstr ""
+
+#: templates/filebox-upload-form.php:4
+msgid "Add files from your computer"
+msgstr ""
+
+#: templates/filebox-upload-form.php:11
+msgid ""
+"The web browser on your device cannot be used to upload files. You may be "
+"able to use the <a href=\"http://wordpress.org/extend/mobile/\">native app "
+"for your device</a> instead."
+msgstr ""
+
+#: templates/filebox-upload-form.php:49
+msgid "Allowed Files"
+msgstr ""
+
+#: templates/filebox-upload-form.php:170
+msgid "Drop files here"
+msgstr ""
+
+#: templates/filebox-upload-form.php:171
+msgid "or"
+msgstr ""
+
+#: templates/filebox-upload-form.php:173
+msgid "Select Files"
+msgstr ""
+
+#: templates/filebox-upload-form.php:180
+#, php-format
+msgid "Maximum upload file size: %d%s."
+msgstr ""
+
+#: templates/filebox-upload-form.php:185
+msgid ""
+"Your browser has some limitations uploading large files with the multi-file "
+"uploader. Please use the browser uploader for files over 100MB."
+msgstr ""
+
+#: includes/filebox.php:26
+msgid "Imported forum attachments"
+msgstr ""
+
+#: includes/filebox.php:150
+msgid "Documents"
+msgstr ""
+
+#: includes/filebox.php:151
+msgid "Document"
+msgstr ""
+
+#: includes/filebox.php:177
+msgid "Folders"
+msgstr ""
+
+#: includes/filebox.php:178
+msgid "Folder"
+msgstr ""
+
+#: includes/filebox.php:195
+msgid "Revision comments"
+msgstr ""
+
+#: includes/filebox.php:196
+msgid "Revision comment"
+msgstr ""
+
+#: includes/filebox.php:226
+msgid ""
+"You're about to delete this folder? You can not undo this. Do you want to "
+"continue?"
+msgstr ""
+
+#: includes/filebox.php:227
+msgid ""
+"You're about to trash this file? You can undo this. Do you want to continue?"
+msgstr ""
+
+#: includes/filebox.php:228
+msgid ""
+"You're about to delete this file permanently? You can not undo this. Do you "
+"want to continue?"
+msgstr ""
+
+#: includes/filebox.php:433
+#, php-format
+msgid "%s group folder"
+msgstr ""
+
+#: includes/filebox.php:487
+#, php-format
+msgid "%s forum attachments folder"
+msgstr ""
+
+#: includes/filebox.php:967
+msgid "Imported from group forum"
+msgstr ""
+
+#: includes/filebox.php:1238
+msgid "Uploaded new file"
+msgstr ""
+
+#: includes/filebox.php:1298
+msgid "Moved to folder"
+msgstr ""
+
+#: includes/filebox.php:1355
+msgid "Renamed file"
+msgstr ""
+
+#: includes/group.php:156
+msgid "Settings saved successfully"
+msgstr ""
+
+#: includes/group.php:158
+msgid "There was an error saving, please try again"
+msgstr ""
+
+#: includes/notifier_component.php:23
+msgid "Filebox Notifier"
+msgstr ""
+
+#: includes/notifier_component.php:73
+#, php-format
+msgid "%1$d files updated in %2$s (%3$s)"
+msgstr ""
+
+#: includes/notifier_component.php:75
+#, php-format
+msgid "%1$d files updated in %3$s"
+msgstr ""
+
+#: includes/notifier_component.php:78
+#, php-format
+msgid "%1$s updated in %3$s"
+msgstr ""
+
+#: includes/notifier_component.php:85
+#, php-format
+msgid "%1$d files added in %2$s (%3$s)"
+msgstr ""
+
+#: includes/notifier_component.php:87
+#, php-format
+msgid "%1$d files added in %3$s"
+msgstr ""
+
+#: includes/notifier_component.php:90
+#, php-format
+msgid "%1$s added in %3$s"
+msgstr ""

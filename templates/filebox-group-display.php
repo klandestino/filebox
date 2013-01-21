@@ -25,6 +25,17 @@ $documents = $filebox->list_files_and_folders( $args, ARRAY_A );
 $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 ?>
 
+<?php if( $filebox->is_allowed( $documents[ 'meta' ][ 'current' ]->term_id, null, true ) ): ?>
+	<script language="javascript" type="text/javascript">
+		var _filebox_nonces = {
+			delete_folder: '<?php echo wp_create_nonce( 'delete_folder' ); ?>',
+			trash_file: '<?php echo wp_create_nonce( 'trash_file' ); ?>',
+			delete_file: '<?php echo wp_create_nonce( 'delete_file' ); ?>',
+			reset_file: '<?php echo wp_create_nonce( 'reset_file' ); ?>'
+		};
+	</script>
+<?php endif; ?>
+
 <ul class="filebox-breadcrumbs">
 	<li class="title"><?php _e( 'Filebox', 'filebox' ); ?></li>
 	<?php if( array_key_exists( 'breadcrumbs', $documents[ 'meta' ] ) ): ?>

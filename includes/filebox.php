@@ -1011,12 +1011,16 @@ class Filebox {
 	// ---------------------
 
 	/**
-	 * Get an ajax-friendly argument array
+	 * Get an ajax-friendly argument array.
+	 * It will also check for nonce if arguments are fetched from an post request.
 	 * @param array $args
 	 * @param array $defaults
+	 * @param string $nonce The nonce to check if this is an ajax-request
 	 * @return array
 	 */
-	public function get_ajax_arguments( $args, $defaults ) {
+	public function get_ajax_arguments( $args, $defaults, $nonce = '' ) {
+		$using_nonce = false;
+
 		if( ! is_array( $args ) ) {
 			$args = array();
 		}
@@ -1025,10 +1029,15 @@ class Filebox {
 			if( ! array_key_exists( $arg, $args ) ) {
 				if( array_key_exists( $arg, $_POST ) ) {
 					$args[ $arg ] = $_POST[ $arg ];
+					$using_nonce = true;
 				} else {
 					$args[ $arg ] = $default;
 				}
 			}
+		}
+
+		if( $using_nonce ) {
+			check_ajax_referer( $nonce, 'security', true );
 		}
 
 		return $args;
@@ -1074,7 +1083,7 @@ class Filebox {
 			'folder_id' => 0,
 			'group_id' => 0,
 			'folder_slug' => ''
-		) );
+		), 'list_files_and_folders' );
 
 		if( ! is_array( $args[ 'folder_slug' ] ) ) {
 			$args[ 'folder_slug' ] = array( $args[ 'folder_slug' ] );
@@ -1162,7 +1171,7 @@ class Filebox {
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0,
 			'file_id' => 0
-		) );
+		), 'upload_file' );
 
 		$args = apply_filters( 'filebox_upload_file_args', $args );
 
@@ -1274,7 +1283,7 @@ class Filebox {
 		$args = $this->get_ajax_arguments( $args, array(
 			'file_id' => 0,
 			'folder_id' => 0
-		) );
+		), 'move_file' );
 
 		$args = apply_filters( 'filebox_move_file_args', $args );
 
@@ -1330,7 +1339,7 @@ class Filebox {
 			'file_id' => 0,
 			'file_name' => '',
 			'file_description' => ''
-		) );
+		), 'rename_file' );
 
 		$args = apply_filters( 'filebox_rename_file_args', $args );
 
@@ -1373,7 +1382,7 @@ class Filebox {
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'file_id' => 0
-		) );
+		), 'history_file' );
 
 		if( $args[ 'file_id' ] ) {
 			$file = $this->get_file( $args[ 'file_id' ] );
@@ -1441,7 +1450,7 @@ class Filebox {
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'file_id' => 0
-		) );
+		), 'trash_file' );
 
 		if( $args[ 'file_id' ] ) {
 			wp_update_post( array(
@@ -1468,7 +1477,7 @@ class Filebox {
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'file_id' => 0
-		) );
+		), 'reset_file' );
 
 		if( $args[ 'file_id' ] ) {
 			wp_update_post( array(
@@ -1495,7 +1504,7 @@ class Filebox {
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'file_id' => 0
-		) );
+		), 'delete_file' );
 
 		if( $args[ 'file_id' ] ) {
 			$file = $this->get_file( $args[ 'file_id' ] );
@@ -1535,7 +1544,7 @@ class Filebox {
 			'folder_name' => '',
 			'folder_parent' => 0,
 			'folder_description' => ''
-		) );
+		), 'add_folder' );
 
 		if(
 			! empty( $args[ 'folder_name' ] )
@@ -1572,7 +1581,7 @@ class Filebox {
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0,
 			'folder_parent' => 0
-		) );
+		), 'move_folder' );
 
 		if(
 			term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
@@ -1608,7 +1617,7 @@ class Filebox {
 			'folder_id' => 0,
 			'folder_name' => '',
 			'folder_description' => ''
-		) );
+		), 'rename_folder' );
 
 		if(
 			! empty( $args[ 'folder_name' ] )
@@ -1643,7 +1652,7 @@ class Filebox {
 
 		$args = $this->get_ajax_arguments( $args, array(
 			'folder_id' => 0
-		) );
+		), 'delete_folder' );
 
 		$group_folder_id = $this->get_group_folder( $this->get_group_by_folder( $args[ 'folder_id' ] ) );
 

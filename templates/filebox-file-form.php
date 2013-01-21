@@ -1,6 +1,6 @@
 <form id="file-form" action="" method="post" class="filebox-file-form filebox-iframe-form">
 	<?php global $file_id, $file; ?>
-	<?php wp_nonce_field( 'filebox-file' ); ?>
+	<?php wp_nonce_field( 'rename_file', 'security' ); ?>
 	<input type="hidden" name="action" value="filebox_rename_file" />
 	<input type="hidden" name="file_id" value="<?php echo $file_id; ?>" />
 

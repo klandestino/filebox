@@ -1,7 +1,7 @@
 <?php global $folder, $file, $folder_list; ?>
 <form id="move-form" action="" method="post" class="filebox-move-form filebox-iframe-form">
 	<input type="hidden" name="action" value="<?php echo $file ? 'filebox_move_file' : 'filebox_move_folder'; ?>" />
-	<?php wp_nonce_field( 'filebox-folder' ); ?>
+	<?php wp_nonce_field( $file ? 'move_file' : 'move_folder', 'security' ); ?>
 
 	<?php if( $file ): ?>
 		<input type="hidden" name="file_id" value="<?php echo $file->ID; ?>" />

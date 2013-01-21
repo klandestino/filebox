@@ -29,8 +29,8 @@
 					do_action( 'upload_ui_over_quota' );
 				} else {
 					$post_params = array(
-						'_wpnonce' => wp_create_nonce( 'filebox-upload' ),
 						'action' => 'filebox_upload_file',
+						'security' => wp_create_nonce( 'upload_file' ),
 						'folder_id' => $folder_id,
 						'file_id' => $file_id
 					);

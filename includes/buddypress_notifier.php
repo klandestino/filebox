@@ -12,6 +12,12 @@ class Filebox_Buddypress_Notifier extends BP_Component {
 	public static function __setup() {
 		global $bp;
 		$bp->filebox_notifier = new Filebox_Buddypress_Notifier();
+
+		// Listen for folder browsing
+		//add_action( 'filebox_list_files_and_folders', array( &$this, '
+
+		// Listen for uploads
+		add_action( 'filebox_file_upload', array( &$this, 'notify_file_upload' ), 10, 4 );
 	}
 
 	/**
@@ -23,12 +29,6 @@ class Filebox_Buddypress_Notifier extends BP_Component {
 			__( 'Filebox Notifier', 'filebox' ),
 			BP_PLUGIN_DIR
 		);
-
-		// Listen for folder browsing
-		//add_action( 'filebox_list_files_and_folders', array( &$this, '
-
-		// Listen for uploads
-		add_action( 'filebox_upload_file', array( &$this, 'notify_file_upload' ), 10, 4 );
 	}
 
 	/**

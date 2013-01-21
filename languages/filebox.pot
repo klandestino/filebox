@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 20:51+0100\n"
+"POT-Creation-Date: 2013-01-21 21:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -242,19 +242,20 @@ msgstr ""
 
 #: includes/filebox.php:226
 msgid ""
-"You're about to delete this folder? You can not undo this. Do you want to "
+"You're about to delete this folder and you can not undo this. Do you want to "
 "continue?"
 msgstr ""
 
 #: includes/filebox.php:227
 msgid ""
-"You're about to trash this file? You can undo this. Do you want to continue?"
+"You're about to trash this file and you can undo this. Do you want to "
+"continue?"
 msgstr ""
 
 #: includes/filebox.php:228
 msgid ""
-"You're about to delete this file permanently? You can not undo this. Do you "
-"want to continue?"
+"You're about to delete this file permanently and you can not undo this. Do "
+"you want to continue?"
 msgstr ""
 
 #: includes/filebox.php:433

@@ -223,9 +223,9 @@ class Filebox {
 			array( 'jquery' )
 		);
 		wp_localize_script( 'filebox', 'filebox', array(
-			'confirm_folder_delete' => __( 'You\'re about to delete this folder? You can not undo this. Do you want to continue?', 'filebox' ),
-			'confirm_file_trash' => __( 'You\'re about to trash this file? You can undo this. Do you want to continue?', 'filebox' ),
-			'confirm_file_delete' => __( 'You\'re about to delete this file permanently? You can not undo this. Do you want to continue?', 'filebox' )
+			'confirm_folder_delete' => __( "You're about to delete this folder and you can not undo this. Do you want to continue?", 'filebox' ),
+			'confirm_file_trash' => __( "You're about to trash this file and you can undo this. Do you want to continue?", 'filebox' ),
+			'confirm_file_delete' => __( "You're about to delete this file permanently and you can not undo this. Do you want to continue?", 'filebox' )
 		) );
 
 		// General style
@@ -949,7 +949,7 @@ class Filebox {
 					if( ! $post_query->have_posts() ) {
 						$filename = get_attached_file( $attachment );
 
-						if( $filename ) {
+						if( $filename && is_file( $filename ) ) {
 							$finfo = new finfo( FILEINFO_MIME );
 							$type = $finfo->file( $filename );
 

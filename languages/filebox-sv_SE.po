@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 20:51+0100\n"
-"PO-Revision-Date: 2013-01-21 21:12+0100\n"
+"POT-Creation-Date: 2013-01-21 21:26+0100\n"
+"PO-Revision-Date: 2013-01-21 21:27+0100\n"
 "Last-Translator: spurge <olof@klandestino.se>\n"
 "Language-Team: Klandestino\n"
 "Language: \n"
@@ -236,16 +236,16 @@ msgid "Revision comment"
 msgstr "Versionskommentar"
 
 #: includes/filebox.php:226
-msgid "You're about to delete this folder? You can not undo this. Do you want to continue?"
-msgstr "Du håller på att ta bort den här katalogen. Detta kan du inte ångra. Vill du fortsätta?"
+msgid "You're about to delete this folder and you can not undo this. Do you want to continue?"
+msgstr "Du håller på att ta bort den här katalogen och detta kan du inte ångra. Vill du fortsätta?"
 
 #: includes/filebox.php:227
-msgid "You're about to trash this file? You can undo this. Do you want to continue?"
-msgstr "Du håller på att slänga den här filen i papperskorgen. Detta kan du ångra. Vill du fortsätta?"
+msgid "You're about to trash this file and you can undo this. Do you want to continue?"
+msgstr "Du håller på att slänga den här filen i papperskorgen och detta kan du ångra. Vill du fortsätta?"
 
 #: includes/filebox.php:228
-msgid "You're about to delete this file permanently? You can not undo this. Do you want to continue?"
-msgstr "Du håller på att radera den här filen permanent. Detta kan du inte ångra. Vill du fortsätta?"
+msgid "You're about to delete this file permanently and you can not undo this. Do you want to continue?"
+msgstr "Du håller på att radera den här filen permanent och detta kan du inte ångra. Vill du fortsätta?"
 
 #: includes/filebox.php:433
 #, php-format

@@ -1,4 +1,12 @@
 jQuery( function( $ ) {
+	function clickcontrol( elm ) {
+		if( elm.data( 'clicked' ) ) {
+			return true;
+		}
+
+		elm.data( 'clicked', true );
+		return false;
+	}
 
 	function get_id_and_type( element ) {
 		return {
@@ -8,6 +16,8 @@ jQuery( function( $ ) {
 	}
 
 	function trash_file() {
+		if( clickcontrol( $( this ) ) ) return;
+
 		var id_and_type = get_id_and_type( this );
 		var action = '', conf = '', data = {}, id = id_and_type.id, type = id_and_type.type;
 
@@ -28,6 +38,7 @@ jQuery( function( $ ) {
 			}
 
 			if( confirm( filebox[ conf ] ) ) {
+				$( this ).addClass( 'working' );
 				$.ajax( ajaxurl, {
 					type: 'POST',
 					dataType: 'json',
@@ -39,17 +50,22 @@ jQuery( function( $ ) {
 						console.log( response );
 					}
 				} );
+			} else {
+				$( this ).data( 'clicked', false  );
 			}
 		}
 	}
 
 	function delete_file() {
+		if( clickcontrol( $( this ) ) ) return;
+
 		var id_and_type = get_id_and_type( this );
 
 		if( id_and_type.id && typeof( _filebox_nonces ) != 'undefined' ) {
 			id = id_and_type.id[ 1 ];
 
 			if( confirm( filebox.confirm_file_delete ) ) {
+				$( this ).addClass( 'working' );
 				$.ajax( ajaxurl, {
 					type: 'POST',
 					dataType: 'json',
@@ -61,15 +77,20 @@ jQuery( function( $ ) {
 						console.log( response );
 					}
 				} );
+			} else {
+				$( this ).data( 'clicked', false );
 			}
 		}
 	}
 
 	function reset_file() {
+		if( clickcontrol( $( this ) ) ) return;
+
 		var id_and_type = get_id_and_type( this );
 
 		if( id_and_type.id && typeof( _filebox_nonces ) != 'undefined' ) {
 			id = id_and_type.id[ 1 ];
+			$( this ).addClass( 'working' );
 
 			$.ajax( ajaxurl, {
 				type: 'POST',
@@ -86,6 +107,10 @@ jQuery( function( $ ) {
 	}
 
 	function iframe_form() {
+		if( clickcontrol( $( this ) ) ) return;
+
+		$( this ).find( 'input:submit' ).addClass( 'working' );
+
 		$.ajax( ajaxurl, {
 			type: 'POST',
 			dataType: 'json',

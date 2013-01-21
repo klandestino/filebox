@@ -128,3 +128,18 @@ form.filebox-move-form li.folder label {
 	font-weight: normal;
 	text-transform: none;
 }
+
+input.working {
+	color: gray;
+	padding-right: 20px;
+	background: url('../../../../wp-admin/images/loading.gif') right center no-repeat;
+}
+
+input.button.working,
+input.button.working:focus,
+input.button.working:hover,
+a.working {
+	color: gray;
+	padding-left: 24px;
+	background: url('../../../../wp-admin/images/loading.gif') 4px center no-repeat;
+}

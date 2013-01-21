@@ -1172,7 +1172,7 @@ class Filebox {
 					'filebox_file_upload',
 					$this->get_file( $file_id ),
 					$this->get_folder( $args[ 'folder_id' ] ),
-					groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) ),
+					groups_get_group( array( 'group_id' => $this->get_group_by_folder( $args[ 'folder_id' ] ) ) ),
 					$doc ? true : false
 				);
 			}

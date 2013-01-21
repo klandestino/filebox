@@ -31,15 +31,18 @@ define( 'FILEBOX_TEMPLATE_DIR', dirname( __FILE__ ) . '/templates' );
 require_once( FILEBOX_INCLUDE_DIR . '/filebox.php' );
 // Require the admin class
 require_once( FILEBOX_INCLUDE_DIR . '/admin.php' );
+// Notifier
+require_once( FILEBOX_INCLUDE_DIR . '/notifier.php' );
 
 // Setup and run classes
 Filebox::__setup();
 Filebox_Admin::__setup();
+Filebox_Notifier::__setup();
 
 // Setup and run buddypress extension if buddypress is installed
 add_action( 'bp_setup_components', create_function( '', "
 	require_once( FILEBOX_INCLUDE_DIR . '/notifier_component.php' );
-	Filebox_Buddypress_Notifier::__setup();
+	Filebox_Notifier_Component::__setup();
 " ) );
 
 // Set buddypress component to be active through a bp-filter
@@ -51,7 +54,7 @@ add_filter( 'bp_active_components', create_function( '$components', "
 // Add buddypress group extension
 add_action( 'bp_include', create_function( '', "
 	require_once( FILEBOX_INCLUDE_DIR . '/group.php' );
-	bp_register_group_extension( 'Filebox_Buddypress_Group' );
+	bp_register_group_extension( 'Filebox_Group' );
 " ) );
 
 // Hook languages-loading function to wordpress init action

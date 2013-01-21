@@ -3,7 +3,7 @@
 /**
  * Extends buddypress groups with filebox functionality
  */
-class Filebox_Buddypress_Group extends BP_Group_Extension {
+class Filebox_Group extends BP_Group_Extension {
 
 	public $name = 'Filebox';
 	public $slug = 'filebox';

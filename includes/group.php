@@ -32,6 +32,7 @@ class Filebox_Group extends BP_Group_Extension {
 			groups_is_user_member( $user_id, $bp->groups->current_group->id )
 			|| groups_is_user_mod( $user_id, $bp->groups->current_group->id )
 			|| groups_is_user_admin( $user_id, $bp->groups->current_group->id )
+			|| is_super_admin()
 		) ) {
 			$this->enable_nav_item = false;
 		}
@@ -169,6 +170,7 @@ class Filebox_Group extends BP_Group_Extension {
 			groups_is_user_member( $user_id, $bp->groups->current_group->id )
 			|| groups_is_user_mod( $user_id, $bp->groups->current_group->id )
 			|| groups_is_user_admin( $user_id, $bp->groups->current_group->id )
+			|| is_super_admin()
 		) {
 			Filebox::get_template( 'filebox-group-display' );
 		}

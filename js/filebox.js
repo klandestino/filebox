@@ -16,7 +16,7 @@ jQuery( function( $ ) {
 			type = type[ 1 ];
 
 			if( type == 'folders' ) {
-				data.action = 'folebox_delete_folder';
+				data.action = 'filebox_delete_folder';
 				data.folder_id = id;
 				conf = 'confirm_folder_delete';
 			} else {

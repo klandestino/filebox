@@ -54,8 +54,8 @@
 
 					// Multi-file uploading doesn't currently work in iOS Safari,
 					// single-file allows the built-in camera to be used as source for images
-					if( wp_is_mobile() ) {
-						$plupload_init[ 'multi_selection'] = false;
+					if( wp_is_mobile() || $file_id ) {
+						$plupload_init[ 'multi_selection' ] = false;
 					}
 
 					$plupload_init = apply_filters( 'plupload_init', $plupload_init );
@@ -93,6 +93,25 @@
 								}
 							}
 
+							uploader.bind( 'Init', function( up ) {
+								var uploaddiv = $( '#plupload-upload-ui'  );
+
+								if( up.features.dragdrop ) {
+									uploaddiv.addClass( 'drag-drop' );
+									$( '#drag-drop-area' ).bind(
+										'dragover.wp-uploader', function() {
+											uploaddiv.addClass( 'drag-over' );
+									} ).bind(
+										'dragleave.wp-uploader, drop.wp-uploader', function() {
+											uploaddiv.removeClass( 'drag-over' );
+										}
+									);
+								} else {
+									uploaddiv.removeClass( 'drag-drop' );
+									$( '#drag-drop-area' ).unbind( '.wp-uploader' );
+								}
+							} );
+
 							uploader.bind( 'FilesAdded', function( up, files ) {
 								$.each( files, function( i, file ) {
 									$( '#media-items' ).append(
@@ -106,8 +125,8 @@
 									);
 								} );
 								up.refresh();
-
 								setTimeout( function() {
+									$( '#plupload-upload-ui' ).fadeOut( 'fast' );
 									uploader.start();
 								}, 1000 );
 							} );

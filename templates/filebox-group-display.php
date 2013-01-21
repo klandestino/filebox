@@ -94,19 +94,25 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 						<ul class="actions">
 							<?php if( $type == 'files' ): ?>
 								<?php if( $doc->post_status == 'trash' ): ?>
-									<li><a class="filebox-action-reset" href="javascript://"><?php _e( 'Reset', 'filebox' ); ?></a></li>
-									<li><a class="filebox-action-delete" href="javascript://"><?php _e( 'Delete permanently', 'filebox' ); ?></a></li>
+									<?php if( $filebox->is_allowed( $documents[ 'meta' ][ 'current' ]->term_id, null, true ) ): ?>
+										<li><a class="filebox-action-reset" href="javascript://"><?php _e( 'Reset', 'filebox' ); ?></a></li>
+										<li><a class="filebox-action-delete" href="javascript://"><?php _e( 'Delete permanently', 'filebox' ); ?></a></li>
+									<?php endif; ?>
 								<?php else: ?>
-									<li><a class="filebox-action-edit thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=file&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>&file_id=<?php echo $doc->ID; ?>" title="<?php _e( 'Edit', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Edit', 'filebox' ); ?></a></li>
-									<li><a class="filebox-action-upload thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>&file_id=<?php echo $doc->ID; ?>" title="<?php esc_attr_e( 'Upload new version', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Upload new version', 'filebox' ); ?></a></li>
 									<li><a class="filebox-action-history thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=history&file_id=<?php echo $doc->ID; ?>" title="<?php esc_attr_e( 'File history', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Show history', 'filebox' ); ?></a></li>
-									<li><a class="filebox-action-move thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=move&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>&file_id=<?php echo $doc->ID; ?>" title="<?php esc_attr_e( 'Move file', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Move', 'filebox' ); ?></a></li>
-									<li><a class="filebox-action-trash" href="javascript://"><?php _e( 'Trash', 'filebox' ); ?></a></li>
+									<?php if( $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ): ?>
+										<li><a class="filebox-action-edit thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=file&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>&file_id=<?php echo $doc->ID; ?>" title="<?php _e( 'Edit', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Edit', 'filebox' ); ?></a></li>
+										<li><a class="filebox-action-upload thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>&file_id=<?php echo $doc->ID; ?>" title="<?php esc_attr_e( 'Upload new version', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Upload new version', 'filebox' ); ?></a></li>
+										<li><a class="filebox-action-move thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=move&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>&file_id=<?php echo $doc->ID; ?>" title="<?php esc_attr_e( 'Move file', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Move', 'filebox' ); ?></a></li>
+										<li><a class="filebox-action-trash" href="javascript://"><?php _e( 'Trash', 'filebox' ); ?></a></li>
+									<?php endif; ?>
 								<?php endif; ?>
 							<?php else: ?>
-								<li><a class="filebox-action-edit thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_id=<?php echo $doc->term_id; ?>" title="<?php esc_attr_e( 'Edit folder', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Edit', 'filebox' ); ?></a></li>
-								<li><a class="filebox-action-move thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=move&folder_id=<?php echo $doc->term_id; ?>" title="<?php esc_attr_e( 'Move folder', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Move', 'filebox' ); ?></a></li>
-								<li><a class="filebox-action-trash" href="javascript://"><?php _e( 'Delete', 'filebox' ); ?></a></li>
+								<?php if( $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ): ?>
+									<li><a class="filebox-action-edit thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_id=<?php echo $doc->term_id; ?>" title="<?php esc_attr_e( 'Edit folder', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Edit', 'filebox' ); ?></a></li>
+									<li><a class="filebox-action-move thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=move&folder_id=<?php echo $doc->term_id; ?>" title="<?php esc_attr_e( 'Move folder', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Move', 'filebox' ); ?></a></li>
+									<li><a class="filebox-action-trash" href="javascript://"><?php _e( 'Delete', 'filebox' ); ?></a></li>
+								<?php endif; ?>
 							<?php endif; ?>
 						</ul>
 					</td>

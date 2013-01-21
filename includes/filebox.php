@@ -769,10 +769,52 @@ class Filebox {
 	 * or modify anything in specified folder.
 	 * @param int $folder_id
 	 * @param int $user_id optional
+	 * @param boolean $make_changes optional If user is about to make changes
 	 * @return boolean
 	 */
-	public function is_allowed( $folder_id, $user_id = 0 ) {
-		return true;
+	public function is_allowed( $folder_id, $user_id = 0, $make_changes = false ) {
+		if( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		if( is_super_admin( $user_id ) ) {
+			//return true;
+		}
+
+		$group_id = $this->get_group_by_folder( $folder_id );
+
+		if( $group_id ) {
+			if(
+				groups_is_user_admin( $user_id, $group_id )
+				|| groups_is_user_mod( $user_id, $group_id )
+				|| groups_is_user_member( $user_id, $group_id )
+			) {
+				if( $make_changes ) {
+					$options = groups_get_groupmeta( $group_id, 'filebox' );
+
+					if( is_array( $options ) ) {
+						if( array_key_exists( 'permissions', $options ) ) {
+							if(
+								$options[ 'permissions' ] == 'admin'
+								&& ! groups_is_user_admin( $user_id, $group_id )
+							) {
+								return false;
+							} elseif(
+								$options[ 'permissions' ] == 'mods'
+								&& ! groups_is_user_admin( $user_id, $group_id )
+								&& ! groups_is_user_mod( $user_id, $group_id )
+							) {
+								return false;
+							}
+						}
+					}
+				}
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

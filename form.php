@@ -20,7 +20,7 @@ function filebox_upload_form() {
 	$folder_id = array_key_exists( 'folder_id', $_GET ) ? $_GET[ 'folder_id' ] : 0;
 	$file_id = array_key_exists( 'file_id', $_GET ) ? $_GET[ 'file_id' ] : 0;
 
-	if( $filebox->is_allowed( $folder_id ) ) {
+	if( $filebox->is_allowed( $folder_id, null, true ) ) {
 		Filebox::get_template( 'filebox-upload-form' );
 	} else {
 		echo '<p>Not allowed</p>';
@@ -34,7 +34,7 @@ function filebox_file_form() {
 	$file_id = array_key_exists( 'file_id', $_GET ) ? $_GET[ 'file_id' ] : 0;
 	$file = $filebox->get_file( $file_id );
 
-	if( $file && $filebox->is_allowed( $folder_id ) ) {
+	if( $file && $filebox->is_allowed( $folder_id, null, true ) ) {
 		Filebox::get_template( 'filebox-file-form' );
 	} else {
 		echo '<p>Not allowed</p>';
@@ -67,7 +67,7 @@ function filebox_folder_form() {
 	}
 
 	if(
-		( $folder_id && $filebox->is_allowed( $folder_id ) )
+		( $folder_id && $filebox->is_allowed( $folder_id, null, true ) )
 		|| ( $folder_parent && $filebox->is_allowed( $folder_parent ) )
 	) {
 		Filebox::get_template( 'filebox-folder-form' );
@@ -89,7 +89,7 @@ function filebox_move_form() {
 		$file = $filebox->get_file( $file_id );
 	}
 
-	if( $folder_id && $filebox->is_allowed( $folder_id ) ) {
+	if( $folder_id && $filebox->is_allowed( $folder_id, null, true ) ) {
 		Filebox::get_template( 'filebox-move-form' );
 	} else {
 		echo '<p>Not allowed</p>';

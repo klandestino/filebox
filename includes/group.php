@@ -101,7 +101,7 @@ class Filebox_Group extends BP_Group_Extension {
 			wp_nonce_field( 'groups_create_save_' . $this->slug );
 		} else {
 			wp_nonce_field( 'groups_edit_save_' . $this->slug );
-			echo '<input type="submit" name="save" value="Save" />';
+			echo '<p><input id="save" type="submit" name="save" value="Save" /></p>';
 		}
 	}
 
@@ -142,10 +142,10 @@ class Filebox_Group extends BP_Group_Extension {
 
 		check_admin_referer( 'groups_edit_save_' . $this->slug );
 
-		if ( $this->set_options( $bp->groups->current_group->id, $_POST ) ) {
-			bp_core_add_message( __( 'There was an error saving, please try again', 'filebox' ), 'error' );
-		} else {
+		if( $this->set_options( $bp->groups->current_group->id, $_POST ) ) {
 			bp_core_add_message( __( 'Settings saved successfully', 'filebox' ) );
+		} else {
+			bp_core_add_message( __( 'There was an error saving, please try again', 'filebox' ), 'error' );
 		}
 
 		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) . '/admin/' . $this->slug );

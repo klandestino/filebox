@@ -38,7 +38,7 @@ Filebox_Admin::__setup();
 
 // Setup and run buddypress extension if buddypress is installed
 add_action( 'bp_setup_components', create_function( '', "
-	require_once( FILEBOX_INCLUDE_DIR . '/buddypress_notifier.php' );
+	require_once( FILEBOX_INCLUDE_DIR . '/notifier_component.php' );
 	Filebox_Buddypress_Notifier::__setup();
 " ) );
 
@@ -50,7 +50,7 @@ add_filter( 'bp_active_components', create_function( '$components', "
 
 // Add buddypress group extension
 add_action( 'bp_include', create_function( '', "
-	require_once( FILEBOX_INCLUDE_DIR . '/buddypress_group.php' );
+	require_once( FILEBOX_INCLUDE_DIR . '/group.php' );
 	bp_register_group_extension( 'Filebox_Buddypress_Group' );
 " ) );
 

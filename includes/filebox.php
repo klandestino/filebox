@@ -810,7 +810,7 @@ class Filebox {
 		}
 
 		if( is_super_admin( $user_id ) ) {
-			//return true;
+			return true;
 		}
 
 		$group_id = $this->get_group_by_folder( $folder_id );

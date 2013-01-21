@@ -24,7 +24,17 @@ class Filebox_Group extends BP_Group_Extension {
 	 * Constructor
 	 */
 	public function __construct() {
+		global $bp;
+		$user_id = get_current_user_id();
 		$this->name = __( 'Filebox', 'filebox' );
+
+		if( !(
+			groups_is_user_member( $user_id, $bp->groups->current_group->id )
+			|| groups_is_user_mod( $user_id, $bp->groups->current_group->id )
+			|| groups_is_user_admin( $user_id, $bp->groups->current_group->id )
+		) ) {
+			$this->enable_nav_item = false;
+		}
 	}
 
 	/**
@@ -152,7 +162,16 @@ class Filebox_Group extends BP_Group_Extension {
 	}
 
 	public function display() {
-		Filebox::get_template( 'filebox-group-display' );
+		global $bp;
+		$user_id = get_current_user_id();
+
+		if(
+			groups_is_user_member( $user_id, $bp->groups->current_group->id )
+			|| groups_is_user_mod( $user_id, $bp->groups->current_group->id )
+			|| groups_is_user_admin( $user_id, $bp->groups->current_group->id )
+		) {
+			Filebox::get_template( 'filebox-group-display' );
+		}
 	}
 
 	/*

@@ -38,7 +38,7 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 	<?php endif; ?>
 </ul>
 
-<?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
+<?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) && $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ): ?>
 	<ul class="filebox-buttons">
 		<li class="upload">
 			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >

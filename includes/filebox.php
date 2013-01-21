@@ -83,8 +83,8 @@ class Filebox {
 		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 
 		// Action for fetching forum attachments
-		add_action( 'bbp_new_topic', array( &$this, 'handle_new_forum_topic' ), 10, 4 );
-		add_action( 'bbp_new_reply', array( &$this, 'handle_new_forum_reply' ), 10, 5 );
+		add_action( 'bbp_new_topic', array( &$this, 'handle_new_forum_topic' ), 1000, 4 );
+		add_action( 'bbp_new_reply', array( &$this, 'handle_new_forum_reply' ), 1000, 5 );
 
 		/**
 		 * WP Document Revisions filters and actions
@@ -428,11 +428,11 @@ class Filebox {
 		$folder_id = groups_get_groupmeta( $group_id, 'filebox_topics_folder' );
 
 		if( is_numeric( $folder_id ) && $folder_id ) {
-			$folder = get_term( $folder_id, 'fileboxfolders' );
+			$folder = get_term( ( int ) $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
 				if( $folder->name != $this->options[ 'topics_folder_name' ] ) {
-					wp_update_term( $folder_id, array(
+					wp_update_term( $folder_id, 'fileboxfolders', array(
 						'name' => $this->options[ 'topics_folder_name' ]
 					) );
 				}
@@ -447,39 +447,25 @@ class Filebox {
 		 * no folder for specified group.
 		 */
 
-		$folder = get_terms( 'fileboxfolders', array(
-			'fields' => 'ids',
-			'name' => $this->options[ 'topics_folder_name' ],
-			'parent' => $parent,
-			'hide_empty' => false
-		) );
+		$folder = wp_insert_term(
+			$this->options[ 'topics_folder_name' ],
+			'fileboxfolders',
+			array(
+				'parent' => $parent,
+				'description' => sprintf( __( '%s forum attachments folder', 'filebox' ), $this->get_group_name( $group_id ) )
+			)
+		);
 
-		if( $folder ) {
-			$folder_id = $folder[ 0 ];
-		} else {
-			$folder = wp_insert_term(
-				$this->options[ 'topics_folder_name' ],
-				'fileboxfolders',
-				array(
-					'parent' => $parent,
-					'description' => sprintf( __( '%s forum attachments folder', 'filebox' ), $this->get_group_name( $group_id ) )
-				)
-			);
+		if( is_array( $folder ) ) {
+			$folder_id = $folder[ 'term_id' ];
 
-			if( is_array( $folder ) ) {
-				$folder_id = $folder[ 'term_id' ];
-				// So we now what folder belongs to where
-				groups_update_groupmeta( $group_id, 'filebox_topics_folder', $folder_id );
-				// Fetch all forum attachments
-				$this->index_group_forum_attachments( $group_id );
-			}
+			// So we now what folder belongs to where
+			groups_update_groupmeta( $group_id, 'filebox_topics_folder', $folder_id );
+			// Fetch all forum attachments
+			$this->index_group_forum_attachments( $group_id );
 		}
 
-		if( $folder_id ) {
-			return $folder_id;
-		} else {
-			return false;
-		}
+		return $folder_id;
 	}
 
 	/**
@@ -888,19 +874,28 @@ class Filebox {
 
 					if( ! $post_query->have_posts() ) {
 						$filename = get_attached_file( $attachment );
-						$finfo = new finfo( FILEINFO_MIME );
-						$file = $this->upload_file( array(
-							'folder_id' => $topics_folder,
-							'file_upload' => array(
-								'name' => substr( $filename, strrpos( $filename, '/' ) + 1 ),
-								'tmp_name' => $filename,
-								'type' => $finfo->file( $filename )
-							),
-							'comment' => __( 'Imported from group forum', 'filebox' )
-						), ARRAY_A );
 
-						if( $file[ 'file_id' ] ) {
-							update_post_meta( $file[ 'file_id' ], 'filebox_forum_imported', $attachment );
+						if( $filename ) {
+							$finfo = new finfo( FILEINFO_MIME );
+							$type = $finfo->file( $filename );
+
+							if( strpos( $type, ';' ) ) {
+								$type = substr( $type, 0, strpos( $type, ';' ) );
+							}
+
+							$file = $this->upload_file( array(
+								'folder_id' => $topics_folder,
+								'file_upload' => array(
+									'name' => substr( $filename, strrpos( $filename, '/' ) + 1 ),
+									'tmp_name' => $filename,
+									'type' => $type
+								),
+								'comment' => __( 'Imported from group forum', 'filebox' )
+							), ARRAY_A );
+
+							if( $file[ 'file_id' ] ) {
+								update_post_meta( $file[ 'file_id' ], 'filebox_forum_imported', $attachment );
+							}
 						}
 					}
 				}
@@ -1097,7 +1092,11 @@ class Filebox {
 
 		$args = apply_filters( 'filebox_upload_file_args', $args );
 
-		$doc = $this->get_file( $args[ 'file_id' ] );
+		if( $args[ 'file_id' ] ) {
+			$doc = $this->get_file( $args[ 'file_id' ] );
+		} else {
+			$doc = null;
+		}
 
 		if(
 			(
@@ -1574,7 +1573,7 @@ class Filebox {
 		foreach( $this->get_files( $args[ 'folder_id' ] ) as $file ) {
 			wp_set_object_terms(
 				$file->ID,
-				$group_folder_id,
+				( int ) $group_folder_id,
 				'fileboxfolders'
 			);
 

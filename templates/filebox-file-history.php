@@ -10,12 +10,9 @@
 	<table cellspacing="0" cellpadding="0" class="history">
 		<thead>
 			<tr>
-				<th><?php _e( 'Changed', 'filebox' ); ?></th>
-				<th><?php _e( 'Comment', 'filebox' ); ?></th>
-				<th><?php _e( 'Author', 'filebox' ); ?></th>
-				<th><?php _e( 'Title', 'filebox' ); ?></th>
-				<th><?php _e( 'Description', 'filebox' ); ?></th>
-				<th><?php _e( 'Folder', 'filebox' ); ?></th>
+				<th><?php _e( 'Changed/author', 'filebox' ); ?></th>
+				<th><?php _e( 'Comment/folder', 'filebox' ); ?></th>
+				<th><?php _e( 'Title/description', 'filebox' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -24,10 +21,12 @@
 				<tr class="<?php echo $even ? 'even' : 'odd'; ?>">
 					<td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $commit[ 'date' ] ) ); ?></td>
 					<td><?php echo $commit[ 'comment' ]; ?></td>
-					<td><?php echo $commit[ 'author' ]->display_name; ?></td>
 					<th><a href="<?php echo $commit[ 'link' ] ?>"><?php echo $commit[ 'title' ]; ?></a></th>
-					<td><?php echo $commit[ 'description' ]; ?></td>
+				</tr>
+				<tr class="<?php echo $even ? 'even' : 'odd'; ?>">
+					<td><?php echo $commit[ 'author' ]->display_name; ?></td>
 					<td><?php echo $commit[ 'folder' ]; ?></td>
+					<td><?php echo $commit[ 'description' ]; ?></td>
 				</tr>
 			<?php endforeach; ?>
 		</tbody>

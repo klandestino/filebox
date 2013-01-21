@@ -23,7 +23,7 @@ class Filebox {
 	 */
 	public static function get_options() {
 		$default = array(
-			'topics_folder_name' => __( 'Forum attachments' )
+			'topics_folder_name' => __( 'Imported forum attachments' )
 		);
 
 		$options = get_option( 'filebox', array() );
@@ -72,53 +72,65 @@ class Filebox {
 	public function __construct() {
 		$this->options = self::get_options();
 		// Maybe create post type (if documents is non-existent)
-		add_action( 'init', array( $this, 'maybe_add_post_type' ) );
+		add_action( 'init', array( &$this, 'maybe_add_post_type' ) );
 		// Maybe create taxonomy (if directories is non-existent)
-		add_action( 'init', array( $this, 'maybe_add_taxonomy' ) );
+		add_action( 'init', array( &$this, 'maybe_add_taxonomy' ) );
 		// Add image sizes
-		add_action( 'init', array( $this, 'add_image_sizes' ) );
+		add_action( 'init', array( &$this, 'add_image_sizes' ) );
 		// Add scripts and styles
-		add_action( 'init', array( $this, 'register_scripts' ) );
+		add_action( 'init', array( &$this, 'register_scripts' ) );
 		// enqueue scripts and styles
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 
-		// WP Document Revisions filters and actions
+		// Action for fetching forum attachments
+		add_action( 'bbp_new_topic', array( &$this, 'handle_new_forum_topic' ), 10, 4 );
+		add_action( 'bbp_new_reply', array( &$this, 'handle_new_forum_reply' ), 10, 5 );
+
+		/**
+		 * WP Document Revisions filters and actions
+		 */
 
 		// Fix thumbnail issue if wp-document-revisions is installed
-		add_filter( 'template_include', array( $this, 'get_correct_thumbnail' ) );
+		add_filter( 'template_include', array( &$this, 'get_correct_thumbnail' ) );
 
-		// Add action for ajax-calls
+		/**
+		 * Add action for ajax-calls
+		 */
 
 		// List all files and folders
-		add_action( 'wp_ajax_filebox_list', array( $this, 'list_files_and_folders' ) );
+		add_action( 'wp_ajax_filebox_list', array( &$this, 'list_files_and_folders' ) );
 
-		// File actions
+		/**
+		 * File actions
+		 */
 
 		// Upload file
-		add_action( 'wp_ajax_filebox_upload_file', array( $this, 'upload_file' ) );
+		add_action( 'wp_ajax_filebox_upload_file', array( &$this, 'upload_file' ) );
 		// Move file to folder
-		add_action( 'wp_ajax_filebox_move_file', array( $this, 'move_file' ) );
+		add_action( 'wp_ajax_filebox_move_file', array( &$this, 'move_file' ) );
 		// Rename file
-		add_action( 'wp_ajax_filebox_rename_file', array( $this, 'rename_file' ) );
+		add_action( 'wp_ajax_filebox_rename_file', array( &$this, 'rename_file' ) );
 		// File history
-		add_action( 'wp_ajax_filebox_history_file', array( $this, 'history_file' ) );
+		add_action( 'wp_ajax_filebox_history_file', array( &$this, 'history_file' ) );
 		// Trash file
-		add_action( 'wp_ajax_filebox_trash_file', array( $this, 'trash_file' ) );
+		add_action( 'wp_ajax_filebox_trash_file', array( &$this, 'trash_file' ) );
 		// Reset file
-		add_action( 'wp_ajax_filebox_reset_file', array( $this, 'reset_file' ) );
+		add_action( 'wp_ajax_filebox_reset_file', array( &$this, 'reset_file' ) );
 		// Reset file
-		add_action( 'wp_ajax_filebox_delete_file', array( $this, 'delete_file' ) );
+		add_action( 'wp_ajax_filebox_delete_file', array( &$this, 'delete_file' ) );
 
-		// Folder actions
+		/**
+		 * Folder actions
+		 */
 
 		// Add new folder
-		add_action( 'wp_ajax_filebox_add_folder', array( $this, 'add_folder' ) );
+		add_action( 'wp_ajax_filebox_add_folder', array( &$this, 'add_folder' ) );
 		// Move folder
-		add_action( 'wp_ajax_filebox_move_folder', array( $this, 'move_folder' ) );
+		add_action( 'wp_ajax_filebox_move_folder', array( &$this, 'move_folder' ) );
 		// Rename folder
-		add_action( 'wp_ajax_filebox_rename_folder', array( $this, 'rename_folder' ) );
+		add_action( 'wp_ajax_filebox_rename_folder', array( &$this, 'rename_folder' ) );
 		// Delete folder
-		add_action( 'wp_ajax_filebox_delete_folder', array( $this, 'delete_folder' ) );
+		add_action( 'wp_ajax_filebox_delete_folder', array( &$this, 'delete_folder' ) );
 	}
 
 	/**
@@ -456,11 +468,14 @@ class Filebox {
 
 			if( is_array( $folder ) ) {
 				$folder_id = $folder[ 'term_id' ];
+				// So we now what folder belongs to where
+				groups_update_groupmeta( $group_id, 'filebox_topics_folder', $folder_id );
+				// Fetch all forum attachments
+				$this->index_group_forum_attachments( $group_id );
 			}
 		}
 
 		if( $folder_id ) {
-			groups_update_groupmeta( $group_id, 'filebox_topics_folder', $folder_id );
 			return $folder_id;
 		} else {
 			return false;
@@ -775,6 +790,51 @@ class Filebox {
 	}
 
 	/**
+	 * Handles the action for a new forum topic
+	 * @param int $topic_id
+	 * @param int $forum_id
+	 * @param string $anonymous_data ???
+	 * @param int $topic_author author user id
+	 * @return void
+	 */
+	public function handle_new_forum_topic( $topic_id, $forum_id, $anonymous_data = '', $topic_author ) {
+		$groups = get_post_meta( $forum_id, '_bbp_group_ids', array() );
+
+		foreach( $groups as $group_ids ) {
+			if( ! is_array( $group_ids ) ) {
+				$group_ids = array( $group_ids );
+			}
+
+			foreach( $group_ids as $group_id ) {
+				$this->index_group_forum_attachments( $group_id );
+			}
+		}
+	}
+
+	/**
+	 * Handles the action for a new forum reply
+	 * @param int $reply_id
+	 * @param int $topic_id
+	 * @param int $forum_id
+	 * @param string $anonymous_data ???
+	 * @param int $topic_author author user id
+	 * @return void
+	 */
+	public function handle_new_forum_reply( $reply_id, $topic_id, $forum_id, $anonymous_data = '', $topic_author ) {
+		$groups = get_post_meta( $forum_id, '_bbp_group_ids', array() );
+
+		foreach( $groups as $group_ids ) {
+			if( ! is_array( $group_ids ) ) {
+				$group_ids = array( $group_ids );
+			}
+
+			foreach( $group_ids as $group_id ) {
+				$this->index_group_forum_attachments( $group_id );
+			}
+		}
+	}
+
+	/**
 	 * Finds attachments in Buddypress group forum threads
 	 * and store a way to find them in a folder linked to
 	 * specified group
@@ -954,8 +1014,8 @@ class Filebox {
 		$args = apply_filters( 'filebox_list_files_and_folders_args', $args );
 
 		if( $args[ 'group_id' ] ) {
-			$this->index_group_forum_attachments( $args[ 'group_id' ] );
 			$group_folder_id = $this->get_group_folder( $args[ 'group_id' ] );
+			$topic_folder_id = $this->get_topics_folder( $args[ 'group_id' ] );
 
 			if( ! empty( $args[ 'folder_slug' ] ) && ! $args[ 'folder_id' ] ) {
 				$folder_id = $group_folder_id;

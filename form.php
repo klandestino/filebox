@@ -49,7 +49,7 @@ function filebox_file_history() {
 	$file = $filebox->get_file( $file_id );
 	$history = $filebox->history_file( array( 'file_id' => $file_id ), ARRAY_A );
 
-	if( $file && $filebox->is_allowed( $folder_id ) ) {
+	if( $file && $filebox->is_allowed( $filebox->get_folder_by_file( $file_id ) ) ) {
 		Filebox::get_template( 'filebox-file-history' );
 	} else {
 		echo '<p>Not allowed</p>';

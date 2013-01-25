@@ -313,10 +313,10 @@ class Filebox {
 		if( is_object( $post ) ) {
 			if( property_exists( $post, 'post_type' ) && property_exists( $post, 'ID' ) ) {
 				if( $post->post_type == 'document' ) {
-					$group_id = $this->get_group_by_file( $post->ID );
+					$folder_id = $this->get_folder_by_file( $post->ID );
 
-					if( $group_id ) {
-						if( ! $this->is_allowed( $group_id ) ) {
+					if( $folder_id ) {
+						if( ! $this->is_allowed( $folder_id ) ) {
 							$post->post_type = '';
 							$wp_query->posts = array();
 							$wp_query->queried_object = null;

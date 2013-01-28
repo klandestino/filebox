@@ -605,6 +605,10 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		) );
 
 		foreach( $folders as $folder ) {
+			$folder->childs = count( get_terms( 'fileboxfolders', array(
+				'parent' => $folder->term_id,
+				'hide_empty' => false
+			) ) );
 			$response[ $folder->term_id ] = $folder;
 		}
 

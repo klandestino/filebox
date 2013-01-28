@@ -81,7 +81,7 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 				<tr class="filebox-<?php echo $type; ?> <?php echo $even ? 'even' : 'odd'; ?> filebox-title filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
 					<td rowspan="3" class="filebox-icon">
 						<?php if( $type == 'folders' ): ?>
-							<img src="<?php echo FILEBOX_PLUGIN_URL . 'images/folder-' . ( $doc->count ? 'files' : 'empty' ); ?>.png" width="46" height="60" />
+							<img src="<?php echo FILEBOX_PLUGIN_URL . 'images/folder-' . ( $doc->count || $doc->childs ? 'files' : 'empty' ); ?>.png" width="46" height="60" />
 						<?php else: $attachment = reset( $doc->attachments ); ?>
 							<?php echo wp_get_attachment_image( $attachment->ID, 'filebox-thumbnail', ! wp_attachment_is_image( $attachment->ID ) ); ?>
 						<?php endif; ?>
@@ -95,7 +95,19 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 					</th>
 					<td class="filebox-changed"><?php echo $type == 'folders' ? '' : date_i18n( get_option( 'date_format' ), strtotime( $doc->post_modified ) ); ?></td>
 					<td class="filebox-owner"><?php echo $type == 'folders' ? '<em>' . $bp->groups->current_group->name . '</em>' : $doc->user->display_name; ?></td>
-					<td class="filebox-size"><?php echo $type == 'folders' ? sprintf( __( '%d files', 'filebox' ), $doc->count ) : get_file_size( reset( $doc->attachments )->ID ) ; ?></td>
+					<td class="filebox-size"><?php if( $type == 'folders' ) {
+						if( $doc->count && $doc->childs ) {
+							printf( __( '%1$d files / %2$d folders', 'filebox' ), $doc->count, $doc->childs );
+						} elseif( $doc->count ) {
+							printf( __( '%1$d files', 'filebox' ), $doc->count );
+						} elseif( $doc->childs ) {
+							printf( __( '%1$d folders', 'filebox' ), $doc->childs );
+						} else {
+							_e( 'Empty', 'filebox' );
+						}
+					} else {
+						echo get_file_size( reset( $doc->attachments )->ID );
+					} ?></td>
 				</tr>
 				<tr class="filebox-<?php echo $type; ?> <?php echo $even ? 'even' : 'odd'; ?> filebox-desc filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
 					<td colspan="4"><?php echo $type == 'folders' ? $doc->description : $doc->post_excerpt; ?></td>

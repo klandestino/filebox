@@ -23,6 +23,9 @@ class Filebox_Notifier_Component extends BP_Component {
 			__( 'Filebox Notifier', 'filebox' ),
 			BP_PLUGIN_DIR
 		);
+
+		// Action run when displaying notification settings (enable or disable emails)
+		add_action( 'bp_notification_settings', array( &$this, 'settings_screen' ) );
 	}
 
 	/**
@@ -42,6 +45,20 @@ class Filebox_Notifier_Component extends BP_Component {
 		);
 
 		parent::setup_globals( $globals );
+	}
+
+	/**
+	 * Displays a edit screen for notifications inside the buddypress notification settings form
+	 * @return void
+	 */
+	public function settings_screen() {
+		global $subscribe;
+
+		if( ! $subscribe = bp_get_user_meta( bp_displayed_user_id(), 'notification_filebox', true ) ) {
+			$subscribe = 'yes';
+		}
+
+		Filebox::get_template( 'filebox-notification-settings' );
 	}
 
 }

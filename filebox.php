@@ -33,11 +33,14 @@ require_once( FILEBOX_INCLUDE_DIR . '/filebox.php' );
 require_once( FILEBOX_INCLUDE_DIR . '/admin.php' );
 // Notifier
 require_once( FILEBOX_INCLUDE_DIR . '/notifier.php' );
+// Mailer
+require_once( FILEBOX_INCLUDE_DIR . '/notifier_mailer.php' );
 
 // Setup and run classes
 Filebox::__setup();
 Filebox_Admin::__setup();
 Filebox_Notifier::__setup();
+Filebox_Notifier_Mailer::__setup();
 
 // Setup and run buddypress extension if buddypress is installed
 add_action( 'bp_setup_components', create_function( '', "

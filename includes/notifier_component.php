@@ -74,25 +74,17 @@ function filebox_notifier_messages_format( $action, $item_id, $secondary_item_id
 	switch( substr( $action, 0, 11 ) ) {
 		case 'file_update':
 			if( $total_items > 1 ) {
-				if( $folder->name != $group->name ) {
-					$text = sprintf( __( '%1$d files updated in %2$s (%3$s)' ), $total_items, $folder->name, $group->name );
-				} else {
-					$text = sprintf( __( '%1$d files updated in %3$s' ), $total_items, $folder->name, $group->name );
-				}
+				$text = sprintf( $filebox->options[ 'file-update-notify-multi' ], $total_items, $folder->name, $group->name );
 			} else {
-				$text = sprintf( __( '%1$s updated in %3$s' ), $file->post_title, $folder->name, $group->name );
+				$text = sprintf( $filebox->options[ 'file-update-notify-single' ], $file->post_title, $folder->name, $group->name );
 			}
 			break;
 
 		case 'file_upload':
 			if( $total_items > 1 ) {
-				if( $folder->name != $group->name ) {
-					$text = sprintf( __( '%1$d files added in %2$s (%3$s)' ), $total_items, $folder->name, $group->name );
-				} else {
-					$text = sprintf( __( '%1$d files added in %3$s' ), $total_items, $folder->name, $group->name );
-				}
+				$text = sprintf( $filebox->options[ 'file-upload-notify-multi' ], $total_items, $folder->name, $group->name );
 			} else {
-				$text = sprintf( __( '%1$s added in %3$s' ), $file->post_title, $folder->name, $group->name );
+				$text = sprintf( $filebox->options[ 'file-upload-notify-single' ], $file->post_title, $folder->name, $group->name );
 			}
 			break;
 	}

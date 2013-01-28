@@ -23,7 +23,32 @@ class Filebox {
 	 */
 	public static function get_options() {
 		$default = array(
-			'topics_folder_name' => __( 'Imported forum attachments' )
+			'group-tab' => __( 'File archive', 'filebox' ),
+			'topics-folder-name' => __( 'Imported forum attachments', 'filebox' ),
+			'mail-delay' => 15,
+			// On-site notifications
+			// 1 filename/files; 2 folder; 3 group
+			'file-update-notify-single' => __( '%1$s updated in %2$s (%3$s)', 'filebox' ),
+			'file-update-notify-multi' => __( '%1$d files updated in %2$s (%3$s)', 'filebox' ),
+			'file-upload-notify-single' => __( '%1$s added in %2$s (%3$s)', 'filebox' ),
+			'file-upload-notify-multi' => __( '%1$d new files in %2$s (%3$s)', 'filebox' ),
+			// Mail notifications
+			// 1 blogname; 2 filename; 3 folder, 4 group
+			'file-update-mail-subject-single' => __( '[%1$s] One updated file in %4$s', 'filebox' ),
+			'file-upload-mail-subject-single' => __( '[%1$s] One new file in %4$s', 'filebox' ),
+			// 1 filename; 2 folder; 3 group
+			'file-update-mail-message-line' => __( '%1$s updated in %2$s (%3$s)', 'filebox' ),
+			'file-upload-mail-message-line' => __( '%1$s added in %2$s (%3$s)', 'filebox' ),
+			// 1 blogname; 2 files
+			'multiple-mail-messages-subject' => __( '[%1$s] %2$d uploaded files', 'filebox' ),
+			// 1 messages
+			'mail-message-wrap' => __( '%1$s
+
+--------------------
+
+You are receiving this email because you\'re a member of these groups.
+
+Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		);
 
 		$options = get_option( 'filebox', array() );
@@ -174,8 +199,8 @@ class Filebox {
 		//if( ! taxonomy_exists( 'fileboxfolders' ) ) {
 			register_taxonomy( 'fileboxfolders', array( 'document', 'revision' ), array(
 				'labels' => array(
-					'name' => _x( 'Folders', 'taxonomy general name', 'filebox' ),
-					'singular_name' => _x( 'Folder', 'taxonomy singular name', 'filebox' )
+					'name' => __( 'Folders', 'filebox' ),
+					'singular_name' => __( 'Folder', 'filebox' )
 				),
 				'hierarchical' => true,
 				'public' => true,
@@ -192,8 +217,8 @@ class Filebox {
 		//if( ! taxonomy_exists( 'fileboxcommits' ) ) {
 			register_taxonomy( 'fileboxcommits', array( 'document', 'revision' ), array(
 				'labels' => array(
-					'name' => _x( 'Revision comments', 'taxonomy general name', 'filebox' ),
-					'singular_name' => _x( 'Revision comment', 'taxonomy singular name', 'filebox' )
+					'name' => __( 'Revision comments', 'filebox' ),
+					'singular_name' => __( 'Revision comment', 'filebox' )
 				),
 				'hierarchical' => false,
 				'public' => true,
@@ -463,9 +488,9 @@ class Filebox {
 			$folder = get_term( ( int ) $folder_id, 'fileboxfolders' );
 
 			if( $folder ) {
-				if( $folder->name != $this->options[ 'topics_folder_name' ] ) {
+				if( $folder->name != $this->options[ 'topics-folder-name' ] ) {
 					wp_update_term( $folder_id, 'fileboxfolders', array(
-						'name' => $this->options[ 'topics_folder_name' ]
+						'name' => $this->options[ 'topics-folder-name' ]
 					) );
 				}
 
@@ -480,7 +505,7 @@ class Filebox {
 		 */
 
 		$folder = wp_insert_term(
-			$this->options[ 'topics_folder_name' ],
+			$this->options[ 'topics-folder-name' ],
 			'fileboxfolders',
 			array(
 				'parent' => $parent,

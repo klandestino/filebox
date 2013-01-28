@@ -50,9 +50,33 @@ class Filebox_Notifier {
 				foreach( $list as $member ) {
 					if( $member->user_id != $me && ! in_array( $member_id, $sent ) ) {
 						bp_core_add_notification( $file_id, $member->user_id, 'filebox_notifier', $type . '_' . $folder_id, $group_id );
+						self::add_notification_email( $member->user_id, $file_id, $folder_id, $group_id, $type );
 						$sent[] = $member->user_id;
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * Adds a notification email if user settings allows it
+	 * E-mail params are stored in a user-meta array if the mail-delayed setting
+	 * is set for later deliviery through wp_schedule_single_event.
+	 * If mail-delay is not set, e-mail will be sent immediately.
+	 * @param int $user_id
+	 * @param int $file_id
+	 * @param int $folder_id
+	 * @param int $group_id
+	 * @param string $action
+	 * @return void
+	 */
+	public static function add_notification_email( $user_id, $file_id, $folder_id, $group_id, $action ) {
+		if( bp_get_user_meta( $user_id, 'notification_filebox', true ) != 'no' ) {
+			global $filebox;
+			add_user_meta( $user_id, 'filebox_notifier_emails', compact( 'file_id', 'folder_id', 'group_id', 'action' ) );
+
+			if( ! wp_next_scheduled( 'filebox_notifier_scheduled_email', $user_id ) ) {
+				wp_schedule_single_event( microtime( true ) + ( ( ( int ) $filebox->options[ 'mail-delay' ] ) * 60 ), 'filebox_notifier_scheduled_email', array( $user_id ) );
 			}
 		}
 	}

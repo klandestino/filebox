@@ -24,9 +24,9 @@ class Filebox_Group extends BP_Group_Extension {
 	 * Constructor
 	 */
 	public function __construct() {
-		global $bp;
+		global $bp, $filebox;
 		$user_id = get_current_user_id();
-		$this->name = __( 'Filebox', 'filebox' );
+		$this->name = $filebox->options[ 'group-tab' ];
 
 		if( !(
 			groups_is_user_member( $user_id, $bp->groups->current_group->id )
@@ -112,7 +112,7 @@ class Filebox_Group extends BP_Group_Extension {
 			wp_nonce_field( 'groups_create_save_' . $this->slug );
 		} else {
 			wp_nonce_field( 'groups_edit_save_' . $this->slug );
-			echo '<p><input id="save" type="submit" name="save" value="Save" /></p>';
+			echo '<p><input id="save" type="submit" name="save" value="' . __( 'Save', 'filebox' ) . '" /></p>';
 		}
 	}
 

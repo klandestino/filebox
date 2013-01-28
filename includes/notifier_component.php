@@ -66,6 +66,11 @@ function filebox_notifier_messages_format( $action, $item_id, $secondary_item_id
 	$group = groups_get_group( array( 'group_id' => $filebox->get_group_by_folder( $folder->term_id ) ) );
 	$link = $filebox->get_folder_url( $folder->term_id );
 
+	if( ! $file ) {
+		Filebox_Notifier::delete_notification_file( $item_id );
+		return 'Error';
+	}
+
 	switch( substr( $action, 0, 11 ) ) {
 		case 'file_update':
 			if( $total_items > 1 ) {

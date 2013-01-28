@@ -791,7 +791,7 @@ class Filebox {
 
 		while( $query->have_posts() ) {
 			$query->the_post();
-			$result[] = $query->post->ID;
+			$result[] = $query->post;
 		}
 
 		return $result;
@@ -907,7 +907,6 @@ class Filebox {
 
 		$group_folder = $this->get_group_folder( $group_id );
 		$topics_folder = $this->get_topics_folder( $group_id );
-
 		$forum_id = groups_get_groupmeta( $group_id, 'forum_id' );
 
 		if( is_array( $forum_id ) ) {
@@ -944,11 +943,11 @@ class Filebox {
 					$post_query = new WP_Query( array(
 						'post_type' => 'document',
 						'meta_key' => 'filebox_forum_imported',
-						'meta_value' => $attachment
+						'meta_value' => $attachment->ID
 					) );
 
 					if( ! $post_query->have_posts() ) {
-						$filename = get_attached_file( $attachment );
+						$filename = get_attached_file( $attachment->ID );
 
 						if( $filename && is_file( $filename ) ) {
 							$finfo = new finfo( FILEINFO_MIME );
@@ -965,11 +964,12 @@ class Filebox {
 									'tmp_name' => $filename,
 									'type' => $type
 								),
-								'comment' => __( 'Imported from group forum', 'filebox' )
+								'comment' => __( 'Imported from group forum', 'filebox' ),
+								'user_id' => $attachment->post_author
 							), ARRAY_A );
 
 							if( $file[ 'file_id' ] ) {
-								update_post_meta( $file[ 'file_id' ], 'filebox_forum_imported', $attachment );
+								update_post_meta( $file[ 'file_id' ], 'filebox_forum_imported', $attachment->ID );
 							}
 						}
 					}
@@ -1209,7 +1209,8 @@ class Filebox {
 						'post_title' => $file[ 'name' ],
 						'post_content' => '',
 						'post_type' => 'document',
-						'post_status' => 'publish'
+						'post_status' => 'publish',
+						'post_author' => array_key_exists( 'user_id', $args ) ? $args[ 'user_id' ] : get_current_user_id()
 					) );
 				}
 
@@ -1224,7 +1225,8 @@ class Filebox {
 					'post_mime_type' => $file[ 'type' ],
 					'post_title' => $file[ 'name' ],
 					'post_content' => '',
-					'post_status' => 'inherit'
+					'post_status' => 'inherit',
+					'post_author' => array_key_exists( 'user_id', $args ) ? $args[ 'user_id' ] : get_current_user_id()
 				), $upload[ 'file' ], $file_id );
 
 				wp_update_post( array(

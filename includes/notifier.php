@@ -59,7 +59,7 @@ class Filebox_Notifier {
 	}
 
 	/**
-	 * Notifies all group members with a new file upload
+	 * Notifies all group members with a new file upload except forum imports
 	 * @param object $file
 	 * @param object $folder
 	 * @param object $group
@@ -67,12 +67,16 @@ class Filebox_Notifier {
 	 * @return boolean
 	 */
 	public static function notify_file_upload( $file, $folder, $group, $updated ) {
-		self::add_notification(
-			$file->ID,
-			$folder->term_id,
-			$group->id,
-			$updated ? 'file_update' : 'file_upload'
-		);
+		global $filebox;
+
+		if( $filebox->get_topics_folder( $group->id ) != $folder->term_id ) {
+			self::add_notification(
+				$file->ID,
+				$folder->term_id,
+				$group->id,
+				$updated ? 'file_update' : 'file_upload'
+			);
+		}
 	}
 
 	/**

@@ -674,9 +674,10 @@ class Filebox {
 	/**
 	 * Get all files from specified folder
 	 * @param int $folder_id
+	 * @param boolean $include_children Get all childs
 	 * @return array
 	 */
-	public function get_files( $folder_id ) {
+	public function get_files( $folder_id, $include_children = false ) {
 		$results = array();
 		$files = new WP_Query( array(
 			'post_type' => array( 'document' ),
@@ -685,7 +686,7 @@ class Filebox {
 					'taxonomy' => 'fileboxfolders',
 					'fields' => 'id',
 					'terms' => $folder_id,
-					'include_children' => false
+					'include_children' => $include_children
 				)
 			),
 			'posts_per_page' => -1
@@ -1640,7 +1641,7 @@ class Filebox {
 	}
 
 	/**
-	 * Deletes a folder and puts content in trash
+	 * Deletes a folder and puts its content in trash
 	 * @param array $args array( folder_id => int )
 	 * @param string $output ARRAY_A, STRING prints json, NULL is void
 	 * @return array|void
@@ -1656,7 +1657,7 @@ class Filebox {
 
 		$group_folder_id = $this->get_group_folder( $this->get_group_by_folder( $args[ 'folder_id' ] ) );
 
-		foreach( $this->get_files( $args[ 'folder_id' ] ) as $file ) {
+		foreach( $this->get_files( $args[ 'folder_id' ], true ) as $file ) {
 			wp_set_object_terms(
 				$file->ID,
 				( int ) $group_folder_id,

@@ -67,9 +67,9 @@ $fields = array(
 
 ?>
 <div class="wrap">
-	<h2><?php _e( 'Forum Notifier Settings', 'bp-forum-notifier' ); ?></h2>
+	<h2><?php _e( 'Filebox Settings', 'filebox' ); ?></h2>
 	<form action="" method="post">
-		<?php wp_nonce_field( 'bp_forum_notifier_admin' ); ?>
+		<?php wp_nonce_field( 'filebox_admin' ); ?>
 
 		<table class="form-table">
 			<tbody>
@@ -96,7 +96,7 @@ $fields = array(
 		</table>
 
 		<p class="submit clear">
-			<input class="button-primary" name="forum-notifier-save" type="submit" value="<?php echo esc_attr( __( 'Save' ) ); ?>" />
+			<input class="button-primary" name="filebox-save" type="submit" value="<?php echo esc_attr( __( 'Save' ) ); ?>" />
 		</p>
 
 	</form>

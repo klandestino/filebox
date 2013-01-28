@@ -56,7 +56,7 @@ class Filebox_Admin {
 				}
 			}
 
-			update_option( 'filebox_settings', $settings );
+			update_option( 'filebox', $settings );
 			wp_redirect( add_query_arg( array( 'filebox-updated' => '1' ) ) );
 		} elseif( array_key_exists( 'filebox-updated', $_GET ) ) {
 			add_action( 'admin_notices', create_function( '', sprintf(

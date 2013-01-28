@@ -3,7 +3,7 @@
 Plugin Name: Filebox
 Plugin URI: https://github.com/klandestino/filebox.git
 Description: Plugin for nice front-end handling of Wordpress attachments.
-Version: 0.8
+Version: 0.9
 Author: Klandestino AB
 Author URI: http://www.klandestino.se/
 License: GPLv3 or later
@@ -17,7 +17,7 @@ if( ! empty( $network_plugin ) ) {
 	$plugin_file = __FILE__;
 }
 
-define( 'FILEBOX_VERSION', '0.8' );
+define( 'FILEBOX_VERSION', '0.9' );
 // Set a symlink friendly plugin dir constant
 define( 'FILEBOX_PLUGIN_DIR', dirname( $plugin_file ) );
 // Set a symlink friendly plugin url constant

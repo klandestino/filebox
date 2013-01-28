@@ -37,7 +37,7 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 <?php endif; ?>
 
 <ul class="filebox-breadcrumbs">
-	<li class="title"><?php _e( 'Filebox', 'filebox' ); ?></li>
+	<li class="title"><?php echo $filebox->options[ 'group-tab' ]; ?></li>
 	<?php if( array_key_exists( 'breadcrumbs', $documents[ 'meta' ] ) ): ?>
 		<?php foreach( $documents[ 'meta' ][ 'breadcrumbs' ] as $folder ): ?>
 			<li class="folder">» <a href="<?php echo esc_url( $filebox->get_folder_url( $folder->term_id ) ); ?>"><?php echo esc_attr( $folder->name ); ?></a></li>

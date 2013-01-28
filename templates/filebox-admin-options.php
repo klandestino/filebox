@@ -7,7 +7,7 @@ $fields = array(
 	),
 	'topics-folder-name' => array(
 		'textfield',
-		__( 'Folder name for imported forum attachments' )
+		__( 'Folder name for imported forum attachments', 'filebox' )
 	),
 	'mail-delay' => array(
 		'textfield',

@@ -70,7 +70,7 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 			<th class="filebox-checkall"></th>
 			<th class="filebox-title"><?php _e( 'Title', 'filebox' ); ?></th>
 			<th class="filebox-changed"><?php _e( 'Changed', 'filebox' ); ?></th>
-			<th class="filebox-owner"><?php _e( 'Owner', 'filebox' ); ?></th>
+			<th class="filebox-owner"><?php _e( 'Uploaded by', 'filebox' ); ?></th>
 			<th class="filebox-size"><?php _e( 'Size', 'filebox' ); ?></th>
 		</tr>
 	</thead>
@@ -94,7 +94,7 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 						<?php endif; ?>
 					</th>
 					<td class="filebox-changed"><?php echo $type == 'folders' ? '' : date_i18n( get_option( 'date_format' ), strtotime( $doc->post_modified ) ); ?></td>
-					<td class="filebox-owner"><?php echo $type == 'folders' ? '<em>' . $bp->groups->current_group->name . '</em>' : $doc->user->display_name; ?></td>
+					<td class="filebox-owner"><?php echo $type == 'folders' ? '' : $doc->user->display_name; ?></td>
 					<td class="filebox-size"><?php if( $type == 'folders' ) {
 						if( $doc->count && $doc->childs ) {
 							printf( __( '%1$d files / %2$d folders', 'filebox' ), $doc->count, $doc->childs );

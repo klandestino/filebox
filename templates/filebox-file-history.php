@@ -10,7 +10,7 @@
 	<table cellspacing="0" cellpadding="0" class="history">
 		<thead>
 			<tr>
-				<th><?php _e( 'Changed/author', 'filebox' ); ?></th>
+				<th><?php _e( 'Changed/uploaded by', 'filebox' ); ?></th>
 				<th><?php _e( 'Comment/folder', 'filebox' ); ?></th>
 				<th><?php _e( 'Title/description', 'filebox' ); ?></th>
 			</tr>

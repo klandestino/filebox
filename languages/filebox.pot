@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-28 18:36+0100\n"
+"POT-Creation-Date: 2013-01-28 19:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,10 +138,6 @@ msgstr ""
 
 #: templates/filebox-folder-form.php:18
 msgid "Save folder"
-msgstr ""
-
-#: templates/filebox-group-display.php:40 includes/admin.php:27
-msgid "Filebox"
 msgstr ""
 
 #: templates/filebox-group-display.php:48
@@ -275,6 +271,18 @@ msgstr ""
 msgid "This person only may make changes:"
 msgstr ""
 
+#: templates/filebox-notification-settings.php:7
+msgid "Yes"
+msgstr ""
+
+#: templates/filebox-notification-settings.php:8
+msgid "No"
+msgstr ""
+
+#: templates/filebox-notification-settings.php:15
+msgid "Files has been uploaded or updated"
+msgstr ""
+
 #: templates/filebox-upload-form.php:4
 msgid "Add files from your computer"
 msgstr ""
@@ -311,6 +319,10 @@ msgstr ""
 msgid ""
 "Your browser has some limitations uploading large files with the multi-file "
 "uploader. Please use the browser uploader for files over 100MB."
+msgstr ""
+
+#: includes/admin.php:27
+msgid "Filebox"
 msgstr ""
 
 #: includes/admin.php:64

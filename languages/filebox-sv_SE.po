@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-28 18:36+0100\n"
-"PO-Revision-Date: 2013-01-28 19:12+0100\n"
+"POT-Creation-Date: 2013-01-28 19:55+0100\n"
+"PO-Revision-Date: 2013-01-28 19:56+0100\n"
 "Last-Translator: spurge <olof@klandestino.se>\n"
 "Language-Team: Klandestino\n"
 "Language: \n"
@@ -142,11 +142,6 @@ msgstr "Mappbeskrivning"
 msgid "Save folder"
 msgstr "Spara mapp"
 
-#: templates/filebox-group-display.php:40
-#: includes/admin.php:27
-msgid "Filebox"
-msgstr "Filebox"
-
 #: templates/filebox-group-display.php:48
 #, php-format
 msgid "Trash (%d)"
@@ -276,6 +271,18 @@ msgstr "Gruppadministratörer och moderatorer kan ladda upp filer och göra änd
 msgid "This person only may make changes:"
 msgstr ""
 
+#: templates/filebox-notification-settings.php:7
+msgid "Yes"
+msgstr "Ja"
+
+#: templates/filebox-notification-settings.php:8
+msgid "No"
+msgstr "Nej"
+
+#: templates/filebox-notification-settings.php:15
+msgid "Files has been uploaded or updated"
+msgstr "Filer laddats upp eller uppdaterats"
+
 #: templates/filebox-upload-form.php:4
 msgid "Add files from your computer"
 msgstr "Lägg till filer från din dator"
@@ -308,6 +315,10 @@ msgstr "Maxstorlek på filer: %d%s."
 #: templates/filebox-upload-form.php:185
 msgid "Your browser has some limitations uploading large files with the multi-file uploader. Please use the browser uploader for files over 100MB."
 msgstr "Din webbläsare har begränsningar gällande uppladdning av stora filer med en multi-fil-uppladdare. Använd istället webbläsarens egna uppladdar för filer över 100MB."
+
+#: includes/admin.php:27
+msgid "Filebox"
+msgstr "Filebox"
 
 #: includes/admin.php:64
 msgid "Settings updated."

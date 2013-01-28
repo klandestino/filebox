@@ -38,7 +38,7 @@ class Filebox_Notifier_Mailer {
 			$mail_properties = get_user_meta( $user_id, 'filebox_notifier_emails' );
 		}
 
-		self::log( $mail_properties );
+		//self::log( $mail_properties );
 
 		if( ! is_array( $mail_properties ) ) {
 			// Fail, no e-mails found

@@ -10,16 +10,20 @@
 	<table cellspacing="0" cellpadding="0" class="history">
 		<thead>
 			<tr>
-				<th><?php _e( 'Changed/uploaded by', 'filebox' ); ?></th>
-				<th><?php _e( 'Comment/folder', 'filebox' ); ?></th>
-				<th><?php _e( 'Title/description', 'filebox' ); ?></th>
+				<th><?php _e( 'Change date', 'filebox' ); ?><br/><?php _e( 'Changed by', 'filebox' ); ?></th>
+				<th><?php _e( 'Comment', 'filebox' ); ?><br/><?php _e( 'Folder', 'filebox' ); ?></th>
+				<th><?php _e( 'Title', 'filebox' ); ?><br/><?php _e( 'Description', 'filebox' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php $even = true;
 			foreach( $history[ 'file_history' ] as $commit ): $even = ! $even; ?>
 				<tr class="<?php echo $even ? 'even' : 'odd'; ?>">
-					<td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $commit[ 'date' ] ) ); ?></td>
+					<td><?php echo
+						date_i18n( get_option( 'time_format' ), strtotime( $commit[ 'date' ] ) ) .
+						' ' .
+						date_i18n( get_option( 'date_format' ), strtotime( $commit[ 'date' ] ) );
+					?></td>
 					<td><?php echo $commit[ 'comment' ]; ?></td>
 					<th><a href="<?php echo $commit[ 'link' ] ?>"><?php echo $commit[ 'title' ]; ?></a></th>
 				</tr>

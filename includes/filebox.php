@@ -1047,6 +1047,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		}
 
 		wp_set_object_terms( $file_id, $message, 'fileboxcommits' );
+		update_post_meta( $file_id, '_edit_last', get_current_user_id() );
 	}
 
 	// ---------------------
@@ -1441,7 +1442,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					'date' => $file->post_modified,
 					'title' => $file->post_title,
 					'description' => $file->post_excerpt,
-					'author' => get_userdata( $file->post_author ),
+					'author' => get_userdata( get_post_meta( $file->ID, '_edit_last', true ) ),
 					'comment' => reset( $workflow )->name,
 					'folder' => reset( $folder )->name,
 					'link' => get_permalink( $file->ID )
@@ -1457,6 +1458,12 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				'order' => 'DESC'
 			) );
 			$version = count( $revisions );
+
+			if( count( $revisions ) && count( $response[ 'file_history' ] ) ) {
+				if( ! $response[ 'file_history' ][ 0 ][ 'author' ] ) {
+					$response[ 'file_history' ][ 0 ][ 'author' ] = get_userdata( reset( $revisions )->post_author );
+				}
+			}
 
 			foreach( $revisions as $rev ) {
 				$folder = wp_get_post_terms( $rev->ID, 'fileboxfolders' );

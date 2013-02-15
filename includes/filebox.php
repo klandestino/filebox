@@ -92,6 +92,19 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	}
 
 	/**
+	 * Sanitizes a filename to a slug
+	 * @param string $title
+	 * @return string
+	 */
+	public static function sanitize_title( $title ) {
+		while( preg_match( '/(\.[^\s]+)$/', $title, $suffix ) ) {
+			$title = substr( $title, 0, strrpos( $title, $suffix[ 1 ] ) );
+		}
+
+		return sanitize_title( $title );
+	}
+
+	/**
 	 * Class constructor
 	 */
 	public function __construct() {
@@ -291,7 +304,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 
 		if( ! $post && strpos( $_SERVER[ 'REQUEST_URI' ], '/documents/' ) === 0 ) {
 			$dir = wp_upload_dir();
-			$filename = $dir[ 'basedir' ] . substr( $_SERVER[ 'REQUEST_URI' ], 10 );
+			$filename = $dir[ 'basedir'] . urldecode( substr( $_SERVER[ 'REQUEST_URI' ], 10 ) );
 
 			if( is_file( $filename ) ) {
 				status_header( 200 );
@@ -1236,6 +1249,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				} else {
 					$file_id = wp_insert_post( array(
 						'post_title' => $file[ 'name' ],
+						'post_name' => self::sanitize_title( $file[ 'name' ] ),
 						'post_content' => '',
 						'post_type' => 'document',
 						'post_status' => 'publish',

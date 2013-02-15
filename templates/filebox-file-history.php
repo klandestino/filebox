@@ -21,7 +21,7 @@
 				<tr class="<?php echo $even ? 'even' : 'odd'; ?>">
 					<td><?php echo
 						date_i18n( get_option( 'date_format' ), strtotime( $commit[ 'date' ] ) ) .
-						' ' .
+						' - ' .
 						date_i18n( get_option( 'time_format' ), strtotime( $commit[ 'date' ] ) );
 					?></td>
 					<td><?php echo $commit[ 'comment' ]; ?></td>

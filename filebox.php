@@ -36,6 +36,9 @@ require_once( FILEBOX_INCLUDE_DIR . '/notifier.php' );
 // Mailer
 require_once( FILEBOX_INCLUDE_DIR . '/notifier_mailer.php' );
 
+// Add language
+load_plugin_textdomain( 'filebox', false, plugin_basename( FILEBOX_PLUGIN_DIR ) . '/languages/' );
+
 // Setup and run classes
 Filebox::__setup();
 Filebox_Admin::__setup();
@@ -58,9 +61,4 @@ add_filter( 'bp_active_components', create_function( '$components', "
 add_action( 'bp_include', create_function( '', "
 	require_once( FILEBOX_INCLUDE_DIR . '/group.php' );
 	bp_register_group_extension( 'Filebox_Group' );
-" ) );
-
-// Hook languages-loading function to wordpress init action
-add_action( 'init', create_function( '', "
-	load_plugin_textdomain( 'filebox', false, plugin_basename( FILEBOX_PLUGIN_DIR ) . '/languages/' );
 " ) );

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-28 19:55+0100\n"
-"PO-Revision-Date: 2013-01-28 19:56+0100\n"
+"POT-Creation-Date: 2013-02-15 15:40+0100\n"
+"PO-Revision-Date: 2013-02-15 15:43+0100\n"
 "Last-Translator: spurge <olof@klandestino.se>\n"
 "Language-Team: Klandestino\n"
 "Language: \n"
@@ -119,16 +119,30 @@ msgid "Save file"
 msgstr "Spara fil"
 
 #: templates/filebox-file-history.php:13
-msgid "Changed/uploaded by"
-msgstr "Ändrad/uppladdad av"
+msgid "Change date"
+msgstr "Ändrad"
+
+#: templates/filebox-file-history.php:13
+msgid "Changed by"
+msgstr "Ändrad av"
 
 #: templates/filebox-file-history.php:14
-msgid "Comment/folder"
-msgstr "Kommentar/mapp"
+msgid "Comment"
+msgstr "Kommentar"
+
+#: templates/filebox-file-history.php:14
+#: includes/filebox.php:216
+msgid "Folder"
+msgstr "Mapp"
 
 #: templates/filebox-file-history.php:15
-msgid "Title/description"
-msgstr "Titel/beskrivning"
+#: templates/filebox-group-display.php:71
+msgid "Title"
+msgstr "Titel"
+
+#: templates/filebox-file-history.php:15
+msgid "Description"
+msgstr "Beskrivning"
 
 #: templates/filebox-folder-form.php:9
 msgid "Folder name"
@@ -156,10 +170,6 @@ msgstr "Lägg till filer"
 #: templates/filebox-group-display.php:61
 msgid "Add folder"
 msgstr "Lägg till mapp"
-
-#: templates/filebox-group-display.php:71
-msgid "Title"
-msgstr "Titel"
 
 #: templates/filebox-group-display.php:72
 msgid "Changed"
@@ -283,38 +293,50 @@ msgstr "Nej"
 msgid "Files has been uploaded or updated"
 msgstr "Filer laddats upp eller uppdaterats"
 
-#: templates/filebox-upload-form.php:4
-msgid "Add files from your computer"
-msgstr "Lägg till filer från din dator"
-
-#: templates/filebox-upload-form.php:11
+#: templates/filebox-upload-form.php:8
 msgid "The web browser on your device cannot be used to upload files. You may be able to use the <a href=\"http://wordpress.org/extend/mobile/\">native app for your device</a> instead."
 msgstr "Webbläsaren på din enhet kan inte användas för att ladda upp filer. "
 
-#: templates/filebox-upload-form.php:49
+#: templates/filebox-upload-form.php:46
 msgid "Allowed Files"
 msgstr "Tillåtna filer"
 
-#: templates/filebox-upload-form.php:170
+#: templates/filebox-upload-form.php:136
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: templates/filebox-upload-form.php:202
+msgid "Add files from your computer"
+msgstr "Lägg till filer från din dator"
+
+#: templates/filebox-upload-form.php:207
 msgid "Drop files here"
 msgstr "Släpp filer här"
 
-#: templates/filebox-upload-form.php:171
+#: templates/filebox-upload-form.php:208
 msgid "or"
 msgstr "eller"
 
-#: templates/filebox-upload-form.php:173
+#: templates/filebox-upload-form.php:210
 msgid "Select Files"
 msgstr "Välj filer"
 
-#: templates/filebox-upload-form.php:180
+#: templates/filebox-upload-form.php:217
 #, php-format
 msgid "Maximum upload file size: %d%s."
 msgstr "Maxstorlek på filer: %d%s."
 
-#: templates/filebox-upload-form.php:185
+#: templates/filebox-upload-form.php:222
 msgid "Your browser has some limitations uploading large files with the multi-file uploader. Please use the browser uploader for files over 100MB."
 msgstr "Din webbläsare har begränsningar gällande uppladdning av stora filer med en multi-fil-uppladdare. Använd istället webbläsarens egna uppladdar för filer över 100MB."
+
+#: templates/filebox-upload-form.php:227
+msgid "Added files"
+msgstr "Tillagda filer"
+
+#: templates/filebox-upload-form.php:232
+msgid "Start upload"
+msgstr "Starta uppladdning"
 
 #: includes/admin.php:27
 msgid "Filebox"
@@ -386,57 +408,53 @@ msgstr ""
 "\n"
 "Logga in och ändra dina inställningar om du vill slippa detta meddelanden."
 
-#: includes/filebox.php:202
+#: includes/filebox.php:215
 msgid "Folders"
 msgstr "Mappar"
 
-#: includes/filebox.php:203
-msgid "Folder"
-msgstr "Mapp"
-
-#: includes/filebox.php:220
+#: includes/filebox.php:233
 msgid "Revision comments"
 msgstr "Versionskommentarer"
 
-#: includes/filebox.php:221
+#: includes/filebox.php:234
 msgid "Revision comment"
 msgstr "Versionskommentar"
 
-#: includes/filebox.php:251
+#: includes/filebox.php:264
 msgid "You're about to delete this folder and you can not undo this. Do you want to continue?"
 msgstr "Du håller på att ta bort den här mappen och detta kan du inte ångra. Vill du fortsätta?"
 
-#: includes/filebox.php:252
+#: includes/filebox.php:265
 msgid "You're about to trash this file and you can undo this. Do you want to continue?"
 msgstr "Du håller på att slänga den här filen i papperskorgen och detta kan du ångra. Vill du fortsätta?"
 
-#: includes/filebox.php:253
+#: includes/filebox.php:266
 msgid "You're about to delete this file permanently and you can not undo this. Do you want to continue?"
 msgstr "Du håller på att radera den här filen permanent och detta kan du inte ångra. Vill du fortsätta?"
 
-#: includes/filebox.php:458
+#: includes/filebox.php:471
 #, php-format
 msgid "%s group folder"
 msgstr "%s gruppmapp"
 
-#: includes/filebox.php:512
+#: includes/filebox.php:525
 #, php-format
 msgid "%s forum attachments folder"
 msgstr "%s mapp för importerade filer från forumet"
 
-#: includes/filebox.php:996
+#: includes/filebox.php:1009
 msgid "Imported from group forum"
 msgstr "Importerad från gruppforum"
 
-#: includes/filebox.php:1270
+#: includes/filebox.php:1285
 msgid "Uploaded new file"
 msgstr "Laddade upp ny fil"
 
-#: includes/filebox.php:1330
+#: includes/filebox.php:1345
 msgid "Moved to folder"
 msgstr "Flyttad till mapp"
 
-#: includes/filebox.php:1387
+#: includes/filebox.php:1402
 msgid "Renamed file"
 msgstr "Ändrade filnamn"
 
@@ -451,6 +469,12 @@ msgstr "Det blev fel, försök igen"
 #: includes/notifier_component.php:23
 msgid "Filebox Notifier"
 msgstr "Dokumentnotifiering"
+
+#~ msgid "Changed/uploaded by"
+#~ msgstr "Ändrad/uppladdad av"
+
+#~ msgid "Title/description"
+#~ msgstr "Titel/beskrivning"
 
 #~ msgid "Owner"
 #~ msgstr "Författare"

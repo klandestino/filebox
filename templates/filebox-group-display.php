@@ -93,7 +93,11 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 							<a href="<?php echo esc_url( get_permalink( $doc->ID ) ); ?>"><?php echo esc_attr( $doc->post_title ); ?></a>
 						<?php endif; ?>
 					</th>
-					<td class="filebox-changed"><?php echo $type == 'folders' ? '' : date_i18n( get_option( 'date_format' ), strtotime( $doc->post_modified ) ); ?></td>
+					<td class="filebox-changed"><?php echo $type == 'folders' ? '' :
+						date_i18n( get_option( 'date_format' ), strtotime( $doc->post_modified ) ) .
+						' - ' .
+						date_i18n( get_option( 'time_format' ), strtotime( $doc->post_modified ) );
+					?></td>
 					<td class="filebox-owner"><?php echo $type == 'folders' ? '' : $doc->user->display_name; ?></td>
 					<td class="filebox-size"><?php if( $type == 'folders' ) {
 						if( $doc->count && $doc->childs ) {

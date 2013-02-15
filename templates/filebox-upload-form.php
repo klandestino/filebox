@@ -191,6 +191,7 @@
 
 							$( '#plupload-start-button' ).click( function() {
 								$( this ).addClass( 'working' );
+								$( '#plupload-upload-ui' ).slideUp( 'fast' );
 								uploader.start();
 							} );
 

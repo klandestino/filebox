@@ -1,13 +1,11 @@
 <?php
 
 define( 'WP_USE_THEMES', true );
+define( 'WP_ADMIN', true );
 
 $dir = dirname( $_SERVER[ 'SCRIPT_FILENAME' ] );
 require_once( substr( $dir, 0, strpos( $dir, '/wp-content' ) ) . '/wp-load.php' );
-require_once( ABSPATH . '/wp-admin/includes/template.php' );
-require_once( ABSPATH . '/wp-admin/includes/screen.php' );
-require_once( ABSPATH . '/wp-admin/includes/media.php' );
-require_once( ABSPATH . '/wp-includes/media-template.php' );
+require_once( ABSPATH . 'wp-admin/includes/admin.php' );
 
 wp_enqueue_script( 'plupload-all' );
 wp_enqueue_script( 'filebox' );

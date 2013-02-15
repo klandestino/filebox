@@ -1,8 +1,5 @@
-		<form enctype="multipart/form-data" method="post" action="" class="media-upload-form type-form validate" id="file-form">
+		<form enctype="multipart/form-data" method="post" action="" class="media-upload-form type-form validate filebox-upload" id="file-form">
 			<?php wp_nonce_field( 'filebox-upload' ); ?>
-
-			<h3 class="media-title"><?php _e( 'Add files from your computer', 'filebox' ); ?></h3>
-
 			<?php
 			global $folder_id, $file_id, $is_IE, $is_opera;
 
@@ -82,7 +79,9 @@
 							var uploader = new plupload.Uploader( _wpUploaderInit );
 
 							function get_nice_size( size ) {
-								if( size < 1024 ) {
+								if( isNaN( size ) ) {
+									return size;
+								} else if( size < 1024 ) {
 									return size + ' B';
 								} else if( size < 1048576 ) {
 									return Math.round( size / 1024 ) + ' KB';
@@ -110,25 +109,59 @@
 									uploaddiv.removeClass( 'drag-drop' );
 									$( '#drag-drop-area' ).unbind( '.wp-uploader' );
 								}
+
+								$( '#plupload-browse-button' ).removeClass( 'working' );
 							} );
 
 							uploader.bind( 'FilesAdded', function( up, files ) {
-								$.each( files, function( i, file ) {
-									$( '#media-items' ).append(
+								plupload.each( files, function( file ) {
+									var filename = file.name;
+
+									if( filename.length > 35 ) {
+										filename = filename.substr( 0, 15 ) + ' ... ' + filename.substr( -15 );
+									}
+
+									var fileelm = $(
 										'<div class="media-item open" id="media-item-' + file.id + '">' +
 											'<div class="progress">' +
-												'<div class="percent"></div>' +
+												'<div class="percent">...</div>' +
 												'<div class="bar"></div>' +
 											'</div>' +
-											'<div class="filename original">' + file.name + ' (' + get_nice_size( file.size ) + ')</div>' +
+											'<div class="filename original">' + filename + ' (' + get_nice_size( file.size ) + ') </div>' +
 										'</div>'
 									);
+
+									$( '#media-items' ).append( fileelm );
+
+									var cancelbtn = $( '<a href="javascript://" class="cancel"><?php _e( 'Cancel', 'filebox' ); ?></a>' );
+									cancelbtn.data( 'plup', { file: file, elm: fileelm } );
+									fileelm.find( 'div.filename' ).append( cancelbtn );
+									cancelbtn.click( function() {
+										var plup = $( this ).data( 'plup' );
+										uploader.removeFile( plup.file );
+										uploader.refresh();
+										plup.elm.fadeOut( function() {
+											$( this ).remove();
+										} );
+									} );
 								} );
+
+								if( files.length > 0 ) {
+									$( '.plupload-upload-button' ).fadeIn( 'fast' );
+									$( '.media-added' ).fadeIn( 'fast' );
+								}
+
 								up.refresh();
-								setTimeout( function() {
-									$( '#plupload-upload-ui' ).fadeOut( 'fast' );
-									uploader.start();
-								}, 1000 );
+							} );
+
+							uploader.bind( 'QueueChanged', function( up ) {
+								if( up.files.length > 0 ) {
+									$( '.plupload-upload-button' ).fadeIn( 'fast' );
+									$( '.media-added' ).fadeIn( 'fast' );
+								} else {
+									$( '.plupload-upload-button' ).fadeOut( 'fast' );
+									$( '.media-added' ).fadeOut( 'fast' );
+								}
 							} );
 
 							uploader.bind( 'Error', function( up, err ) {
@@ -136,6 +169,7 @@
 
 								if( err.file ) {
 									$( '#media-item-' + err.file.id ).remove();
+									up.removeFile( err.file );
 								}
 
 								up.refresh();
@@ -156,6 +190,7 @@
 							} );
 
 							$( '#plupload-start-button' ).click( function() {
+								$( this ).addClass( 'working' );
 								uploader.start();
 							} );
 
@@ -164,13 +199,15 @@
 						//]]>
 					</script>
 
+					<h3 class="media-title"><?php _e( 'Add files from your computer', 'filebox' ); ?></h3>
+
 					<div id="plupload-upload-ui">
 						<div id="drag-drop-area">
 							<div class="drag-drop-inside">
 								<p class="drag-drop-info"><?php _e( 'Drop files here', 'filebox' ); ?></p>
 								<p><?php _e( 'or', 'filebox' ); ?></p>
 								<p class="drag-drop-buttons">
-									<input id="plupload-browse-button" type="button" value="<?php esc_attr_e( 'Select Files', 'filebox' ); ?>" class="button" />
+									<input id="plupload-browse-button" type="button" value="<?php esc_attr_e( 'Select Files', 'filebox' ); ?>" class="button working" />
 								</p>
 							</div>
 						</div>
@@ -186,7 +223,14 @@
 					<?php endif; ?>
 
 					<div id="upload-error"></div>
-					<div id="media-items"></div>
+					<div class="media-added">
+						<h3 class="media-title"><?php _e( 'Added files', 'filebox' ); ?></h3>
+						<div id="media-items"></div>
+					</div>
+
+					<div class="plupload-upload-button">
+						<input id="plupload-start-button" type="button" value="<?php esc_attr_e( 'Start upload', 'filebox' ); ?>" class="button" />
+					</div>
 				<?php }
 			} ?>
 		</form>

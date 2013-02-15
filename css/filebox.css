@@ -129,6 +129,33 @@ form.filebox-move-form li.folder label {
 	text-transform: none;
 }
 
+div.plupload-upload-button {
+	display: none;
+	padding-top: 10px;
+	text-align: center;
+}
+
+form.filebox-upload div.media-added {
+	display: none;
+}
+
+form.filebox-upload div#media-items {
+	width: auto;
+	border-top: 4px dashed #ddd;
+	border-left: 4px dashed #ddd;
+	border-right: 4px dashed #ddd;
+}
+
+form.filebox-upload div#media-items div.media-item {
+	border: 0px;
+	border-bottom: 4px dashed #ddd;
+}
+
+form.filebox-upload div#media-items a.cancel {
+	padding: 0 2px;
+	color: red;
+}
+
 input.working {
 	color: gray;
 	padding-right: 20px;

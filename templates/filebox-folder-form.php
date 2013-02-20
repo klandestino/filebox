@@ -6,8 +6,8 @@
 	<input type="hidden" name="folder_id" value="<?php echo $folder_id; ?>" />
 
 	<p>
-		<label for="folder-name" class="folder-name"><?php _e( 'Folder name', 'filebox' ); ?></label><br/>
-		<input id="folder-name" type="text" class="folder-name text" name="folder_name" value="<?php echo is_object( $folder ) ? esc_attr( $folder->name ) : ''; ?>" />
+		<label for="folder-name" class="folder-name"><?php _e( 'Folder name', 'filebox' ); ?></label><span class="required">*</span><br/>
+		<input id="folder-name" type="text" class="folder-name text required" name="folder_name" value="<?php echo is_object( $folder ) ? esc_attr( $folder->name ) : ''; ?>" />
 	</p>
 
 	<p>
@@ -16,4 +16,6 @@
 	</p>
 
 	<input class="button" type="submit" name="submit" value="<?php esc_attr_e( 'Save folder', 'filebox' ); ?>" />
+
+	<p class="required"><small>* <?php _e( 'Required', 'filebox' ); ?></small></p>
 </form>

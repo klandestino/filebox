@@ -47,7 +47,7 @@ jQuery( function( $ ) {
 					success: function( response ) {
 						if( response ) {
 							if( typeof( response.error ) != 'undefined' ) {
-								link.removeClass( 'working' );
+								link.removeClass( 'working' ).data( 'clicked', null );
 								alert( response.error );
 								return;
 							}
@@ -83,7 +83,7 @@ jQuery( function( $ ) {
 					success: function( response ) {
 						if( response ) {
 							if( typeof( response.error ) != 'undefined' ) {
-								link.removeClass( 'working' );
+								link.removeClass( 'working' ).data( 'clicked', null );
 								alert( response.error );
 								return;
 							}
@@ -117,7 +117,7 @@ jQuery( function( $ ) {
 				success: function( response ) {
 					if( response ) {
 						if( typeof( response.error ) != 'undefined' ) {
-							link.removeClass( 'working' );
+							link.removeClass( 'working' ).data( 'clicked', null );
 							alert( response.error );
 							return;
 						}
@@ -133,29 +133,69 @@ jQuery( function( $ ) {
 	}
 
 	function iframe_form() {
-		if( clickcontrol( $( this ) ) ) return;
+		if( clickcontrol( $( this ) ) ) return false;
 
 		var button = $( this ).find( 'input:submit' ).addClass( 'working' );
+		var form = $( this );
+		form.data( 'error', [] );
+		var elements = form.find( 'input.required' );
+		var length = elements.length;
 
-		$.ajax( ajaxurl, {
-			type: 'POST',
-			dataType: 'json',
-			data: $( this ).serialize(),
-			success: function( response ) {
-				if( response ) {
-					if( typeof( response.error ) != 'undefined' ) {
-						button.removeClass( 'working' );
-						alert( response.error );
-						return;
+		function submit() {
+			var error = form.data( 'error' );
+			
+			if( error.length > 0 ) {
+				button.removeClass( 'working' ).data( 'clicked', null );
+				form.data( 'clicked', null );
+				alert( error.join( "\n" ) );
+			} else {
+				$.ajax( ajaxurl, {
+					type: 'POST',
+					dataType: 'json',
+					data: form.serialize(),
+					success: function( response ) {
+						if( response ) {
+							if( typeof( response.error ) != 'undefined' ) {
+								button.removeClass( 'working' ).data( 'clicked', null );
+								form.data( 'clicked', null );
+								alert( response.error );
+								return;
+							}
+						}
+
+						window.location.reload();
+					},
+					error: function( response ) {
+						console.log( response );
 					}
+				} );
+			}
+		}
+
+		if( length == 0 ) {
+			submit();
+		} else {
+			elements.each( function( i, elm ) {
+				elm = $( elm );
+
+				if( elm.val().replace( /\s+/, ' ' ).replace( /^\s+|\s+$/, '' ) == '' ) {
+					elm.addClass( 'error' );
+					var name = elm.siblings( 'label[for="' + elm.attr( 'id' ) + '"]' ).text();
+					if( ! name ) name = elm.attr( 'name' );
+					var error = form.data( 'error' );
+					error.push( name + ' is required' );
+					form.data( 'error', error );
+				} else {
+					elm.removeClass( 'error' );
 				}
 
-				window.location.reload();
-			},
-			error: function( response ) {
-				console.log( response );
-			}
-		} );
+				length--;
+
+				if( length == 0 ) {
+					submit();
+				}
+			} );
+		}
 
 		return false;
 	}

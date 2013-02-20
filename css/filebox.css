@@ -171,6 +171,11 @@ input.working {
 	background: url('../../../../wp-admin/images/loading.gif') right center no-repeat;
 }
 
+form.filebox-iframe-form span.required,
+form.filebox-iframe-form p.required {
+	color: red;
+}
+
 input.button.working,
 input.button.working:focus,
 input.button.working:hover,

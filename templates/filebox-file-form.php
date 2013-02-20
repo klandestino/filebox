@@ -5,8 +5,8 @@
 	<input type="hidden" name="file_id" value="<?php echo $file_id; ?>" />
 
 	<p>
-		<label for="file-name" class="file-name"><?php _e( 'File title', 'filebox' ); ?></label><br/>
-		<input id="file-name" type="text" class="file-name text" name="file_name" value="<?php echo esc_attr( $file->post_title ); ?>" />
+		<label for="file-name" class="file-name"><?php _e( 'File title', 'filebox' ); ?></label><span class="required">*</span><br/>
+		<input id="file-name" type="text" class="file-name text required" name="file_name" value="<?php echo esc_attr( $file->post_title ); ?>" />
 	</p>
 
 	<p>
@@ -15,4 +15,6 @@
 	</p>
 
 	<input class="button" type="submit" name="submit" value="<?php esc_attr_e( 'Save file', 'filebox' ); ?>" />
+
+	<p class="required"><small>* <?php _e( 'Required', 'filebox' ); ?></small></p>
 </form>

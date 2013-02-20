@@ -1306,7 +1306,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				);
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wrong arguments. Could not save file', 'filebox' );
+			$response[ 'error' ] = __( 'Wrong arguments. Could not save file.', 'filebox' );
 		}
 
 		$response = apply_filters( 'filebox_upload_file_response', $response, $args );
@@ -1360,13 +1360,13 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 
 					$response = $args;
 				} else {
-					$response[ 'error' ] = __( 'Error when trying to move file', 'filebox' );
+					$response[ 'error' ] = __( 'Error when trying to move file.', 'filebox' );
 				}
 			} else {
-				$response[ 'error' ] = __( 'Error when trying to move file', 'filebox' );
+				$response[ 'error' ] = __( 'Error when trying to move file. Either you\'re moving an non-existing file or the folder doesn\'t exist.', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wrong arguments. Could not move file', 'filebox' );
+			$response[ 'error' ] = __( 'Wrong arguments. Could not move file.', 'filebox' );
 		}
 
 		$response = apply_filters( 'filebox_move_file_response', $response, $args );
@@ -1417,10 +1417,10 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 
 				$response = $args;
 			} else {
-				$response[ 'error' ] = __( 'Error when trying to rename file', 'filebox' );
+				$response[ 'error' ] = __( 'Error when trying to rename file.', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Either you\'re trying to rename a non-existing file. Or the new name is empty', 'filebox' );
+			$response[ 'error' ] = __( 'Error when trying to rename file. Either you\'re trying to rename a non-existing file. Or the new name is empty.', 'filebox' );
 		}
 
 		$response = apply_filters( 'filebox_rename_file_response', $response, $args );
@@ -1524,10 +1524,10 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			) ) ) {
 				$response[ 'file_id' ] = $args[ 'file_id' ];
 			} else {
-				$response[ 'error' ] = __( 'Error when trying to trash file', 'filebox' );
+				$response[ 'error' ] = __( 'Error when trying to trash file.', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wrong arguments. Could not trash file', 'filebox' );
+			$response[ 'error' ] = __( 'Wrong arguments. Could not trash file.', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1555,10 +1555,10 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			) ) ) {
 				$response[ 'file_id' ] = $args[ 'file_id' ];
 			} else {
-				$response[ 'error' ] = __( 'Error when trying to reset file', 'filebox' );
+				$response[ 'error' ] = __( 'Error when trying to reset file.', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wrong arguments. Could not reset file', 'filebox' );
+			$response[ 'error' ] = __( 'Wrong arguments. Could not reset file.', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1590,13 +1590,13 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				if( wp_delete_post( $file->ID, true ) ) {
 					$response[ 'file_id' ] = $file->ID;
 				} else {
-					$response[ 'error' ] = __( 'Error when trying to delete file', 'filebox' );
+					$response[ 'error' ] = __( 'Error when trying to delete file.', 'filebox' );
 				}
 			} else {
-				$response[ 'error' ] = __( 'Can not delete a non-existing file', 'filebox' );
+				$response[ 'error' ] = __( 'Can not delete a non-existing file.', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wring arguments. Could not delete file', 'filebox' );
+			$response[ 'error' ] = __( 'Wrong arguments. Could not delete file.', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1641,10 +1641,10 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$response[ 'folder_name' ] = $args[ 'folder_name' ];
 				$response[ 'folder_description' ] = $args[ 'folder_description' ];
 			} else {
-				$response[ 'error' ] = __( 'Error when trying to add folder', 'filebox' );
+				$response[ 'error' ] = __( 'Error when trying to create folder. You\'re probably trying to create a folder with a name that is already taken.', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wrong arguments. Could not add folder', 'filebox' );
+			$response[ 'error' ] = __( 'Error when trying to create folder. The name is probably empty.', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1679,10 +1679,10 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$response[ 'folder_id' ] = $folder[ 'term_id' ];
 				$response[ 'folder_parent' ] = $args[ 'folder_parent' ];
 			} else {
-				$response[ 'error' ] = __( 'Error when trying to move folder', 'filebox' );
+				$response[ 'error' ] = __( 'Error when trying to move folder.', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wrong arguments. Could not move folder', 'filebox' );
+			$response[ 'error' ] = __( 'Error when trying to move folder.', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1725,7 +1725,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$response[ 'error' ] = __( 'Error when trying to rename folder', 'filebox' );
 			}
 		} else {
-			$response[ 'error' ] = __( 'Wrong arguments. Could not rename folder', 'filebox' );
+			$response[ 'error' ] = __( 'Error when trying to rename a folder. Folder name is propably empty.', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1764,7 +1764,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		if( wp_delete_term( $args[ 'folder_id' ], 'fileboxfolders' ) ) {
 			$response[ 'folder_id' ] = $args[ 'folder_id' ];
 		} else {
-			$response[ 'error' ] = __( 'Error when trying to delete folder', 'filebox' );
+			$response[ 'error' ] = __( 'Error when trying to delete folder.', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );

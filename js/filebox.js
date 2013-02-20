@@ -183,7 +183,7 @@ jQuery( function( $ ) {
 					var name = elm.siblings( 'label[for="' + elm.attr( 'id' ) + '"]' ).text();
 					if( ! name ) name = elm.attr( 'name' );
 					var error = form.data( 'error' );
-					error.push( name + ' is required' );
+					error.push( filebox.required_error_message.replace( '%s', name ) );
 					form.data( 'error', error );
 				} else {
 					elm.removeClass( 'error' );

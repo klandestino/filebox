@@ -38,12 +38,21 @@ jQuery( function( $ ) {
 			}
 
 			if( confirm( filebox[ conf ] ) ) {
-				$( this ).addClass( 'working' );
+				var link = $( this ).addClass( 'working' );
+
 				$.ajax( ajaxurl, {
 					type: 'POST',
 					dataType: 'json',
 					data: data,
 					success: function( response ) {
+						if( response ) {
+							if( typeof( response.error ) != 'undefined' ) {
+								link.removeClass( 'working' );
+								alert( response.error );
+								return;
+							}
+						}
+
 						$( '.filebox-' + type + '.filebox-' + id ).fadeOut( 'fast' );
 					},
 					error: function( response ) {
@@ -65,12 +74,21 @@ jQuery( function( $ ) {
 			id = id_and_type.id[ 1 ];
 
 			if( confirm( filebox.confirm_file_delete ) ) {
-				$( this ).addClass( 'working' );
+				var link = $( this ).addClass( 'working' );
+
 				$.ajax( ajaxurl, {
 					type: 'POST',
 					dataType: 'json',
 					data: { action: 'filebox_delete_file', security: _filebox_nonces.delete_file, 'file_id': id },
 					success: function( response ) {
+						if( response ) {
+							if( typeof( response.error ) != 'undefined' ) {
+								link.removeClass( 'working' );
+								alert( response.error );
+								return;
+							}
+						}
+
 						$( '.filebox-' + id ).fadeOut( 'fast' );
 					},
 					error: function( response ) {
@@ -90,13 +108,21 @@ jQuery( function( $ ) {
 
 		if( id_and_type.id && typeof( _filebox_nonces ) != 'undefined' ) {
 			id = id_and_type.id[ 1 ];
-			$( this ).addClass( 'working' );
+			var link = $( this ).addClass( 'working' );
 
 			$.ajax( ajaxurl, {
 				type: 'POST',
 				dataType: 'json',
 				data: { action: 'filebox_reset_file', security: _filebox_nonces.reset_file, 'file_id': id },
 				success: function( response ) {
+					if( response ) {
+						if( typeof( response.error ) != 'undefined' ) {
+							link.removeClass( 'working' );
+							alert( response.error );
+							return;
+						}
+					}
+
 					$( '.filebox-' + id ).fadeOut( 'fast' );
 				},
 				error: function( response ) {
@@ -109,13 +135,21 @@ jQuery( function( $ ) {
 	function iframe_form() {
 		if( clickcontrol( $( this ) ) ) return;
 
-		$( this ).find( 'input:submit' ).addClass( 'working' );
+		var button = $( this ).find( 'input:submit' ).addClass( 'working' );
 
 		$.ajax( ajaxurl, {
 			type: 'POST',
 			dataType: 'json',
 			data: $( this ).serialize(),
 			success: function( response ) {
+				if( response ) {
+					if( typeof( response.error ) != 'undefined' ) {
+						button.removeClass( 'working' );
+						alert( response.error );
+						return;
+					}
+				}
+
 				window.location.reload();
 			},
 			error: function( response ) {

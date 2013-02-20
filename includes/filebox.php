@@ -1305,6 +1305,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					$doc ? true : false
 				);
 			}
+		} else {
+			$response[ 'error' ] = __( 'Wrong arguments. Could not save file', 'filebox' );
 		}
 
 		$response = apply_filters( 'filebox_upload_file_response', $response, $args );
@@ -1338,27 +1340,33 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			get_post( $args[ 'file_id' ] )
 			&& term_exists( ( int ) $args[ 'folder_id' ], 'fileboxfolders' )
 		) {
-			wp_update_post( array( 'ID' => $args[ 'file_id' ] ) );
+			if( wp_update_post( array( 'ID' => $args[ 'file_id' ] ) ) ) {
+				$this->record_change(
+					$args[ 'file_id' ],
+					__( 'Moved to folder', 'filebox' )
+				);
 
-			$this->record_change(
-				$args[ 'file_id' ],
-				__( 'Moved to folder', 'filebox' )
-			);
+				if( wp_set_object_terms(
+					$args[ 'file_id' ],
+					( int ) $args[ 'folder_id' ],
+					'fileboxfolders'
+				) ) {
+					do_action(
+						'filebox_move_file',
+						$this->get_file( $args[ 'file_id' ] ),
+						$this->get_folder( $args[ 'folder_id' ] ),
+						groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
+					);
 
-			wp_set_object_terms(
-				$args[ 'file_id' ],
-				( int ) $args[ 'folder_id' ],
-				'fileboxfolders'
-			);
-
-			do_action(
-				'filebox_move_file',
-				$this->get_file( $args[ 'file_id' ] ),
-				$this->get_folder( $args[ 'folder_id' ] ),
-				groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
-			);
-
-			$response = $args;
+					$response = $args;
+				} else {
+					$response[ 'error' ] = __( 'Error when trying to move file', 'filebox' );
+				}
+			} else {
+				$response[ 'error' ] = __( 'Error when trying to move file', 'filebox' );
+			}
+		} else {
+			$response[ 'error' ] = __( 'Wrong arguments. Could not move file', 'filebox' );
 		}
 
 		$response = apply_filters( 'filebox_move_file_response', $response, $args );
@@ -1393,22 +1401,26 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		$file = get_post( $args[ 'file_id' ] );
 
 		if( $file && ! empty( $args[ 'file_name' ] ) ) {
-			wp_update_post( array(
+			if( wp_update_post( array(
 				'ID' => $file->ID,
 				'post_title' => $args[ 'file_name' ],
 				'post_excerpt' => $args[ 'file_description' ]
-			) );
+			) ) ) {
+				$this->record_change( $file->ID, __( 'Renamed file', 'filebox' ) );
 
-			$this->record_change( $file->ID, __( 'Renamed file', 'filebox' ) );
+				do_action(
+					'filebox_rename_file',
+					$this->get_file( $file->ID ),
+					$this->get_folder_by_file( $file->ID ),
+					groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
+				);
 
-			do_action(
-				'filebox_rename_file',
-				$this->get_file( $file->ID ),
-				$this->get_folder_by_file( $file->ID ),
-				groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
-			);
-
-			$response = $args;
+				$response = $args;
+			} else {
+				$response[ 'error' ] = __( 'Error when trying to rename file', 'filebox' );
+			}
+		} else {
+			$response[ 'error' ] = __( 'Either you\'re trying to rename a non-existing file. Or the new name is empty', 'filebox' );
 		}
 
 		$response = apply_filters( 'filebox_rename_file_response', $response, $args );
@@ -1506,12 +1518,16 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		), 'trash_file' );
 
 		if( $args[ 'file_id' ] ) {
-			wp_update_post( array(
+			if( wp_update_post( array(
 				'ID' => $args[ 'file_id' ],
 				'post_status' => 'trash'
-			) );
-
-			$response[ 'file_id' ] = $args[ 'file_id' ];
+			) ) ) {
+				$response[ 'file_id' ] = $args[ 'file_id' ];
+			} else {
+				$response[ 'error' ] = __( 'Error when trying to trash file', 'filebox' );
+			}
+		} else {
+			$response[ 'error' ] = __( 'Wrong arguments. Could not trash file', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1533,12 +1549,16 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		), 'reset_file' );
 
 		if( $args[ 'file_id' ] ) {
-			wp_update_post( array(
+			if( wp_update_post( array(
 				'ID' => $args[ 'file_id' ],
 				'post_status' => 'publish'
-			) );
-
-			$response[ 'file_id' ] = $args[ 'file_id' ];
+			) ) ) {
+				$response[ 'file_id' ] = $args[ 'file_id' ];
+			} else {
+				$response[ 'error' ] = __( 'Error when trying to reset file', 'filebox' );
+			}
+		} else {
+			$response[ 'error' ] = __( 'Wrong arguments. Could not reset file', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1567,9 +1587,16 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					wp_delete_post( $attach->ID, true );
 				}
 
-				wp_delete_post( $file->ID, true );
-				$response[ 'file_id' ] = $file->ID;
+				if( wp_delete_post( $file->ID, true ) ) {
+					$response[ 'file_id' ] = $file->ID;
+				} else {
+					$response[ 'error' ] = __( 'Error when trying to delete file', 'filebox' );
+				}
+			} else {
+				$response[ 'error' ] = __( 'Can not delete a non-existing file', 'filebox' );
 			}
+		} else {
+			$response[ 'error' ] = __( 'Wring arguments. Could not delete file', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1613,7 +1640,11 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$response[ 'folder_id' ] = $folder[ 'term_id' ];
 				$response[ 'folder_name' ] = $args[ 'folder_name' ];
 				$response[ 'folder_description' ] = $args[ 'folder_description' ];
+			} else {
+				$response[ 'error' ] = __( 'Error when trying to add folder', 'filebox' );
 			}
+		} else {
+			$response[ 'error' ] = __( 'Wrong arguments. Could not add folder', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1647,7 +1678,11 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			if( is_array( $folder ) ) {
 				$response[ 'folder_id' ] = $folder[ 'term_id' ];
 				$response[ 'folder_parent' ] = $args[ 'folder_parent' ];
+			} else {
+				$response[ 'error' ] = __( 'Error when trying to move folder', 'filebox' );
 			}
+		} else {
+			$response[ 'error' ] = __( 'Wrong arguments. Could not move folder', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1686,7 +1721,11 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$response[ 'folder_id' ] = $folder[ 'term_id' ];
 				$response[ 'folder_name' ] = $args[ 'folder_name' ];
 				$response[ 'folder_description' ] = $args[ 'folder_description' ];
+			} else {
+				$response[ 'error' ] = __( 'Error when trying to rename folder', 'filebox' );
 			}
+		} else {
+			$response[ 'error' ] = __( 'Wrong arguments. Could not rename folder', 'filebox' );
 		}
 
 		return $this->get_ajax_output( $output, $response );
@@ -1722,9 +1761,11 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			) );
 		}
 
-		wp_delete_term( $args[ 'folder_id' ], 'fileboxfolders' );
-
-		$response[ 'folder_id' ] = $args[ 'folder_id' ];
+		if( wp_delete_term( $args[ 'folder_id' ], 'fileboxfolders' ) ) {
+			$response[ 'folder_id' ] = $args[ 'folder_id' ];
+		} else {
+			$response[ 'error' ] = __( 'Error when trying to delete folder', 'filebox' );
+		}
 
 		return $this->get_ajax_output( $output, $response );
 	}

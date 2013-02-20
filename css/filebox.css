@@ -156,6 +156,15 @@ form.filebox-upload div#media-items a.cancel {
 	color: red;
 }
 
+form.filebox-upload div#media-items div.error div.percent {
+	color: white;
+}
+
+form.filebox-upload div#media-items div.error div.bar {
+	background-image: none;
+	background-color: red;
+}
+
 input.working {
 	color: gray;
 	padding-right: 20px;

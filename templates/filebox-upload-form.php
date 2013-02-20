@@ -165,27 +165,55 @@
 							} );
 
 							uploader.bind( 'Error', function( up, err ) {
-								$( '#upload-error' ).append( '<p>' + err.message + ( err.file ? ': ' + err.file.name : '' ) + '</p>' );
-
 								if( err.file ) {
-									$( '#media-item-' + err.file.id ).remove();
-									up.removeFile( err.file );
+									$( '#media-item-' + err.file.id ).data( 'error', response.error );
+									$( '#media-item-' + err.file.id + ' .percent' ).text( err.message );
+									$( '#media-item-' + err.file.id + ' .bar' ).addClass( 'error' );
+								} else {
+									$( '#upload-error' ).append( '<p>' + err.message + '</p>' );
 								}
 
 								up.refresh();
 							});
 
 							uploader.bind( 'UploadProgress', function( up, file ) {
-								$( '#media-item-' + file.id + ' .percent' ).text( file.percent + '%' );
+								if( ! $( '#media-item-' + file.id ).data( 'error' ) ) {
+									$( '#media-item-' + file.id + ' .percent' ).text( file.percent + '%' );
+								}
+
 								$( '#media-item-' + file.id + ' .bar' ).width( Math.round( 200 * ( file.percent / 100 ) ) );
 							} );
 
-							uploader.bind( 'FileUploaded', function( up, file ) {
+							uploader.bind( 'FileUploaded', function( up, file, response ) {
+								if( response ) {
+									if( typeof( response.response ) == 'string' ) {
+										response = jQuery.parseJSON( response.response );
+									} else if( typeof( response.response ) == 'object' ) {
+										response = response.response;
+									}
+
+									if( typeof( response.error ) != 'undefined' ) {
+										$( '#media-item-' + file.id ).addClass( 'error' ).data( 'error', response.error );
+										$( '#media-item-' + file.id + ' .percent' ).text( response.error );
+										$( '#media-item-' + file.id + ' .bar' ).width( 200 );
+										return;
+									}
+								}
+
 								$( '#media-item-' + file.id + ' .percent' ).text( '100%' );
 								$( '#media-item-' + file.id + ' .bar' ).width( 200 );
 							} );
 
 							uploader.bind( 'UploadComplete', function() {
+								for( var i in uploader.files ) {
+									if( $( '#media-item-' + uploader.files[ i ].id ).data( 'error' ) ) {
+										$( '#media-item-' + uploader.files[ i ].id ).data( 'error', null )
+										$( '#plupload-start-button' ).removeClass( 'working' );
+										$( '#plupload-upload-ui' ).slideDown( 'fast' );
+										return;
+									}
+								}
+
 								window.location.reload();
 							} );
 

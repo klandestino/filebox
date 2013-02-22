@@ -71,5 +71,5 @@
 		<?php endforeach; ?>
 	</ul>
 
-	<input class="button" type="submit" name="submit" value="<?php esc_attr_e( 'Move', 'filebox' ); ?>" />
+	<input class="button button-filebox" type="submit" name="submit" value="<?php esc_attr_e( 'Move', 'filebox' ); ?>" />
 </div>

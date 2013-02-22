@@ -14,7 +14,7 @@
 		<input id="file-desc" type="text" class="file-desc text" name="file_description" value="<?php echo esc_attr( $file->post_excerpt ); ?>" />
 	</p>
 
-	<input class="button" type="submit" name="submit" value="<?php esc_attr_e( 'Save file', 'filebox' ); ?>" />
+	<input class="button button-filebox" type="submit" name="submit" value="<?php esc_attr_e( 'Save file', 'filebox' ); ?>" />
 
 	<p class="required"><small>* <?php _e( 'Required', 'filebox' ); ?></small></p>
 </form>

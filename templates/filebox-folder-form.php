@@ -15,7 +15,7 @@
 		<input id="folder-desc" type="text" class="folder-desc text" name="folder_description" value="<?php echo is_object( $folder ) ? esc_attr( $folder->description ) : ''; ?>" />
 	</p>
 
-	<input class="button" type="submit" name="submit" value="<?php esc_attr_e( 'Save folder', 'filebox' ); ?>" />
+	<input class="button button-filebox" type="submit" name="submit" value="<?php esc_attr_e( 'Save folder', 'filebox' ); ?>" />
 
 	<p class="required"><small>* <?php _e( 'Required', 'filebox' ); ?></small></p>
 </form>

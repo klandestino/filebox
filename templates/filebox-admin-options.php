@@ -96,7 +96,7 @@ $fields = array(
 		</table>
 
 		<p class="submit clear">
-			<input class="button-primary" name="filebox-save" type="submit" value="<?php echo esc_attr( __( 'Save' ) ); ?>" />
+			<input class="button-filebox button-primary" name="filebox-save" type="submit" value="<?php echo esc_attr( __( 'Save' ) ); ?>" />
 		</p>
 
 	</form>

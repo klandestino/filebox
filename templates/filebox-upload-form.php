@@ -236,7 +236,7 @@
 								<p class="drag-drop-info"><?php _e( 'Drop files here', 'filebox' ); ?></p>
 								<p><?php _e( 'or', 'filebox' ); ?></p>
 								<p class="drag-drop-buttons">
-									<input id="plupload-browse-button" type="button" value="<?php esc_attr_e( 'Select Files', 'filebox' ); ?>" class="button working" />
+									<input id="plupload-browse-button" type="button" value="<?php esc_attr_e( 'Select Files', 'filebox' ); ?>" class="button button-filebox working" />
 								</p>
 							</div>
 						</div>
@@ -258,7 +258,7 @@
 					</div>
 
 					<div class="plupload-upload-button">
-						<input id="plupload-start-button" type="button" value="<?php esc_attr_e( 'Start upload', 'filebox' ); ?>" class="button" />
+						<input id="plupload-start-button" type="button" value="<?php esc_attr_e( 'Start upload', 'filebox' ); ?>" class="button button-filebox" />
 					</div>
 				<?php }
 			} ?>

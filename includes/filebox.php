@@ -135,6 +135,11 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		add_filter( 'template_include', array( &$this, 'get_correct_thumbnail' ) );
 
 		/**
+		 * Permissions
+		 */
+		add_filter( 'user_has_cap', array( &$this, 'user_has_cap' ), 10, 3 );
+
+		/**
 		 * Add action for ajax-calls
 		 */
 
@@ -368,6 +373,21 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Checks for user permissions
+	 * @param array $all_caps All capabilities
+	 * @param array $caps Required capabilities
+	 * @param array $args Requested objects
+	 * @return array
+	 */
+	public function user_has_cap( $all_caps, $caps, $args ) {
+		if( in_array( 'read_document_revisions', $caps ) ) {
+			$all_caps[ 'read_document_revisions' ] = true;
+		}
+
+		return $all_caps;
 	}
 
 	/**

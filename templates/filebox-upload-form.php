@@ -140,15 +140,18 @@
 										var plup = $( this ).data( 'plup' );
 										uploader.removeFile( plup.file );
 										uploader.refresh();
-										plup.elm.fadeOut( function() {
-											$( this ).remove();
-										} );
+										//plup.elm.fadeOut( function() {
+										//	$( this ).remove();
+										//} );
+										plup.elm.remove();
 									} );
 								} );
 
 								if( files.length > 0 ) {
-									$( '.plupload-upload-button' ).fadeIn( 'fast' );
-									$( '.media-added' ).fadeIn( 'fast' );
+									//$( '.plupload-upload-button' ).fadeIn( 'fast' );
+									$( '.plupload-upload-button' ).show();
+									//$( '.media-added' ).fadeIn( 'fast' );
+									$( '.media-added' ).show();
 								}
 
 								up.refresh();
@@ -156,11 +159,15 @@
 
 							uploader.bind( 'QueueChanged', function( up ) {
 								if( up.files.length > 0 ) {
-									$( '.plupload-upload-button' ).fadeIn( 'fast' );
-									$( '.media-added' ).fadeIn( 'fast' );
+									//$( '.plupload-upload-button' ).fadeIn( 'fast' );
+									$( '.plupload-upload-button' ).show();
+									//$( '.media-added' ).fadeIn( 'fast' );
+									$( '.media-added' ).show();
 								} else {
-									$( '.plupload-upload-button' ).fadeOut( 'fast' );
-									$( '.media-added' ).fadeOut( 'fast' );
+									//$( '.plupload-upload-button' ).fadeOut( 'fast' );
+									$( '.plupload-upload-button' ).hide();
+									//$( '.media-added' ).fadeOut( 'fast' );
+									$( '.media-added' ).hide();
 								}
 							} );
 
@@ -209,7 +216,8 @@
 									if( $( '#media-item-' + uploader.files[ i ].id ).data( 'error' ) ) {
 										$( '#media-item-' + uploader.files[ i ].id ).data( 'error', null )
 										$( '#plupload-start-button' ).removeClass( 'working' );
-										$( '#plupload-upload-ui' ).slideDown( 'fast' );
+										//$( '#plupload-upload-ui' ).slideDown( 'fast' );
+										$( '#plupload-upload-ui' ).show();
 										return;
 									}
 								}
@@ -219,7 +227,8 @@
 
 							$( '#plupload-start-button' ).click( function() {
 								$( this ).addClass( 'working' );
-								$( '#plupload-upload-ui' ).slideUp( 'fast' );
+								//$( '#plupload-upload-ui' ).slideUp( 'fast' );
+								$( '#plupload-upload-ui' ).hide();
 								uploader.start();
 							} );
 

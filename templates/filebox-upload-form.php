@@ -80,7 +80,7 @@
 
 							function get_nice_size( size ) {
 								if( isNaN( size ) ) {
-									return size;
+									return filebox.unknown_size;
 								} else if( size < 1024 ) {
 									return size + ' B';
 								} else if( size < 1048576 ) {
@@ -211,21 +211,36 @@
 								$( '#media-item-' + file.id + ' .bar' ).width( 200 );
 							} );
 
-							uploader.bind( 'UploadComplete', function() {
+							uploader.bind( 'UploadComplete', function( up ) {
+								var error = false;
+
 								for( var i in uploader.files ) {
 									if( $( '#media-item-' + uploader.files[ i ].id ).data( 'error' ) ) {
 										$( '#media-item-' + uploader.files[ i ].id ).data( 'error', null )
-										$( '#plupload-start-button' ).removeClass( 'working' );
-										//$( '#plupload-upload-ui' ).slideDown( 'fast' );
-										$( '#plupload-upload-ui' ).show();
-										return;
+										error = true;
 									}
 								}
 
-								window.location.reload();
+								if( error ) {
+									$( '#plupload-start-button' ).removeClass( 'working' );
+									//$( '#plupload-upload-ui' ).slideDown( 'fast' );
+									$( '#plupload-upload-ui' ).show();
+
+									up.refresh();
+								} else {
+									window.location.reload();
+								}
 							} );
 
 							$( '#plupload-start-button' ).click( function() {
+								plupload.each( uploader.files, function( file ) {
+									var elm = $( '#media-item-' + file.id + ' .percent' );
+
+									if( elm.text() == '...' ) {
+										elm.text( '0%' );
+									}
+								} );
+
 								$( this ).addClass( 'working' );
 								//$( '#plupload-upload-ui' ).slideUp( 'fast' );
 								$( '#plupload-upload-ui' ).hide();

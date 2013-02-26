@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-22 15:10+0100\n"
+"POT-Creation-Date: 2013-02-26 16:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,240 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: includes/admin.php:26 templates/filebox-admin-options.php:70
-msgid "Filebox Settings"
-msgstr ""
-
-#: includes/admin.php:27
-msgid "Filebox"
-msgstr ""
-
-#: includes/admin.php:64
-msgid "Settings updated."
-msgstr ""
-
-#: includes/filebox.php:26
-msgid "File archive"
-msgstr ""
-
-#: includes/filebox.php:27
-msgid "Imported forum attachments"
-msgstr ""
-
-#: includes/filebox.php:31 includes/filebox.php:40
-#, php-format
-msgid "%1$s updated in %2$s (%3$s)"
-msgstr ""
-
-#: includes/filebox.php:32
-#, php-format
-msgid "%1$d files updated in %2$s (%3$s)"
-msgstr ""
-
-#: includes/filebox.php:33 includes/filebox.php:41
-#, php-format
-msgid "%1$s added in %2$s (%3$s)"
-msgstr ""
-
-#: includes/filebox.php:34
-#, php-format
-msgid "%1$d new files in %2$s (%3$s)"
-msgstr ""
-
-#: includes/filebox.php:37
-#, php-format
-msgid "[%1$s] One updated file in %4$s"
-msgstr ""
-
-#: includes/filebox.php:38
-#, php-format
-msgid "[%1$s] One new file in %4$s"
-msgstr ""
-
-#: includes/filebox.php:43
-#, php-format
-msgid "[%1$s] %2$d uploaded files"
-msgstr ""
-
-#: includes/filebox.php:45
-#, php-format
-msgid ""
-"%1$s\n"
-"\n"
-"--------------------\n"
-"\n"
-"You are receiving this email because you're a member of these groups.\n"
-"\n"
-"Login and change you settings to unsubscribe from these emails."
-msgstr ""
-
-#: includes/filebox.php:220
-msgid "Folders"
-msgstr ""
-
-#: includes/filebox.php:221 templates/filebox-file-history.php:14
-msgid "Folder"
-msgstr ""
-
-#: includes/filebox.php:238
-msgid "Revision comments"
-msgstr ""
-
-#: includes/filebox.php:239
-msgid "Revision comment"
-msgstr ""
-
-#: includes/filebox.php:269
-msgid ""
-"You're about to delete this folder and you can not undo this. Do you want to "
-"continue?"
-msgstr ""
-
-#: includes/filebox.php:270
-msgid ""
-"You're about to trash this file and you can undo this. Do you want to "
-"continue?"
-msgstr ""
-
-#: includes/filebox.php:271
-msgid ""
-"You're about to delete this file permanently and you can not undo this. Do "
-"you want to continue?"
-msgstr ""
-
-#: includes/filebox.php:272
-#, php-format
-msgid "%s is required"
-msgstr ""
-
-#: includes/filebox.php:273
-msgid "Unknown size"
-msgstr ""
-
-#: includes/filebox.php:493
-#, php-format
-msgid "%s group folder"
-msgstr ""
-
-#: includes/filebox.php:547
-#, php-format
-msgid "%s forum attachments folder"
-msgstr ""
-
-#: includes/filebox.php:1031
-msgid "Imported from group forum"
-msgstr ""
-
-#: includes/filebox.php:1307
-msgid "Uploaded new file"
-msgstr ""
-
-#: includes/filebox.php:1331
-msgid "Wrong arguments. Could not save file."
-msgstr ""
-
-#: includes/filebox.php:1368
-msgid "Moved to folder"
-msgstr ""
-
-#: includes/filebox.php:1385
-msgid "Error when trying to move file."
-msgstr ""
-
-#: includes/filebox.php:1388
-msgid ""
-"Error when trying to move file. Either you're moving an non-existing file or "
-"the folder doesn't exist."
-msgstr ""
-
-#: includes/filebox.php:1391
-msgid "Wrong arguments. Could not move file."
-msgstr ""
-
-#: includes/filebox.php:1431
-msgid "Renamed file"
-msgstr ""
-
-#: includes/filebox.php:1442
-msgid "Error when trying to rename file."
-msgstr ""
-
-#: includes/filebox.php:1445
-msgid ""
-"Error when trying to rename file. Either you're trying to rename a non-"
-"existing file. Or the new name is empty."
-msgstr ""
-
-#: includes/filebox.php:1549
-msgid "Error when trying to trash file."
-msgstr ""
-
-#: includes/filebox.php:1552
-msgid "Wrong arguments. Could not trash file."
-msgstr ""
-
-#: includes/filebox.php:1580
-msgid "Error when trying to reset file."
-msgstr ""
-
-#: includes/filebox.php:1583
-msgid "Wrong arguments. Could not reset file."
-msgstr ""
-
-#: includes/filebox.php:1615
-msgid "Error when trying to delete file."
-msgstr ""
-
-#: includes/filebox.php:1618
-msgid "Can not delete a non-existing file."
-msgstr ""
-
-#: includes/filebox.php:1621
-msgid "Wrong arguments. Could not delete file."
-msgstr ""
-
-#: includes/filebox.php:1666
-msgid ""
-"Error when trying to create folder. You're probably trying to create a "
-"folder with a name that is already taken."
-msgstr ""
-
-#: includes/filebox.php:1669
-msgid "Error when trying to create folder. The name is probably empty."
-msgstr ""
-
-#: includes/filebox.php:1704 includes/filebox.php:1707
-msgid "Error when trying to move folder."
-msgstr ""
-
-#: includes/filebox.php:1747
-msgid "Error when trying to rename folder"
-msgstr ""
-
-#: includes/filebox.php:1750
-msgid "Error when trying to rename a folder. Folder name is propably empty."
-msgstr ""
-
-#: includes/filebox.php:1789
-msgid "Error when trying to delete folder."
-msgstr ""
-
-#: includes/group.php:115 templates/filebox-admin-options.php:99
-msgid "Save"
-msgstr ""
-
-#: includes/group.php:157
-msgid "Settings saved successfully"
-msgstr ""
-
-#: includes/group.php:159
-msgid "There was an error saving, please try again"
-msgstr ""
-
-#: includes/notifier_component.php:23
-msgid "Filebox Notifier"
-msgstr ""
 
 #: templates/filebox-admin-options.php:6
 msgid "Group tab title"
@@ -260,74 +26,90 @@ msgid "Folder name for imported forum attachments"
 msgstr ""
 
 #: templates/filebox-admin-options.php:14
-msgid "Delay in minutes before e-mails are sent"
+msgid "Folder description for imported forum attachments"
 msgstr ""
 
 #: templates/filebox-admin-options.php:18
+msgid "Delay in minutes before e-mails are sent"
+msgstr ""
+
+#: templates/filebox-admin-options.php:22
+msgid "Hide all uploaded documents in media library"
+msgstr ""
+
+#: templates/filebox-admin-options.php:26
 msgid "E-mail subject when message contains multiple uploads"
 msgstr ""
 
-#: templates/filebox-admin-options.php:19
+#: templates/filebox-admin-options.php:27
 #, php-format
 msgid "%1$s = blogname, %2$d = number of files"
 msgstr ""
 
-#: templates/filebox-admin-options.php:23
+#: templates/filebox-admin-options.php:31
 msgid "E-mail subject for single file updated"
 msgstr ""
 
-#: templates/filebox-admin-options.php:24
-#: templates/filebox-admin-options.php:34
+#: templates/filebox-admin-options.php:32
+#: templates/filebox-admin-options.php:42
 #, php-format
 msgid "%1$s = blogname, %2$s = filename, %3$s = folder name, %4$s group name"
 msgstr ""
 
-#: templates/filebox-admin-options.php:28
+#: templates/filebox-admin-options.php:36
 msgid "E-mail message for single file updated"
 msgstr ""
 
-#: templates/filebox-admin-options.php:29
-#: templates/filebox-admin-options.php:39
-#: templates/filebox-admin-options.php:44
-#: templates/filebox-admin-options.php:49
-#: templates/filebox-admin-options.php:54
-#: templates/filebox-admin-options.php:59
+#: templates/filebox-admin-options.php:37
+#: templates/filebox-admin-options.php:47
+#: templates/filebox-admin-options.php:52
+#: templates/filebox-admin-options.php:57
+#: templates/filebox-admin-options.php:62
+#: templates/filebox-admin-options.php:67
 #, php-format
 msgid "%1$s = filename, %2$s = folder name, %3$s group name"
 msgstr ""
 
-#: templates/filebox-admin-options.php:33
+#: templates/filebox-admin-options.php:41
 msgid "E-mail subject for single file upload"
 msgstr ""
 
-#: templates/filebox-admin-options.php:38
+#: templates/filebox-admin-options.php:46
 msgid "E-mail message for single file upload"
 msgstr ""
 
-#: templates/filebox-admin-options.php:43
+#: templates/filebox-admin-options.php:51
 msgid "Notification for single file updated"
 msgstr ""
 
-#: templates/filebox-admin-options.php:48
+#: templates/filebox-admin-options.php:56
 msgid "Notification for multiple files updated in the same folder and group"
 msgstr ""
 
-#: templates/filebox-admin-options.php:53
+#: templates/filebox-admin-options.php:61
 msgid "Notification for single file uploaded"
 msgstr ""
 
-#: templates/filebox-admin-options.php:58
+#: templates/filebox-admin-options.php:66
 msgid ""
 "Notification for multiple new files uploaded in the same folder and group"
 msgstr ""
 
-#: templates/filebox-admin-options.php:63
+#: templates/filebox-admin-options.php:71
 msgid "E-mail message body wrapper"
 msgstr ""
 
-#: templates/filebox-admin-options.php:64
+#: templates/filebox-admin-options.php:72
 #, php-format
 msgid "%1$s = message bodies"
+msgstr ""
+
+#: templates/filebox-admin-options.php:78 includes/admin.php:26
+msgid "Filebox Settings"
+msgstr ""
+
+#: templates/filebox-admin-options.php:109 includes/group.php:115
+msgid "Save"
 msgstr ""
 
 #: templates/filebox-file-form.php:8
@@ -358,8 +140,12 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+#: templates/filebox-file-history.php:14 includes/filebox.php:237
+msgid "Folder"
+msgstr ""
+
 #: templates/filebox-file-history.php:15
-#: templates/filebox-group-display.php:71
+#: templates/filebox-group-display.php:80
 msgid "Title"
 msgstr ""
 
@@ -379,99 +165,110 @@ msgstr ""
 msgid "Save folder"
 msgstr ""
 
-#: templates/filebox-group-display.php:48
+#: templates/filebox-group-display.php:50
 #, php-format
 msgid "Trash (%d)"
 msgstr ""
 
-#: templates/filebox-group-display.php:55
-#: templates/filebox-group-display.php:56
+#: templates/filebox-group-display.php:58
+#: templates/filebox-group-display.php:151
+msgid "Download folder as a zip"
+msgstr ""
+
+#: templates/filebox-group-display.php:59
+#: templates/filebox-group-display.php:151
+#, php-format
+msgid "Download (zip, %s)"
+msgstr ""
+
+#: templates/filebox-group-display.php:64
+#: templates/filebox-group-display.php:65
 msgid "Add files"
 msgstr ""
 
-#: templates/filebox-group-display.php:60
-#: templates/filebox-group-display.php:61
+#: templates/filebox-group-display.php:69
+#: templates/filebox-group-display.php:70
 msgid "Add folder"
 msgstr ""
 
-#: templates/filebox-group-display.php:72
+#: templates/filebox-group-display.php:81
 msgid "Changed"
 msgstr ""
 
-#: templates/filebox-group-display.php:73
+#: templates/filebox-group-display.php:82
 msgid "Uploaded by"
 msgstr ""
 
-#: templates/filebox-group-display.php:74
+#: templates/filebox-group-display.php:83
 msgid "Size"
 msgstr ""
 
-#: templates/filebox-group-display.php:104
+#: templates/filebox-group-display.php:113
 #, php-format
 msgid "%1$d files / %2$d folders"
 msgstr ""
 
-#: templates/filebox-group-display.php:106
+#: templates/filebox-group-display.php:115
 #, php-format
 msgid "%1$d files"
 msgstr ""
 
-#: templates/filebox-group-display.php:108
+#: templates/filebox-group-display.php:117
 #, php-format
 msgid "%1$d folders"
 msgstr ""
 
-#: templates/filebox-group-display.php:110
+#: templates/filebox-group-display.php:119
 msgid "Empty"
 msgstr ""
 
-#: templates/filebox-group-display.php:125
+#: templates/filebox-group-display.php:134
 msgid "Reset"
 msgstr ""
 
-#: templates/filebox-group-display.php:126
+#: templates/filebox-group-display.php:135
 msgid "Delete permanently"
 msgstr ""
 
-#: templates/filebox-group-display.php:129
+#: templates/filebox-group-display.php:138
 msgid "File history"
 msgstr ""
 
-#: templates/filebox-group-display.php:129
+#: templates/filebox-group-display.php:138
 msgid "Show history"
 msgstr ""
 
-#: templates/filebox-group-display.php:131
-#: templates/filebox-group-display.php:139
+#: templates/filebox-group-display.php:140
+#: templates/filebox-group-display.php:148
 msgid "Edit"
 msgstr ""
 
-#: templates/filebox-group-display.php:132
+#: templates/filebox-group-display.php:141
 msgid "Upload new version"
 msgstr ""
 
-#: templates/filebox-group-display.php:133
+#: templates/filebox-group-display.php:142
 msgid "Move file"
 msgstr ""
 
-#: templates/filebox-group-display.php:133
-#: templates/filebox-group-display.php:140 templates/filebox-move-form.php:74
+#: templates/filebox-group-display.php:142
+#: templates/filebox-group-display.php:149 templates/filebox-move-form.php:74
 msgid "Move"
 msgstr ""
 
-#: templates/filebox-group-display.php:134
+#: templates/filebox-group-display.php:143
 msgid "Trash"
 msgstr ""
 
-#: templates/filebox-group-display.php:139
+#: templates/filebox-group-display.php:148
 msgid "Edit folder"
 msgstr ""
 
-#: templates/filebox-group-display.php:140
+#: templates/filebox-group-display.php:149
 msgid "Move folder"
 msgstr ""
 
-#: templates/filebox-group-display.php:141
+#: templates/filebox-group-display.php:153
 msgid "Delete"
 msgstr ""
 
@@ -566,4 +363,226 @@ msgstr ""
 
 #: templates/filebox-upload-form.php:285
 msgid "Start upload"
+msgstr ""
+
+#: includes/admin.php:27
+msgid "Filebox"
+msgstr ""
+
+#: includes/admin.php:68
+msgid "Settings updated."
+msgstr ""
+
+#: includes/filebox.php:26
+msgid "File archive"
+msgstr ""
+
+#: includes/filebox.php:27
+msgid "Imported forum attachments"
+msgstr ""
+
+#: includes/filebox.php:28
+#, php-format
+msgid "%s folder for imported forum attachments"
+msgstr ""
+
+#: includes/filebox.php:38 includes/filebox.php:47
+#, php-format
+msgid "%1$s updated in %2$s (%3$s)"
+msgstr ""
+
+#: includes/filebox.php:39
+#, php-format
+msgid "%1$d files updated in %2$s (%3$s)"
+msgstr ""
+
+#: includes/filebox.php:40 includes/filebox.php:48
+#, php-format
+msgid "%1$s added in %2$s (%3$s)"
+msgstr ""
+
+#: includes/filebox.php:41
+#, php-format
+msgid "%1$d new files in %2$s (%3$s)"
+msgstr ""
+
+#: includes/filebox.php:44
+#, php-format
+msgid "[%1$s] One updated file in %4$s"
+msgstr ""
+
+#: includes/filebox.php:45
+#, php-format
+msgid "[%1$s] One new file in %4$s"
+msgstr ""
+
+#: includes/filebox.php:50
+#, php-format
+msgid "[%1$s] %2$d uploaded files"
+msgstr ""
+
+#: includes/filebox.php:52
+#, php-format
+msgid ""
+"%1$s\n"
+"\n"
+"--------------------\n"
+"\n"
+"You are receiving this email because you're a member of these groups.\n"
+"\n"
+"Login and change you settings to unsubscribe from these emails."
+msgstr ""
+
+#: includes/filebox.php:236
+msgid "Folders"
+msgstr ""
+
+#: includes/filebox.php:254
+msgid "Revision comments"
+msgstr ""
+
+#: includes/filebox.php:255
+msgid "Revision comment"
+msgstr ""
+
+#: includes/filebox.php:285
+msgid ""
+"You're about to delete this folder and you can not undo this. Do you want to "
+"continue?"
+msgstr ""
+
+#: includes/filebox.php:286
+msgid ""
+"You're about to trash this file and you can undo this. Do you want to "
+"continue?"
+msgstr ""
+
+#: includes/filebox.php:287
+msgid ""
+"You're about to delete this file permanently and you can not undo this. Do "
+"you want to continue?"
+msgstr ""
+
+#: includes/filebox.php:288
+#, php-format
+msgid "%s is required"
+msgstr ""
+
+#: includes/filebox.php:289
+msgid "Unknown size"
+msgstr ""
+
+#: includes/filebox.php:597
+#, php-format
+msgid "%s group folder"
+msgstr ""
+
+#: includes/filebox.php:1151
+msgid "Imported from group forum"
+msgstr ""
+
+#: includes/filebox.php:1541
+msgid "Uploaded new file"
+msgstr ""
+
+#: includes/filebox.php:1570
+msgid "Wrong arguments. Could not save file."
+msgstr ""
+
+#: includes/filebox.php:1607
+msgid "Moved to folder"
+msgstr ""
+
+#: includes/filebox.php:1629
+msgid "Error when trying to move file."
+msgstr ""
+
+#: includes/filebox.php:1632
+msgid ""
+"Error when trying to move file. Either you're moving an non-existing file or "
+"the folder doesn't exist."
+msgstr ""
+
+#: includes/filebox.php:1635
+msgid "Wrong arguments. Could not move file."
+msgstr ""
+
+#: includes/filebox.php:1675
+msgid "Renamed file"
+msgstr ""
+
+#: includes/filebox.php:1691
+msgid "Error when trying to rename file."
+msgstr ""
+
+#: includes/filebox.php:1694
+msgid ""
+"Error when trying to rename file. Either you're trying to rename a non-"
+"existing file. Or the new name is empty."
+msgstr ""
+
+#: includes/filebox.php:1803
+msgid "Error when trying to trash file."
+msgstr ""
+
+#: includes/filebox.php:1806
+msgid "Wrong arguments. Could not trash file."
+msgstr ""
+
+#: includes/filebox.php:1834
+msgid "Error when trying to reset file."
+msgstr ""
+
+#: includes/filebox.php:1837
+msgid "Wrong arguments. Could not reset file."
+msgstr ""
+
+#: includes/filebox.php:1869
+msgid "Error when trying to delete file."
+msgstr ""
+
+#: includes/filebox.php:1872
+msgid "Can not delete a non-existing file."
+msgstr ""
+
+#: includes/filebox.php:1875
+msgid "Wrong arguments. Could not delete file."
+msgstr ""
+
+#: includes/filebox.php:1920
+msgid ""
+"Error when trying to create folder. You're probably trying to create a "
+"folder with a name that is already taken."
+msgstr ""
+
+#: includes/filebox.php:1923
+msgid "Error when trying to create folder. The name is probably empty."
+msgstr ""
+
+#: includes/filebox.php:1963 includes/filebox.php:1966
+msgid "Error when trying to move folder."
+msgstr ""
+
+#: includes/filebox.php:2006
+msgid "Error when trying to rename folder"
+msgstr ""
+
+#: includes/filebox.php:2009
+msgid "Error when trying to rename a folder. Folder name is propably empty."
+msgstr ""
+
+#: includes/filebox.php:2052
+msgid "Error when trying to delete folder."
+msgstr ""
+
+#: includes/group.php:157
+msgid "Settings saved successfully"
+msgstr ""
+
+#: includes/group.php:159
+msgid "There was an error saving, please try again"
+msgstr ""
+
+#: includes/notifier_component.php:23
+msgid "Filebox Notifier"
 msgstr ""

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-22 15:10+0100\n"
-"PO-Revision-Date: 2013-02-22 15:11+0100\n"
+"POT-Creation-Date: 2013-02-26 16:40+0100\n"
+"PO-Revision-Date: 2013-02-26 16:42+0100\n"
 "Last-Translator: spurge <olof@klandestino.se>\n"
 "Language-Team: Klandestino\n"
 "Language: \n"
@@ -17,239 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Swedish\n"
 "X-Poedit-Country: SWEDEN\n"
-
-#: includes/admin.php:26
-#: templates/filebox-admin-options.php:70
-msgid "Filebox Settings"
-msgstr "Filebox inställningar"
-
-#: includes/admin.php:27
-msgid "Filebox"
-msgstr "Filebox"
-
-#: includes/admin.php:64
-msgid "Settings updated."
-msgstr "Inställningar uppdaterade."
-
-#: includes/filebox.php:26
-msgid "File archive"
-msgstr "Filarkiv"
-
-#: includes/filebox.php:27
-msgid "Imported forum attachments"
-msgstr "Importerade filer från forumet"
-
-#: includes/filebox.php:31
-#: includes/filebox.php:40
-#, php-format
-msgid "%1$s updated in %2$s (%3$s)"
-msgstr "%1$s uppdaterad i %2$s (%3$s)"
-
-#: includes/filebox.php:32
-#, php-format
-msgid "%1$d files updated in %2$s (%3$s)"
-msgstr "%1$d filer uppdaterade i %2$s (%3$s)"
-
-#: includes/filebox.php:33
-#: includes/filebox.php:41
-#, php-format
-msgid "%1$s added in %2$s (%3$s)"
-msgstr "%1$s lades till i %2$s (%3$s)"
-
-#: includes/filebox.php:34
-#, php-format
-msgid "%1$d new files in %2$s (%3$s)"
-msgstr "%1$d nya filer i %2$s (%3$s)"
-
-#: includes/filebox.php:37
-#, php-format
-msgid "[%1$s] One updated file in %4$s"
-msgstr "[%1$s] En uppdaterad fil i %3$s"
-
-#: includes/filebox.php:38
-#, php-format
-msgid "[%1$s] One new file in %4$s"
-msgstr "[%1$s] En ny fil i %4$s"
-
-#: includes/filebox.php:43
-#, php-format
-msgid "[%1$s] %2$d uploaded files"
-msgstr "[%1$s] %2$d upladdade filer"
-
-#: includes/filebox.php:45
-#, php-format
-msgid ""
-"%1$s\n"
-"\n"
-"--------------------\n"
-"\n"
-"You are receiving this email because you're a member of these groups.\n"
-"\n"
-"Login and change you settings to unsubscribe from these emails."
-msgstr ""
-"%1$s--------------------\n"
-"\n"
-"Du får detta e-postmeddelande för att du är medlem i dessa grupper.\n"
-"\n"
-"Logga in och ändra dina inställningar om du vill slippa detta meddelanden."
-
-#: includes/filebox.php:220
-msgid "Folders"
-msgstr "Mappar"
-
-#: includes/filebox.php:221
-#: templates/filebox-file-history.php:14
-msgid "Folder"
-msgstr "Mapp"
-
-#: includes/filebox.php:238
-msgid "Revision comments"
-msgstr "Versionskommentarer"
-
-#: includes/filebox.php:239
-msgid "Revision comment"
-msgstr "Versionskommentar"
-
-#: includes/filebox.php:269
-msgid "You're about to delete this folder and you can not undo this. Do you want to continue?"
-msgstr "Du håller på att ta bort den här mappen och detta kan du inte ångra. Vill du fortsätta?"
-
-#: includes/filebox.php:270
-msgid "You're about to trash this file and you can undo this. Do you want to continue?"
-msgstr "Du håller på att slänga den här filen i papperskorgen och detta kan du ångra. Vill du fortsätta?"
-
-#: includes/filebox.php:271
-msgid "You're about to delete this file permanently and you can not undo this. Do you want to continue?"
-msgstr "Du håller på att radera den här filen permanent och detta kan du inte ångra. Vill du fortsätta?"
-
-#: includes/filebox.php:272
-#, php-format
-msgid "%s is required"
-msgstr "%s är obligatorisk"
-
-#: includes/filebox.php:273
-msgid "Unknown size"
-msgstr "Okänd storlek"
-
-#: includes/filebox.php:493
-#, php-format
-msgid "%s group folder"
-msgstr "%s gruppmapp"
-
-#: includes/filebox.php:547
-#, php-format
-msgid "%s forum attachments folder"
-msgstr "%s mapp för importerade filer från forumet"
-
-#: includes/filebox.php:1031
-msgid "Imported from group forum"
-msgstr "Importerad från gruppforum"
-
-#: includes/filebox.php:1307
-msgid "Uploaded new file"
-msgstr "Laddade upp ny fil"
-
-#: includes/filebox.php:1331
-msgid "Wrong arguments. Could not save file."
-msgstr "Felaktiga argument. Kunde inte spara fil."
-
-#: includes/filebox.php:1368
-msgid "Moved to folder"
-msgstr "Flyttad till mapp"
-
-#: includes/filebox.php:1385
-msgid "Error when trying to move file."
-msgstr "Fel vid försök att flytta fil."
-
-#: includes/filebox.php:1388
-msgid "Error when trying to move file. Either you're moving an non-existing file or the folder doesn't exist."
-msgstr "Fel vid försök att flytta fil. Antingen försökte du flytta en fil som inte finns eller till en mapp som inte finns."
-
-#: includes/filebox.php:1391
-msgid "Wrong arguments. Could not move file."
-msgstr "Felaktiga argument. Kunde inte flytta fil."
-
-#: includes/filebox.php:1431
-msgid "Renamed file"
-msgstr "Ändrade filnamn"
-
-#: includes/filebox.php:1442
-msgid "Error when trying to rename file."
-msgstr "Fel vid försök att ändra filnamn."
-
-#: includes/filebox.php:1445
-msgid "Error when trying to rename file. Either you're trying to rename a non-existing file. Or the new name is empty."
-msgstr "Vid vid försök att ändra filnamn. Antingen försökte du ändra en fil som inte finns. Eller så är filnamnet tomt."
-
-#: includes/filebox.php:1549
-msgid "Error when trying to trash file."
-msgstr "Fel vid försök att slänga fil."
-
-#: includes/filebox.php:1552
-msgid "Wrong arguments. Could not trash file."
-msgstr "Felaktiga argument. Kunde inte slänga fil."
-
-#: includes/filebox.php:1580
-msgid "Error when trying to reset file."
-msgstr "Fel vid försök att återställa fil."
-
-#: includes/filebox.php:1583
-msgid "Wrong arguments. Could not reset file."
-msgstr "Felaktiga argument. Kunde inte återställa fil."
-
-#: includes/filebox.php:1615
-msgid "Error when trying to delete file."
-msgstr "Fel vid försök att radera fil."
-
-#: includes/filebox.php:1618
-msgid "Can not delete a non-existing file."
-msgstr "Kan inte radera en fil som inte finns."
-
-#: includes/filebox.php:1621
-msgid "Wrong arguments. Could not delete file."
-msgstr "Felaktiga argument. Kunde inte radera fil."
-
-#: includes/filebox.php:1666
-msgid "Error when trying to create folder. You're probably trying to create a folder with a name that is already taken."
-msgstr "Fel vid försök att skapa en mapp. Du försök antagligen skapa en mapp med ett namn som redan är uppdaget."
-
-#: includes/filebox.php:1669
-msgid "Error when trying to create folder. The name is probably empty."
-msgstr "Fel vid försök att skapa en mapp. Namnet är antagligen tomt."
-
-#: includes/filebox.php:1704
-#: includes/filebox.php:1707
-msgid "Error when trying to move folder."
-msgstr "Fel vid försök att flytta mapp."
-
-#: includes/filebox.php:1747
-msgid "Error when trying to rename folder"
-msgstr "Fel vid försök att byta namn på mapp."
-
-#: includes/filebox.php:1750
-msgid "Error when trying to rename a folder. Folder name is propably empty."
-msgstr "Fel vid försök att byta namn på mapp. Antagligen är namnet tomt."
-
-#: includes/filebox.php:1789
-msgid "Error when trying to delete folder."
-msgstr "Fel vid försök att ta bort mapp."
-
-#: includes/group.php:115
-#: templates/filebox-admin-options.php:99
-msgid "Save"
-msgstr "Spara"
-
-#: includes/group.php:157
-msgid "Settings saved successfully"
-msgstr "Inställningarna sparades"
-
-#: includes/group.php:159
-msgid "There was an error saving, please try again"
-msgstr "Det blev fel, försök igen"
-
-#: includes/notifier_component.php:23
-msgid "Filebox Notifier"
-msgstr "Dokumentnotifiering"
 
 #: templates/filebox-admin-options.php:6
 msgid "Group tab title"
@@ -260,74 +27,92 @@ msgid "Folder name for imported forum attachments"
 msgstr "Katalognamn för filer importerade från forumet"
 
 #: templates/filebox-admin-options.php:14
+msgid "Folder description for imported forum attachments"
+msgstr "Katalogens beskrivning för filer importerade från forumet"
+
+#: templates/filebox-admin-options.php:18
 msgid "Delay in minutes before e-mails are sent"
 msgstr "Antal minuter innan e-post skickas"
 
-#: templates/filebox-admin-options.php:18
+#: templates/filebox-admin-options.php:22
+msgid "Hide all uploaded documents in media library"
+msgstr "Göm alla uppladdade dokument i mediabiblioteket"
+
+#: templates/filebox-admin-options.php:26
 msgid "E-mail subject when message contains multiple uploads"
 msgstr "Ämnesrad för e-post när meddelandet innehåller flera nya uppladdningar"
 
-#: templates/filebox-admin-options.php:19
+#: templates/filebox-admin-options.php:27
 #, php-format
 msgid "%1$s = blogname, %2$d = number of files"
 msgstr "%1$s = bloggnamn, %2$d = antal filer"
 
-#: templates/filebox-admin-options.php:23
+#: templates/filebox-admin-options.php:31
 msgid "E-mail subject for single file updated"
 msgstr "Ämnesrad för e-post när enbart en fil uppdaterats"
 
-#: templates/filebox-admin-options.php:24
-#: templates/filebox-admin-options.php:34
+#: templates/filebox-admin-options.php:32
+#: templates/filebox-admin-options.php:42
 #, php-format
 msgid "%1$s = blogname, %2$s = filename, %3$s = folder name, %4$s group name"
 msgstr "%1$s = bloggnamn, %2$s = filnamn, %3$s = katalognamn, %4$s gruppnamn"
 
-#: templates/filebox-admin-options.php:28
+#: templates/filebox-admin-options.php:36
 msgid "E-mail message for single file updated"
 msgstr "E-postmeddelande när en fil uppdaterats"
 
-#: templates/filebox-admin-options.php:29
-#: templates/filebox-admin-options.php:39
-#: templates/filebox-admin-options.php:44
-#: templates/filebox-admin-options.php:49
-#: templates/filebox-admin-options.php:54
-#: templates/filebox-admin-options.php:59
+#: templates/filebox-admin-options.php:37
+#: templates/filebox-admin-options.php:47
+#: templates/filebox-admin-options.php:52
+#: templates/filebox-admin-options.php:57
+#: templates/filebox-admin-options.php:62
+#: templates/filebox-admin-options.php:67
 #, php-format
 msgid "%1$s = filename, %2$s = folder name, %3$s group name"
 msgstr "%1$s = filnamn, %2$s = katalognamn, %3$s gruppnamn"
 
-#: templates/filebox-admin-options.php:33
+#: templates/filebox-admin-options.php:41
 msgid "E-mail subject for single file upload"
 msgstr "Ämnesrad för e-post när enbart en fil laddats upp"
 
-#: templates/filebox-admin-options.php:38
+#: templates/filebox-admin-options.php:46
 msgid "E-mail message for single file upload"
 msgstr "E-postmeddelande när en fil laddats upp"
 
-#: templates/filebox-admin-options.php:43
+#: templates/filebox-admin-options.php:51
 msgid "Notification for single file updated"
 msgstr "Notifikation när enbart en fil uppdaterats"
 
-#: templates/filebox-admin-options.php:48
+#: templates/filebox-admin-options.php:56
 msgid "Notification for multiple files updated in the same folder and group"
 msgstr "Notifikation när flera filer uppdaterats i samma katalog och grupp"
 
-#: templates/filebox-admin-options.php:53
+#: templates/filebox-admin-options.php:61
 msgid "Notification for single file uploaded"
 msgstr "Notifikation när enbart en fil laddats upp"
 
-#: templates/filebox-admin-options.php:58
+#: templates/filebox-admin-options.php:66
 msgid "Notification for multiple new files uploaded in the same folder and group"
 msgstr "Notifikation när flera filer laddats upp i samma katalog och grupp"
 
-#: templates/filebox-admin-options.php:63
+#: templates/filebox-admin-options.php:71
 msgid "E-mail message body wrapper"
 msgstr "E-postmeddelandets omslutning"
 
-#: templates/filebox-admin-options.php:64
+#: templates/filebox-admin-options.php:72
 #, php-format
 msgid "%1$s = message bodies"
 msgstr "%1$s = e-postmeddelanden"
+
+#: templates/filebox-admin-options.php:78
+#: includes/admin.php:26
+msgid "Filebox Settings"
+msgstr "Filebox inställningar"
+
+#: templates/filebox-admin-options.php:109
+#: includes/group.php:115
+msgid "Save"
+msgstr "Spara"
 
 #: templates/filebox-file-form.php:8
 msgid "File title"
@@ -358,8 +143,13 @@ msgstr "Ändrad av"
 msgid "Comment"
 msgstr "Kommentar"
 
+#: templates/filebox-file-history.php:14
+#: includes/filebox.php:237
+msgid "Folder"
+msgstr "Mapp"
+
 #: templates/filebox-file-history.php:15
-#: templates/filebox-group-display.php:71
+#: templates/filebox-group-display.php:80
 msgid "Title"
 msgstr "Titel"
 
@@ -379,100 +169,111 @@ msgstr "Mappbeskrivning"
 msgid "Save folder"
 msgstr "Spara mapp"
 
-#: templates/filebox-group-display.php:48
+#: templates/filebox-group-display.php:50
 #, php-format
 msgid "Trash (%d)"
 msgstr "Papperskorg (%d)"
 
-#: templates/filebox-group-display.php:55
-#: templates/filebox-group-display.php:56
+#: templates/filebox-group-display.php:58
+#: templates/filebox-group-display.php:151
+msgid "Download folder as a zip"
+msgstr "Ladda hem mapp som zip"
+
+#: templates/filebox-group-display.php:59
+#: templates/filebox-group-display.php:151
+#, php-format
+msgid "Download (zip, %s)"
+msgstr "Ladda hem (zip, %s)"
+
+#: templates/filebox-group-display.php:64
+#: templates/filebox-group-display.php:65
 msgid "Add files"
 msgstr "Lägg till filer"
 
-#: templates/filebox-group-display.php:60
-#: templates/filebox-group-display.php:61
+#: templates/filebox-group-display.php:69
+#: templates/filebox-group-display.php:70
 msgid "Add folder"
 msgstr "Lägg till mapp"
 
-#: templates/filebox-group-display.php:72
+#: templates/filebox-group-display.php:81
 msgid "Changed"
 msgstr "Ändrad"
 
-#: templates/filebox-group-display.php:73
+#: templates/filebox-group-display.php:82
 msgid "Uploaded by"
 msgstr "Uppladdad av"
 
-#: templates/filebox-group-display.php:74
+#: templates/filebox-group-display.php:83
 msgid "Size"
 msgstr "Storlek"
 
-#: templates/filebox-group-display.php:104
+#: templates/filebox-group-display.php:113
 #, php-format
 msgid "%1$d files / %2$d folders"
 msgstr "%1$d filer / %2$d mappar"
 
-#: templates/filebox-group-display.php:106
+#: templates/filebox-group-display.php:115
 #, php-format
 msgid "%1$d files"
 msgstr "%1$d filer"
 
-#: templates/filebox-group-display.php:108
+#: templates/filebox-group-display.php:117
 #, php-format
 msgid "%1$d folders"
 msgstr "%1$d mappar"
 
-#: templates/filebox-group-display.php:110
+#: templates/filebox-group-display.php:119
 msgid "Empty"
 msgstr "Tom"
 
-#: templates/filebox-group-display.php:125
+#: templates/filebox-group-display.php:134
 msgid "Reset"
 msgstr "Återställ"
 
-#: templates/filebox-group-display.php:126
+#: templates/filebox-group-display.php:135
 msgid "Delete permanently"
 msgstr "Ta bort permanent"
 
-#: templates/filebox-group-display.php:129
+#: templates/filebox-group-display.php:138
 msgid "File history"
 msgstr "Filhistorik"
 
-#: templates/filebox-group-display.php:129
+#: templates/filebox-group-display.php:138
 msgid "Show history"
 msgstr "Visa historik"
 
-#: templates/filebox-group-display.php:131
-#: templates/filebox-group-display.php:139
+#: templates/filebox-group-display.php:140
+#: templates/filebox-group-display.php:148
 msgid "Edit"
 msgstr "Ändra"
 
-#: templates/filebox-group-display.php:132
+#: templates/filebox-group-display.php:141
 msgid "Upload new version"
 msgstr "Ladda upp ny version"
 
-#: templates/filebox-group-display.php:133
+#: templates/filebox-group-display.php:142
 msgid "Move file"
 msgstr "Flytta fil"
 
-#: templates/filebox-group-display.php:133
-#: templates/filebox-group-display.php:140
+#: templates/filebox-group-display.php:142
+#: templates/filebox-group-display.php:149
 #: templates/filebox-move-form.php:74
 msgid "Move"
 msgstr "Flytta"
 
-#: templates/filebox-group-display.php:134
+#: templates/filebox-group-display.php:143
 msgid "Trash"
 msgstr "Släng"
 
-#: templates/filebox-group-display.php:139
+#: templates/filebox-group-display.php:148
 msgid "Edit folder"
 msgstr "Ändra mapp"
 
-#: templates/filebox-group-display.php:140
+#: templates/filebox-group-display.php:149
 msgid "Move folder"
 msgstr "Flytta mapp"
 
-#: templates/filebox-group-display.php:141
+#: templates/filebox-group-display.php:153
 msgid "Delete"
 msgstr "Radera"
 
@@ -560,6 +361,227 @@ msgstr "Tillagda filer"
 #: templates/filebox-upload-form.php:285
 msgid "Start upload"
 msgstr "Starta uppladdning"
+
+#: includes/admin.php:27
+msgid "Filebox"
+msgstr "Filebox"
+
+#: includes/admin.php:68
+msgid "Settings updated."
+msgstr "Inställningar uppdaterade."
+
+#: includes/filebox.php:26
+msgid "File archive"
+msgstr "Filarkiv"
+
+#: includes/filebox.php:27
+msgid "Imported forum attachments"
+msgstr "Importerade filer från forumet"
+
+#: includes/filebox.php:28
+#, php-format
+msgid "%s folder for imported forum attachments"
+msgstr "%s mapp för importerade bifogade filer från forumet"
+
+#: includes/filebox.php:38
+#: includes/filebox.php:47
+#, php-format
+msgid "%1$s updated in %2$s (%3$s)"
+msgstr "%1$s uppdaterad i %2$s (%3$s)"
+
+#: includes/filebox.php:39
+#, php-format
+msgid "%1$d files updated in %2$s (%3$s)"
+msgstr "%1$d filer uppdaterade i %2$s (%3$s)"
+
+#: includes/filebox.php:40
+#: includes/filebox.php:48
+#, php-format
+msgid "%1$s added in %2$s (%3$s)"
+msgstr "%1$s lades till i %2$s (%3$s)"
+
+#: includes/filebox.php:41
+#, php-format
+msgid "%1$d new files in %2$s (%3$s)"
+msgstr "%1$d nya filer i %2$s (%3$s)"
+
+#: includes/filebox.php:44
+#, php-format
+msgid "[%1$s] One updated file in %4$s"
+msgstr "[%1$s] En uppdaterad fil i %3$s"
+
+#: includes/filebox.php:45
+#, php-format
+msgid "[%1$s] One new file in %4$s"
+msgstr "[%1$s] En ny fil i %4$s"
+
+#: includes/filebox.php:50
+#, php-format
+msgid "[%1$s] %2$d uploaded files"
+msgstr "[%1$s] %2$d upladdade filer"
+
+#: includes/filebox.php:52
+#, php-format
+msgid ""
+"%1$s\n"
+"\n"
+"--------------------\n"
+"\n"
+"You are receiving this email because you're a member of these groups.\n"
+"\n"
+"Login and change you settings to unsubscribe from these emails."
+msgstr ""
+"%1$s--------------------\n"
+"\n"
+"Du får detta e-postmeddelande för att du är medlem i dessa grupper.\n"
+"\n"
+"Logga in och ändra dina inställningar om du vill slippa detta meddelanden."
+
+#: includes/filebox.php:236
+msgid "Folders"
+msgstr "Mappar"
+
+#: includes/filebox.php:254
+msgid "Revision comments"
+msgstr "Versionskommentarer"
+
+#: includes/filebox.php:255
+msgid "Revision comment"
+msgstr "Versionskommentar"
+
+#: includes/filebox.php:285
+msgid "You're about to delete this folder and you can not undo this. Do you want to continue?"
+msgstr "Du håller på att ta bort den här mappen och detta kan du inte ångra. Vill du fortsätta?"
+
+#: includes/filebox.php:286
+msgid "You're about to trash this file and you can undo this. Do you want to continue?"
+msgstr "Du håller på att slänga den här filen i papperskorgen och detta kan du ångra. Vill du fortsätta?"
+
+#: includes/filebox.php:287
+msgid "You're about to delete this file permanently and you can not undo this. Do you want to continue?"
+msgstr "Du håller på att radera den här filen permanent och detta kan du inte ångra. Vill du fortsätta?"
+
+#: includes/filebox.php:288
+#, php-format
+msgid "%s is required"
+msgstr "%s är obligatorisk"
+
+#: includes/filebox.php:289
+msgid "Unknown size"
+msgstr "Okänd storlek"
+
+#: includes/filebox.php:597
+#, php-format
+msgid "%s group folder"
+msgstr "%s gruppmapp"
+
+#: includes/filebox.php:1151
+msgid "Imported from group forum"
+msgstr "Importerad från gruppforum"
+
+#: includes/filebox.php:1541
+msgid "Uploaded new file"
+msgstr "Laddade upp ny fil"
+
+#: includes/filebox.php:1570
+msgid "Wrong arguments. Could not save file."
+msgstr "Felaktiga argument. Kunde inte spara fil."
+
+#: includes/filebox.php:1607
+msgid "Moved to folder"
+msgstr "Flyttad till mapp"
+
+#: includes/filebox.php:1629
+msgid "Error when trying to move file."
+msgstr "Fel vid försök att flytta fil."
+
+#: includes/filebox.php:1632
+msgid "Error when trying to move file. Either you're moving an non-existing file or the folder doesn't exist."
+msgstr "Fel vid försök att flytta fil. Antingen försökte du flytta en fil som inte finns eller till en mapp som inte finns."
+
+#: includes/filebox.php:1635
+msgid "Wrong arguments. Could not move file."
+msgstr "Felaktiga argument. Kunde inte flytta fil."
+
+#: includes/filebox.php:1675
+msgid "Renamed file"
+msgstr "Ändrade filnamn"
+
+#: includes/filebox.php:1691
+msgid "Error when trying to rename file."
+msgstr "Fel vid försök att ändra filnamn."
+
+#: includes/filebox.php:1694
+msgid "Error when trying to rename file. Either you're trying to rename a non-existing file. Or the new name is empty."
+msgstr "Vid vid försök att ändra filnamn. Antingen försökte du ändra en fil som inte finns. Eller så är filnamnet tomt."
+
+#: includes/filebox.php:1803
+msgid "Error when trying to trash file."
+msgstr "Fel vid försök att slänga fil."
+
+#: includes/filebox.php:1806
+msgid "Wrong arguments. Could not trash file."
+msgstr "Felaktiga argument. Kunde inte slänga fil."
+
+#: includes/filebox.php:1834
+msgid "Error when trying to reset file."
+msgstr "Fel vid försök att återställa fil."
+
+#: includes/filebox.php:1837
+msgid "Wrong arguments. Could not reset file."
+msgstr "Felaktiga argument. Kunde inte återställa fil."
+
+#: includes/filebox.php:1869
+msgid "Error when trying to delete file."
+msgstr "Fel vid försök att radera fil."
+
+#: includes/filebox.php:1872
+msgid "Can not delete a non-existing file."
+msgstr "Kan inte radera en fil som inte finns."
+
+#: includes/filebox.php:1875
+msgid "Wrong arguments. Could not delete file."
+msgstr "Felaktiga argument. Kunde inte radera fil."
+
+#: includes/filebox.php:1920
+msgid "Error when trying to create folder. You're probably trying to create a folder with a name that is already taken."
+msgstr "Fel vid försök att skapa en mapp. Du försök antagligen skapa en mapp med ett namn som redan är uppdaget."
+
+#: includes/filebox.php:1923
+msgid "Error when trying to create folder. The name is probably empty."
+msgstr "Fel vid försök att skapa en mapp. Namnet är antagligen tomt."
+
+#: includes/filebox.php:1963
+#: includes/filebox.php:1966
+msgid "Error when trying to move folder."
+msgstr "Fel vid försök att flytta mapp."
+
+#: includes/filebox.php:2006
+msgid "Error when trying to rename folder"
+msgstr "Fel vid försök att byta namn på mapp."
+
+#: includes/filebox.php:2009
+msgid "Error when trying to rename a folder. Folder name is propably empty."
+msgstr "Fel vid försök att byta namn på mapp. Antagligen är namnet tomt."
+
+#: includes/filebox.php:2052
+msgid "Error when trying to delete folder."
+msgstr "Fel vid försök att ta bort mapp."
+
+#: includes/group.php:157
+msgid "Settings saved successfully"
+msgstr "Inställningarna sparades"
+
+#: includes/group.php:159
+msgid "There was an error saving, please try again"
+msgstr "Det blev fel, försök igen"
+
+#: includes/notifier_component.php:23
+msgid "Filebox Notifier"
+msgstr "Dokumentnotifiering"
+
+#~ msgid "%s forum attachments folder"
+#~ msgstr "%s mapp för importerade filer från forumet"
 
 #~ msgid "Changed/uploaded by"
 #~ msgstr "Ändrad/uppladdad av"

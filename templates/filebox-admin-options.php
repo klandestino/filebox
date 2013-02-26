@@ -9,9 +9,17 @@ $fields = array(
 		'textfield',
 		__( 'Folder name for imported forum attachments', 'filebox' )
 	),
+	'topics-folder-desc' => array(
+		'textfield',
+		__( 'Folder description for imported forum attachments', 'filebox' )
+	),
 	'mail-delay' => array(
 		'textfield',
 		__( 'Delay in minutes before e-mails are sent', 'filebox' )
+	),
+	'remove-docs-from-library' => array(
+		'checkbox',
+		__( 'Hide all uploaded documents in media library', 'filebox' )
 	),
 	'multiple-mail-messages-subject' => array(
 		'textfield',
@@ -83,6 +91,8 @@ $fields = array(
 								<input id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="textfield" class="large-text" value="<?php echo esc_attr( $settings[ $field_name ] ); ?>" />
 							<?php elseif( $field[ 0 ] == 'textarea' ) : ?>
 								<textarea id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" class="large-text"><?php echo $settings[ $field_name ]; ?></textarea>
+							<?php elseif( $field[ 0 ] == 'checkbox' ) : ?>
+								<input id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="checkbox" class="checkbox" <?php echo $settings[ $field_name ] ? 'checked="checked"' : ''; ?> />
 							<?php endif; ?>
 
 							<?php if( array_key_exists( 2, $field ) ) : ?>

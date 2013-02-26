@@ -25,7 +25,9 @@ class Filebox {
 		$default = array(
 			'group-tab' => __( 'File archive', 'filebox' ),
 			'topics-folder-name' => __( 'Imported forum attachments', 'filebox' ),
+			'topics-folder-desc' => __( '%s folder for imported forum attachments', 'filebox' ),
 			'mail-delay' => 15,
+			'remove-docs-from-library' => true,
 			// Slugs
 			// 1 year; 2 month
 			'slug-files' => 'documents/%1$s/%2$s',
@@ -150,6 +152,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 
 		// User permissions to read uploaded files revisions
 		add_filter( 'user_has_cap', array( &$this, 'user_has_cap' ), 10, 3 );
+		// Admins shall not see documents attachments in media library
+		add_filter( 'posts_where', array( &$this, 'set_sql_where_limit_for_docs' ) );
 
 		/**
 		 * Add action for ajax-calls
@@ -465,6 +469,33 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	}
 
 	/**
+	 * Limits attachments to not include documents in media library
+	 * @param string $where
+	 * return string
+	 */
+	public function set_sql_where_limit_for_docs( $where ) {
+		global $wpdb;
+
+		if(
+			$this->options[ 'remove-docs-from-library' ]
+			&& (
+				strpos( $_SERVER[ 'REQUEST_URI' ], 'wp-admin/upload.php' )
+				|| (
+					strpos( $_SERVER[ 'REQUEST_URI' ], 'wp-admin/admin-ajax.php' )
+					&& $_POST[ 'action' ] == 'query-attachments'
+				)
+			)
+		) {
+			$where .= sprintf(
+				' AND ( SELECT COUNT( * ) FROM `%1$s` AS docs_parent WHERE docs_parent.post_type = "document" AND docs_parent.ID = `%1$s`.post_parent ) = 0',
+				$wpdb->posts
+			);
+		}
+
+		return $where;
+	}
+
+	/**
 	 * Gets a group name
 	 * @using groups_get_group
 	 * @return string
@@ -598,7 +629,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			if( $folder ) {
 				if( $folder->name != $this->options[ 'topics-folder-name' ] ) {
 					wp_update_term( $folder_id, 'fileboxfolders', array(
-						'name' => $this->options[ 'topics-folder-name' ]
+						'name' => $this->options[ 'topics-folder-name' ],
+						'description' => sprintf( $this->options[ 'topics-folder-desc' ], $this->get_group_name( $group_id ) )
 					) );
 				}
 
@@ -617,7 +649,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			'fileboxfolders',
 			array(
 				'parent' => $parent,
-				'description' => sprintf( __( '%s forum attachments folder', 'filebox' ), $this->get_group_name( $group_id ) )
+				'description' => sprintf( $this->options[ 'topics-folder-desc' ], $this->get_group_name( $group_id ) )
 			)
 		);
 

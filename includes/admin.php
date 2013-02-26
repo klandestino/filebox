@@ -56,6 +56,10 @@ class Filebox_Admin {
 				}
 			}
 
+			if( ! array_key_exists( 'remove-docs-from-library', $_POST ) ) {
+				$settings[ 'remove-docs-from-library' ] = false;
+			}
+
 			update_option( 'filebox', $settings );
 			wp_redirect( add_query_arg( array( 'filebox-updated' => '1' ) ) );
 		} elseif( array_key_exists( 'filebox-updated', $_GET ) ) {

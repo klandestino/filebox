@@ -2,8 +2,10 @@
 global $bp, $filebox;
 
 function get_file_size( $id ) {
-	$bytes = filesize( get_attached_file( $id ) );
+	return get_nice_size( filesize( get_attached_file( $id ) ) );
+}
 
+function get_nice_size( $bytes ) {
 	if( $bytes < 1024 ) {
 		return $bytes . ' B';
 	} elseif( $bytes < 1048576 ) {
@@ -51,6 +53,13 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 
 <?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) && $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ): ?>
 	<ul class="filebox-buttons">
+		<?php if( $documents[ 'meta' ][ 'current' ]->zip ): ?>
+			<li class="download">
+				<a href="<?php echo $documents[ 'meta' ][ 'current' ]->zip->url; ?>" class="button" title="<?php esc_attr_e( 'Download folder as a zip', 'filebox' ) ?>">
+					<?php printf( __( 'Download (zip, %s)', 'filebox' ), get_nice_size( $documents[ 'meta' ][ 'current' ]->zip->size ) ); ?>
+				</a>
+			</li>
+		<?php endif; ?>
 		<li class="upload">
 			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >
 				<?php _e( 'Add files', 'filebox' ); ?>
@@ -138,6 +147,9 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 								<?php if( $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ): ?>
 									<li><a class="filebox-action-edit thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_id=<?php echo $doc->term_id; ?>" title="<?php esc_attr_e( 'Edit folder', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Edit', 'filebox' ); ?></a></li>
 									<li><a class="filebox-action-move thickbox" href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=move&folder_id=<?php echo $doc->term_id; ?>" title="<?php esc_attr_e( 'Move folder', 'filebox' ); ?>" onclick="return false;"><?php _e( 'Move', 'filebox' ); ?></a></li>
+									<?php if( $doc->zip ): ?>
+										<li><a class="filebox-action-download " href="<?php echo $doc->zip->url; ?>" title="<?php esc_attr_e( 'Download folder as a zip', 'filebox' ); ?>"><?php printf( __( 'Download (zip, %s)', 'filebox' ), get_nice_size( $doc->zip->size ) ); ?></a></li>
+									<?php endif; ?>
 									<li><a class="filebox-action-trash" href="javascript://"><?php _e( 'Delete', 'filebox' ); ?></a></li>
 								<?php endif; ?>
 							<?php endif; ?>

@@ -26,6 +26,11 @@ class Filebox {
 			'group-tab' => __( 'File archive', 'filebox' ),
 			'topics-folder-name' => __( 'Imported forum attachments', 'filebox' ),
 			'mail-delay' => 15,
+			// Slugs
+			// 1 year; 2 month
+			'slug-files' => 'documents/%1$s/%2$s',
+			'slug-folders' => 'documents/folders',
+			'folder-zip-folder' => 'document-archives',
 			// On-site notifications
 			// 1 filename/files; 2 folder; 3 group
 			'file-update-notify-single' => __( '%1$s updated in %2$s (%3$s)', 'filebox' ),
@@ -97,6 +102,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	 * @return string
 	 */
 	public static function sanitize_title( $title ) {
+		$title = sanitize_file_name( $title );
+
 		while( preg_match( '/(\.[^\s]+)$/', $title, $suffix ) ) {
 			$title = substr( $title, 0, strrpos( $title, $suffix[ 1 ] ) );
 		}
@@ -124,19 +131,24 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		add_action( 'bbp_new_topic', array( &$this, 'handle_new_forum_topic' ), 1000, 4 );
 		add_action( 'bbp_new_reply', array( &$this, 'handle_new_forum_reply' ), 1000, 5 );
 
-		// Security action for documents so non-members can't view group files
-		add_filter( 'template_include', array( &$this, 'handle_file_loading' ) );
-
 		/**
-		 * WP Document Revisions filters and actions
+		 * Upload directories
 		 */
 
+		// Fix upload directory
+		add_filter( 'upload_dir', array( &$this, 'get_upload_dir' ) );
+		// Security action for documents so non-members can't view group files
+		add_filter( 'template_include', array( &$this, 'load_file' ) );
 		// Fix thumbnail issue if wp-document-revisions is installed
-		add_filter( 'template_include', array( &$this, 'get_correct_thumbnail' ) );
+		add_filter( 'template_include', array( &$this, 'load_thumbnail' ) );
+		// Set correct folder zip url
+		add_filter( 'template_include', array( &$this, 'load_folder_zip' ) );
 
 		/**
 		 * Permissions
 		 */
+
+		// User permissions to read uploaded files revisions
 		add_filter( 'user_has_cap', array( &$this, 'user_has_cap' ), 10, 3 );
 
 		/**
@@ -299,6 +311,45 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	}
 
 	/**
+	 * Get upload directory
+	 * @param array $params
+	 * return array
+	 */
+	public function get_upload_dir( $params ) {
+		//
+		return $params;
+	}
+
+	/**
+	 * Is a loaded post is a document from a group, then apply security check
+	 * @param string $template;
+	 * @return string
+	 */
+	public function load_file( $template ) {
+		global $post, $wp, $wp_query;
+
+		if( is_object( $post ) ) {
+			if( property_exists( $post, 'post_type' ) && property_exists( $post, 'ID' ) ) {
+				if( $post->post_type == 'document' ) {
+					$folder_id = $this->get_folder_by_file( $post->ID );
+
+					if( $folder_id ) {
+						if( ! $this->is_allowed( $folder_id ) ) {
+							$post->post_type = '';
+							$wp_query->posts = array();
+							$wp_query->queried_object = null;
+							$wp->handle_404();
+							return get_404_template();
+						}
+					}
+				}
+			}
+		}
+
+		return $template;
+	}
+
+	/**
 	 * If WP Document Revisions is installed, thumbnail urls
 	 * are rewritten to something uncompatible. Therefore,
 	 * we'll check the request path and translate it to an
@@ -306,7 +357,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	 * @param string $template
 	 * @return string
 	 */
-	public function get_correct_thumbnail( $template ) {
+	public function load_thumbnail( $template ) {
 		global $post;
 
 		if( ! $post && strpos( $_SERVER[ 'REQUEST_URI' ], '/documents/' ) === 0 ) {
@@ -348,26 +399,48 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	}
 
 	/**
-	 * Is a loaded post is a document from a group, then apply security check
-	 * @param string $template;
-	 * @return string
+	 * Serves folder zip files
+	 * @param string $template
+	 * return string
 	 */
-	public function handle_file_loading( $template ) {
-		global $post, $wp, $wp_query;
+	public function load_folder_zip( $template ) {
+		global $post;
 
-		if( is_object( $post ) ) {
-			if( property_exists( $post, 'post_type' ) && property_exists( $post, 'ID' ) ) {
-				if( $post->post_type == 'document' ) {
-					$folder_id = $this->get_folder_by_file( $post->ID );
+		if( ! $post && strpos( $_SERVER[ 'REQUEST_URI' ], $this->options[ 'slug-folders' ] ) ) {
+			$folder = null;
 
-					if( $folder_id ) {
-						if( ! $this->is_allowed( $folder_id ) ) {
-							$post->post_type = '';
-							$wp_query->posts = array();
-							$wp_query->queried_object = null;
-							$wp->handle_404();
-							return get_404_template();
+			if( preg_match( '/\/([0-9]+)\/[^\.]+\.zip$/', $_SERVER[ 'REQUEST_URI' ], $folder_id ) ) {
+				$folder = get_term( $folder_id[ 1 ], 'fileboxfolders' );
+			}
+
+			if( $folder ) {
+				if( $this->is_allowed( $folder->term_id ) ) {
+					$upload = wp_upload_dir();
+					$filename = $this->get_folder_zip_path( $folder->term_id );
+
+					if( is_file( $filename ) ) {
+						status_header( 200 );
+						$mime = wp_check_filetype( $filename );
+
+						if( $mime[ 'type' ] === false && function_exists( 'mime_content_type' ) ) {
+							$mime[ 'type' ] = mime_content_type( $filename );
 						}
+
+						$mimetype = $mime[ 'type' ];
+						$last_modified = gmdate( 'D, d M Y H:i:s', filemtime( $filename ) );
+						$etag = '"' . md5( $last_modified ) . '"';
+
+						header( 'Content-Type: ' . $mimetype );
+						header( 'Content-Length: ' . filesize( $filename ) );
+						header( "Last-Modified: $last_modified GMT" );
+						header( 'ETag: ' . $etag );
+						header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
+
+						ob_clean();
+						flush();
+						@set_time_limit( 0 );
+						readfile( $filename );
+						exit;
 					}
 				}
 			}
@@ -567,7 +640,13 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	 * @return object
 	 */
 	public function get_folder( $folder_id ) {
-		return get_term( $folder_id, 'fileboxfolders' );
+		$folder = get_term( $folder_id, 'fileboxfolders' );
+
+		if( $folder ) {
+			$folder->zip = $this->get_folder_zip( $folder_id );
+		}
+
+		return $folder;
 	}
 
 	/**
@@ -632,7 +711,6 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	 */
 	public function get_subfolders( $folder_id ) {
 		$response = array();
-
 		$folders = get_terms( 'fileboxfolders', array(
 			'parent' => $folder_id,
 			'hide_empty' => false,
@@ -644,6 +722,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				'parent' => $folder->term_id,
 				'hide_empty' => false
 			) ) );
+
+			$folder->zip = $this->get_folder_zip( $folder->term_id );
 			$response[ $folder->term_id ] = $folder;
 		}
 
@@ -766,6 +846,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			$results[ $files->post->ID ] = $files->post;
 		}
 
+		wp_reset_postdata();
+
 		return $results;
 	}
 
@@ -837,6 +919,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			$results[ $files->post->ID ] = $files->post;
 		}
 
+		wp_reset_postdata();
+
 		return $results;
 	}
 
@@ -857,6 +941,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			$query->the_post();
 			$result[] = $query->post;
 		}
+
+		wp_reset_postdata();
 
 		return $result;
 	}
@@ -1003,6 +1089,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					$attachments = array_merge( $attachments, $this->get_attachments( $reply_id ) );
 				}
 
+				wp_reset_postdata();
+
 				foreach( $attachments as $attachment ) {
 					$post_query = new WP_Query( array(
 						'post_type' => 'document',
@@ -1037,7 +1125,117 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 							}
 						}
 					}
+
+					wp_reset_postdata();
 				}
+			}
+		}
+	}
+
+	/**
+	 * Returns zip info-data
+	 * $zip->url, $zip->size
+	 * @param int $folder_id
+	 * @return object
+	 */
+	public function get_folder_zip( $folder_id ) {
+		$upload = wp_upload_dir();
+		$folder = get_term( $folder_id, 'fileboxfolders' );
+
+		if( $folder ) {
+			$filename = $this->get_folder_zip_path( $folder_id );
+
+			if( is_file( $filename ) ) {
+				$zip = new stdClass();
+				$zip->url = sprintf( '%s/%s.zip',
+					home_url( sprintf( '/%s/%s',
+						$this->options[ 'slug-folders' ],
+						$folder_id
+					) ),
+					$folder->slug
+				);
+				$zip->size = filesize( $filename );
+
+				return $zip;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns a local path to specified folder zip
+	 * @param int $folder_id
+	 * return atring
+	 */
+	public function get_folder_zip_path( $folder_id ) {
+		$upload = wp_upload_dir();
+		$path = sprintf( '%s/%s',
+			$upload[ 'basedir' ],
+			$this->options[ 'folder-zip-folder' ]
+		);
+
+		if( ! is_dir( $path ) ) {
+			mkdir( $path );
+		}
+
+		$path = sprintf( '%s/%s.zip', $path, $folder_id );
+
+		return $path;
+	}
+
+	/**
+	 * Generates a zip stored in uploads folder with all files attached to specified term.
+	 * @param int $folder_id
+	 * @return void
+	 */
+	public function generate_folder_zip( $folder_id ) {
+		$zip = new ZipArchive();
+		$filename = $this->get_folder_zip_path( $folder_id );
+
+		if( is_file( $filename ) ) {
+			unlink( $filename );
+		}
+
+		if( $zip->open( $filename, ZIPARCHIVE::CREATE ) ) {
+			$this->generate_folder_zip_files( $zip, $folder_id );
+		}
+
+		$zip->close();
+	}
+
+	/**
+	 * Adds folders and folders' files in specified zip
+	 * @param object $zip
+	 * @param int $folder_id
+	 * @return void
+	 */
+	public function generate_folder_zip_files( $zip, $folder_id, $current_zip_dir = '' ) {
+		$folder_name = sanitize_title( sanitize_file_name( $this->get_folder_name( $folder_id ) ) );
+		$files = $this->get_files( $folder_id );
+		$subfolders = $this->get_subfolders( $folder_id );
+
+		if( $folder_name && ( count( $subfolders ) || count( $files ) ) ) {
+			$folder_name = $current_zip_dir . $folder_name;
+			$zip->addEmptyDir( $folder_name );
+
+			foreach( $files as $file ) {
+				if( is_array( $file->attachments ) ) {
+					$attachment = reset( $file->attachments );
+					if( is_object( $attachment ) ) {
+						$filename = get_attached_file( $attachment->ID );
+						$zip->addFile( $filename, sprintf( '%s/%s.%s',
+							$folder_name,
+							self::sanitize_title( $file->post_title ),
+							substr( $filename, strpos( $filename, '.' ) + 1 )
+						) );
+					}
+				}
+			}
+
+			foreach( $subfolders as $subfolder ) {
+				$this->generate_folder_zip( $subfolder->term_id );
+				$this->generate_folder_zip_files( $zip, $subfolder->term_id, $folder_name . '/' );
 			}
 		}
 	}
@@ -1188,6 +1386,10 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			}
 
 			if( $args[ 'folder_id' ] ) {
+				if( ! is_file( $this->get_folder_zip_path( $args[ 'folder_id' ] ) ) ) {
+					$this->generate_folder_zip( $args[ 'folder_id' ] );
+				}
+
 				$response[ 'folders' ] = $this->get_subfolders( $args[ 'folder_id' ] );
 				$response[ 'files' ] = $this->get_files( $args[ 'folder_id' ] );
 				$response[ 'meta' ] = array(
@@ -1319,11 +1521,16 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$response[ 'file_id' ] = $file_id;
 				$response[ 'file_name' ] = $file[ 'name' ];
 
+				$group_id = $this->get_group_by_folder( $args[ 'folder_id' ] );
+				$group_folder_id = $this->get_group_folder( $group_id );
+
+				$this->generate_folder_zip( $group_folder_id );
+
 				do_action(
 					'filebox_file_upload',
 					$this->get_file( $file_id ),
 					$this->get_folder( $args[ 'folder_id' ] ),
-					groups_get_group( array( 'group_id' => $this->get_group_by_folder( $args[ 'folder_id' ] ) ) ),
+					groups_get_group( array( 'group_id' => $group_id ) ),
 					$doc ? true : false
 				);
 			}
@@ -1373,11 +1580,16 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					( int ) $args[ 'folder_id' ],
 					'fileboxfolders'
 				) ) {
+					$group_id = $this->get_group_by_folder( $args[ 'folder_id' ] );
+					$group_folder_id = $this->get_group_folder( $group_id );
+
+					$this->generate_folder_zip( $group_folder_id );
+
 					do_action(
 						'filebox_move_file',
 						$this->get_file( $args[ 'file_id' ] ),
 						$this->get_folder( $args[ 'folder_id' ] ),
-						groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
+						groups_get_group( array( 'group_id' => $group_id ) )
 					);
 
 					$response = $args;
@@ -1430,11 +1642,16 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			) ) ) {
 				$this->record_change( $file->ID, __( 'Renamed file', 'filebox' ) );
 
+				$group_id = $this->get_group_by_file( $args[ 'file_id' ] );
+				$group_folder_id = $this->get_group_folder( $group_id );
+
+				$this->generate_folder_zip( $group_folder_id );
+
 				do_action(
 					'filebox_rename_file',
 					$this->get_file( $file->ID ),
 					$this->get_folder_by_file( $file->ID ),
-					groups_get_group( array( 'group_id' => $this->get_group_folder( $args[ 'folder_id' ] ) ) )
+					groups_get_group( array( 'group_id' => $group_id ) )
 				);
 
 				$response = $args;
@@ -1545,6 +1762,11 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				'post_status' => 'trash'
 			) ) ) {
 				$response[ 'file_id' ] = $args[ 'file_id' ];
+
+				$group_id = $this->get_group_by_file( $args[ 'file_id' ] );
+				$group_folder_id = $this->get_group_folder( $group_id );
+
+				$this->generate_folder_zip( $group_folder_id );
 			} else {
 				$response[ 'error' ] = __( 'Error when trying to trash file.', 'filebox' );
 			}
@@ -1700,6 +1922,11 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			if( is_array( $folder ) ) {
 				$response[ 'folder_id' ] = $folder[ 'term_id' ];
 				$response[ 'folder_parent' ] = $args[ 'folder_parent' ];
+
+				$group_id = $this->get_group_by_folder( $args[ 'folder_id' ] );
+				$group_folder_id = $this->get_group_folder( $group_id );
+
+				$this->generate_folder_zip( $group_folder_id );
 			} else {
 				$response[ 'error' ] = __( 'Error when trying to move folder.', 'filebox' );
 			}
@@ -1783,8 +2010,12 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			) );
 		}
 
+		$group_id = $this->get_group_by_folder( $args[ 'folder_id' ] );
+		$group_folder_id = $this->get_group_folder( $group_id );
+
 		if( wp_delete_term( $args[ 'folder_id' ], 'fileboxfolders' ) ) {
 			$response[ 'folder_id' ] = $args[ 'folder_id' ];
+			$this->generate_folder_zip( $group_folder_id );
 		} else {
 			$response[ 'error' ] = __( 'Error when trying to delete folder.', 'filebox' );
 		}

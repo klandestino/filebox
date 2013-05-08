@@ -746,7 +746,9 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 		$folders = get_terms( 'fileboxfolders', array(
 			'parent' => $folder_id,
 			'hide_empty' => false,
-			'pad_counts' => true
+			'pad_counts' => true,
+			'orderby' => 'name',
+			'order' => 'ASC'
 		) );
 
 		foreach( $folders as $folder ) {
@@ -865,7 +867,9 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					'include_children' => $include_children
 				)
 			),
-			'posts_per_page' => -1
+			'posts_per_page' => -1,
+			'orderby' => 'title',
+			'order' => 'ASC'
 		) );
 
 		while( $files->have_posts() ) {
@@ -1440,9 +1444,6 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				);
 			}
 		}
-
-		asort( $response[ 'folders' ] );
-		asort( $response[ 'files' ] );
 
 		$response = apply_filters( 'filebox_list_files_and_folders_response', $response, $args );
 

@@ -51,7 +51,7 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 	<?php endif; ?>
 </ul>
 
-<?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) && $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ): ?>
+<?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
 	<ul class="filebox-buttons">
 		<?php if( $documents[ 'meta' ][ 'current' ]->zip ): ?>
 			<li class="download">
@@ -60,16 +60,18 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 				</a>
 			</li>
 		<?php endif; ?>
-		<li class="upload">
-			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >
-				<?php _e( 'Add files', 'filebox' ); ?>
-			</a>
-		</li>
-		<li class="folder">
-			<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add folder', 'filebox' ) ?>" onclick="return false;" >
-				<?php _e( 'Add folder', 'filebox' ); ?>
-			</a>
-		</li>
+		<?php if( $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ) : ?>
+			<li class="upload">
+				<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >
+					<?php _e( 'Add files', 'filebox' ); ?>
+				</a>
+			</li>
+			<li class="folder">
+				<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add folder', 'filebox' ) ?>" onclick="return false;" >
+					<?php _e( 'Add folder', 'filebox' ); ?>
+				</a>
+			</li>
+		<?php endif; ?>
 	</ul>
 <?php endif; ?>
 

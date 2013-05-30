@@ -81,7 +81,7 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 			<th class="filebox-checkall"></th>
 			<th class="filebox-title"><?php _e( 'Title', 'filebox' ); ?></th>
 			<th class="filebox-changed"><?php _e( 'Changed', 'filebox' ); ?></th>
-			<th class="filebox-owner"><?php _e( 'Uploaded by', 'filebox' ); ?></th>
+			<th class="filebox-owner"><?php _e( 'Latest change by', 'filebox' ); ?></th>
 			<th class="filebox-size"><?php _e( 'Size', 'filebox' ); ?></th>
 		</tr>
 	</thead>

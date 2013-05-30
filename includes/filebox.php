@@ -1532,15 +1532,26 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 
 				wp_update_post( array(
 					'ID' => $file_id,
-					'post_content' => $attach_id
+					'post_content' => $attach_id,
+					'post_author' => array_key_exists( 'user_id', $args ) ? $args[ 'user_id' ] : get_current_user_id()
 				) );
 
-				$this->record_change(
-					$file_id,
-					array_key_exists( 'comment', $args )
-						? $args[ 'comment' ]
-						: __( 'Uploaded new file', 'filebox' )
-				);
+				// check if this is the first time the file has been uploaded, if so add term "Uploaded new file", else add term "Updated file"
+				if ( ! has_term( __( 'Uploaded new file', 'filebox' ), 'fileboxcommits', $file_id ) ) :
+					$this->record_change(
+						$file_id,
+						array_key_exists( 'comment', $args )
+							? $args[ 'comment' ]
+							: __( 'Uploaded new file', 'filebox' )
+					);
+				else :
+					$this->record_change(
+						$file_id,
+						array_key_exists( 'comment', $args )
+							? $args[ 'comment' ]
+							: __( 'Updated file', 'filebox' )
+					);
+				endif;
 
 				require_once( ABSPATH . 'wp-admin/includes/image.php');
 

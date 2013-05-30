@@ -10,9 +10,9 @@
 	<table cellspacing="0" cellpadding="0" class="history">
 		<thead>
 			<tr>
-				<th><?php _e( 'Change date', 'filebox' ); ?><br/><?php _e( 'Changed by', 'filebox' ); ?></th>
-				<th><?php _e( 'Comment', 'filebox' ); ?><br/><?php _e( 'Folder', 'filebox' ); ?></th>
-				<th><?php _e( 'Title', 'filebox' ); ?><br/><?php _e( 'Description', 'filebox' ); ?></th>
+				<th><?php _e( 'Changed by', 'filebox' ); ?></th>
+				<th><?php _e( 'Folder', 'filebox' ); ?></th>
+				<th><?php _e( 'Description', 'filebox' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>

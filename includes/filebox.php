@@ -1537,7 +1537,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				) );
 
 				// check if this is the first time the file has been uploaded, if so add term "Uploaded new file", else add term "Updated file"
-				if ( ! has_term( __( 'Uploaded new file', 'filebox' ), 'fileboxcommits', $file_id ) ) :
+				if ( ! $doc ) :
 					$this->record_change(
 						$file_id,
 						array_key_exists( 'comment', $args )

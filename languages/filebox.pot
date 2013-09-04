@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-30 12:27+0100\n"
-"PO-Revision-Date: 2013-05-30 12:27+0100\n"
+"POT-Creation-Date: 2013-09-04 13:14+0100\n"
+"PO-Revision-Date: 2013-09-04 13:14+0100\n"
 "Last-Translator: Alexander Berthelsen <alexander.berthelsen@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
-"X-Poedit-KeywordsList: __;_e\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: __;_e;esc_attr_e\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Imported from group forum"
 msgstr ""
 
-#: includes/filebox.php:1540 includes/filebox.php:1545
+#: includes/filebox.php:1545
 msgid "Uploaded new file"
 msgstr ""
 
@@ -352,6 +352,10 @@ msgstr ""
 msgid "File description"
 msgstr ""
 
+#: templates/filebox-file-form.php:17
+msgid "Save file"
+msgstr ""
+
 #: templates/filebox-file-form.php:19 templates/filebox-folder-form.php:20
 msgid "Required"
 msgstr ""
@@ -372,9 +376,18 @@ msgstr ""
 msgid "Folder description"
 msgstr ""
 
+#: templates/filebox-folder-form.php:18
+msgid "Save folder"
+msgstr ""
+
 #: templates/filebox-group-display.php:50
 #, php-format
 msgid "Trash (%d)"
+msgstr ""
+
+#: templates/filebox-group-display.php:58
+#: templates/filebox-group-display.php:153
+msgid "Download folder as a zip"
 msgstr ""
 
 #: templates/filebox-group-display.php:59
@@ -383,10 +396,12 @@ msgstr ""
 msgid "Download (zip, %s)"
 msgstr ""
 
+#: templates/filebox-group-display.php:65
 #: templates/filebox-group-display.php:66
 msgid "Add files"
 msgstr ""
 
+#: templates/filebox-group-display.php:70
 #: templates/filebox-group-display.php:71
 msgid "Add folder"
 msgstr ""
@@ -435,6 +450,10 @@ msgid "Delete permanently"
 msgstr ""
 
 #: templates/filebox-group-display.php:140
+msgid "File history"
+msgstr ""
+
+#: templates/filebox-group-display.php:140
 msgid "Show history"
 msgstr ""
 
@@ -448,12 +467,24 @@ msgid "Upload new version"
 msgstr ""
 
 #: templates/filebox-group-display.php:144
-#: templates/filebox-group-display.php:151
+msgid "Move file"
+msgstr ""
+
+#: templates/filebox-group-display.php:144
+#: templates/filebox-group-display.php:151 templates/filebox-move-form.php:74
 msgid "Move"
 msgstr ""
 
 #: templates/filebox-group-display.php:145
 msgid "Trash"
+msgstr ""
+
+#: templates/filebox-group-display.php:150
+msgid "Edit folder"
+msgstr ""
+
+#: templates/filebox-group-display.php:151
+msgid "Move folder"
 msgstr ""
 
 #: templates/filebox-group-display.php:155
@@ -530,6 +561,10 @@ msgstr ""
 msgid "or"
 msgstr ""
 
+#: templates/filebox-upload-form.php:263
+msgid "Select Files"
+msgstr ""
+
 #: templates/filebox-upload-form.php:270
 #, php-format
 msgid "Maximum upload file size: %d%s."
@@ -543,4 +578,8 @@ msgstr ""
 
 #: templates/filebox-upload-form.php:280
 msgid "Added files"
+msgstr ""
+
+#: templates/filebox-upload-form.php:285
+msgid "Start upload"
 msgstr ""

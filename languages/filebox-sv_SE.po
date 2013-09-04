@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-30 12:27+0100\n"
-"PO-Revision-Date: 2013-05-30 12:29+0100\n"
+"POT-Creation-Date: 2013-09-04 13:14+0100\n"
+"PO-Revision-Date: 2013-09-04 13:14+0100\n"
 "Last-Translator: Alexander Berthelsen <alexander.berthelsen@gmail.com>\n"
 "Language-Team: Klandestino\n"
 "Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #: includes/admin.php:26 templates/filebox-admin-options.php:78
 msgid "Filebox Settings"
@@ -152,7 +152,7 @@ msgstr "%s gruppmapp"
 msgid "Imported from group forum"
 msgstr "Importerad från gruppforum"
 
-#: includes/filebox.php:1540 includes/filebox.php:1545
+#: includes/filebox.php:1545
 msgid "Uploaded new file"
 msgstr "Laddade upp filen"
 
@@ -367,6 +367,10 @@ msgstr "Filnamn"
 msgid "File description"
 msgstr "Filbeskrivning"
 
+#: templates/filebox-file-form.php:17
+msgid "Save file"
+msgstr "Spara fil"
+
 #: templates/filebox-file-form.php:19 templates/filebox-folder-form.php:20
 msgid "Required"
 msgstr "Obligatoriskt."
@@ -387,10 +391,19 @@ msgstr "Mappnamn"
 msgid "Folder description"
 msgstr "Mappbeskrivning"
 
+#: templates/filebox-folder-form.php:18
+msgid "Save folder"
+msgstr "Spara mapp"
+
 #: templates/filebox-group-display.php:50
 #, php-format
 msgid "Trash (%d)"
 msgstr "Papperskorg (%d)"
+
+#: templates/filebox-group-display.php:58
+#: templates/filebox-group-display.php:153
+msgid "Download folder as a zip"
+msgstr "Ladda hem mapp som zip"
 
 #: templates/filebox-group-display.php:59
 #: templates/filebox-group-display.php:153
@@ -398,10 +411,12 @@ msgstr "Papperskorg (%d)"
 msgid "Download (zip, %s)"
 msgstr "Ladda hem (zip, %s)"
 
+#: templates/filebox-group-display.php:65
 #: templates/filebox-group-display.php:66
 msgid "Add files"
 msgstr "Lägg till filer"
 
+#: templates/filebox-group-display.php:70
 #: templates/filebox-group-display.php:71
 msgid "Add folder"
 msgstr "Lägg till mapp"
@@ -450,6 +465,10 @@ msgid "Delete permanently"
 msgstr "Ta bort permanent"
 
 #: templates/filebox-group-display.php:140
+msgid "File history"
+msgstr "Filhistorik"
+
+#: templates/filebox-group-display.php:140
 msgid "Show history"
 msgstr "Visa historik"
 
@@ -463,13 +482,25 @@ msgid "Upload new version"
 msgstr "Ladda upp ny version"
 
 #: templates/filebox-group-display.php:144
-#: templates/filebox-group-display.php:151
+msgid "Move file"
+msgstr "Flytta fil"
+
+#: templates/filebox-group-display.php:144
+#: templates/filebox-group-display.php:151 templates/filebox-move-form.php:74
 msgid "Move"
 msgstr "Flytta"
 
 #: templates/filebox-group-display.php:145
 msgid "Trash"
 msgstr "Släng"
+
+#: templates/filebox-group-display.php:150
+msgid "Edit folder"
+msgstr "Ändra mapp"
+
+#: templates/filebox-group-display.php:151
+msgid "Move folder"
+msgstr "Flytta mapp"
 
 #: templates/filebox-group-display.php:155
 msgid "Delete"
@@ -548,6 +579,10 @@ msgstr "Släpp filer här"
 msgid "or"
 msgstr "eller"
 
+#: templates/filebox-upload-form.php:263
+msgid "Select Files"
+msgstr "Välj filer"
+
 #: templates/filebox-upload-form.php:270
 #, php-format
 msgid "Maximum upload file size: %d%s."
@@ -566,8 +601,9 @@ msgstr ""
 msgid "Added files"
 msgstr "Tillagda filer"
 
-#~ msgid "Save file"
-#~ msgstr "Spara fil"
+#: templates/filebox-upload-form.php:285
+msgid "Start upload"
+msgstr "Starta uppladdning"
 
 #~ msgid "Change date"
 #~ msgstr "Ändrad"
@@ -575,32 +611,8 @@ msgstr "Tillagda filer"
 #~ msgid "Comment"
 #~ msgstr "Kommentar"
 
-#~ msgid "Save folder"
-#~ msgstr "Spara mapp"
-
-#~ msgid "Download folder as a zip"
-#~ msgstr "Ladda hem mapp som zip"
-
 #~ msgid "Uploaded by"
 #~ msgstr "Uppladdad av"
-
-#~ msgid "File history"
-#~ msgstr "Filhistorik"
-
-#~ msgid "Move file"
-#~ msgstr "Flytta fil"
-
-#~ msgid "Edit folder"
-#~ msgstr "Ändra mapp"
-
-#~ msgid "Move folder"
-#~ msgstr "Flytta mapp"
-
-#~ msgid "Select Files"
-#~ msgstr "Välj filer"
-
-#~ msgid "Start upload"
-#~ msgstr "Starta uppladdning"
 
 #~ msgid "%s forum attachments folder"
 #~ msgstr "%s mapp för importerade filer från forumet"

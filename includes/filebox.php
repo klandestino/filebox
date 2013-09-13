@@ -1223,11 +1223,16 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	}
 
 	/**
-	 * Generates a zip stored in uploads folder with all files attached to specified term.
-	 * @param int $folder_id
+	 * Generates a zip stored in uploads folder with all files attached to
+	 * specified term.
+	 * DONT CALL THIS FUNCTION DIRECTLY. USE generate_folder_zip_async INSTEAD.
+	 * This function touches a lock-file that ensures no duplicates. Altough,
+	 * $force will override this.
+	 * @param array|int $args Argument array or the folder id
+	 * @param boolean $force Override lock
 	 * @return void
 	 */
-	public function generate_folder_zip( $args ) {
+	public function generate_folder_zip( $args, $force = false ) {
 		set_time_limit( 0 );
 		$now = time();
 
@@ -1235,36 +1240,45 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			$folder_id = $args;
 		} else {
 			$args = $this->get_ajax_arguments( $args, array(
-				'folder_id' => 0
+				'folder_id' => 0,
+				'force' => false
 			), 'generate_folder_zip' );
 
 			$folder_id = $args[ 'folder_id' ];
+			$force = $args[ 'force' ];
 		}
 
-		if( $folder_id ) {
-			$zip = new ZipArchive();
-			$filename = preg_replace(
+		if( $folder_id && ( ! $this->generate_folder_zip_exists( $folder_id ) || $force ) ) {
+			$lock = preg_replace(
 				'/\.zip$/',
-				sprintf( '.%s.zip', $now ),
+				'.lock',
 				$this->get_folder_zip_path( $folder_id )
 			);
-
-			if( is_file( $filename ) ) {
-				unlink( $filename );
-			}
+			touch( $lock );
+			$zip = new ZipArchive();
+			$filename = preg_replace(
+				'/\.lock$/',
+				sprintf( '.%s.zip', $now ),
+				$lock
+			);
 
 			if( $zip->open( $filename, ZIPARCHIVE::CREATE ) ) {
-				$this->generate_folder_zip_files( $zip, $folder_id );
+				$this->generate_folder_zip_files( $zip, $folder_id, '', $force );
 			}
 
 			$zip->close();
-			$target = $this->get_folder_zip_path( $folder_id );
 
-			if( file_exists( $target ) ) {
-				unlink( $target );
+			if( file_exists( $filename ) ) {
+				$target = $this->get_folder_zip_path( $folder_id );
+
+				if( file_exists( $target ) ) {
+					unlink( $target );
+				}
+
+				symlink( $filename, $target );
 			}
 
-			symlink( $filename, $target );
+			unlink( $lock );
 
 			foreach( glob( preg_match(
 				'/\.zip$/', '.*.zip', $this->get_folder_zip_path( $folder_id )
@@ -1281,26 +1295,51 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	}
 
 	/**
+	 * Checks of a generated folder zip file exists or a lock.
+	 * @param int $folder_id
+	 * @return boolean
+	 */
+	public function generate_folder_zip_exists( $folder_id ) {
+		$filename = $this->get_folder_zip_path( $folder_id );
+		$files = glob( preg_replace(
+			'/\.zip$/',
+			'.*.zip',
+			$filename
+		) );
+		$files = array_merge( $files, glob( preg_replace(
+			'/\.zip$/',
+			'.lock',
+			$filename
+		) ) );
+
+		return( is_array( $files ) && count( $files ) );
+	}
+
+	/**
 	 * Starts an async call to the generate_folder_zip via an ajax request.
 	 * @param int $folder_id
+	 * @param boolean $force If a zip is already being created, a true here will
+	 * force a new creation.
 	 * @return void
 	 */
-	public function generate_folder_zip_async( $folder_id ) {
-		global $ajaxurl;
-		$nonce = wp_create_nonce( 'generate_folder_zip' );
-		$cookies = array();
+	public function generate_folder_zip_async( $folder_id, $force = false ) {
+		if( ! $this->generate_folder_zip_exists( $folder_id ) || $force ) {
+			$nonce = wp_create_nonce( 'generate_folder_zip' );
+			$cookies = array();
 
-		foreach( $_COOKIE as $key => $val ) {
-			$cookies[] = sprintf( '%s=%s', $key, urlencode( $val ) );
+			foreach( $_COOKIE as $key => $val ) {
+				$cookies[] = sprintf( '%s=%s', $key, urlencode( $val ) );
+			}
+
+			exec( sprintf(
+				'curl -b "%s" -d "action=filebox_generate_zip" -d "security=%s" -d "folder_id=%s" -d "force=%s" "%s" > /dev/null 2>&1 &',
+				implode( ';', $cookies ),
+				$nonce,
+				$folder_id,
+				$force,
+				admin_url( 'admin-ajax.php' )
+			) );
 		}
-
-		exec( sprintf(
-			'curl -b "%s" -d "action=filebox_generate_zip" -d "security=%s" -d "folder_id=%s" "%s" > /dev/null 2>&1 &',
-			implode( ';', $cookies ),
-			$nonce,
-			$folder_id,
-			admin_url( 'admin-ajax.php' )
-		) );
 	}
 
 	/**
@@ -1309,7 +1348,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	 * @param int $folder_id
 	 * @return void
 	 */
-	public function generate_folder_zip_files( $zip, $folder_id, $current_zip_dir = '' ) {
+	public function generate_folder_zip_files( $zip, $folder_id, $current_zip_dir = '', $force = false ) {
 		$folder_name = sanitize_title( sanitize_file_name( $this->get_folder_name( $folder_id ) ) );
 		$files = $this->get_files( $folder_id );
 		$subfolders = $this->get_subfolders( $folder_id );
@@ -1333,8 +1372,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			}
 
 			foreach( $subfolders as $subfolder ) {
-				$this->generate_folder_zip( $subfolder->term_id );
-				$this->generate_folder_zip_files( $zip, $subfolder->term_id, $folder_name . '/' );
+				$this->generate_folder_zip( $subfolder->term_id, $force );
+				$this->generate_folder_zip_files( $zip, $subfolder->term_id, $folder_name . '/', $force );
 			}
 		}
 	}
@@ -1485,9 +1524,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			}
 
 			if( $args[ 'folder_id' ] ) {
-				if( ! is_file( $this->get_folder_zip_path( $args[ 'folder_id' ] ) ) ) {
-					$this->generate_folder_zip_async( $args[ 'folder_id' ] );
-				}
+				$this->generate_folder_zip_async( $args[ 'folder_id' ] );
 
 				$response[ 'folders' ] = $this->get_subfolders( $args[ 'folder_id' ] );
 				$response[ 'files' ] = $this->get_files( $args[ 'folder_id' ] );
@@ -1631,7 +1668,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$group_id = $this->get_group_by_folder( $args[ 'folder_id' ] );
 				$group_folder_id = $this->get_group_folder( $group_id );
 
-				$this->generate_folder_zip_async( $group_folder_id );
+				$this->generate_folder_zip_async( $group_folder_id, true );
 
 				do_action(
 					'filebox_file_upload',
@@ -1690,7 +1727,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					$group_id = $this->get_group_by_folder( $args[ 'folder_id' ] );
 					$group_folder_id = $this->get_group_folder( $group_id );
 
-					$this->generate_folder_zip_async( $group_folder_id );
+					$this->generate_folder_zip_async( $group_folder_id, true );
 
 					do_action(
 						'filebox_move_file',
@@ -1752,7 +1789,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$group_id = $this->get_group_by_file( $args[ 'file_id' ] );
 				$group_folder_id = $this->get_group_folder( $group_id );
 
-				$this->generate_folder_zip_async( $group_folder_id );
+				$this->generate_folder_zip_async( $group_folder_id, true );
 
 				do_action(
 					'filebox_rename_file',
@@ -1873,7 +1910,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$group_id = $this->get_group_by_file( $args[ 'file_id' ] );
 				$group_folder_id = $this->get_group_folder( $group_id );
 
-				$this->generate_folder_zip_async( $group_folder_id );
+				$this->generate_folder_zip_async( $group_folder_id, true );
 			} else {
 				$response[ 'error' ] = __( 'Error when trying to trash file.', 'filebox' );
 			}
@@ -2033,7 +2070,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				$group_id = $this->get_group_by_folder( $args[ 'folder_id' ] );
 				$group_folder_id = $this->get_group_folder( $group_id );
 
-				$this->generate_folder_zip_async( $group_folder_id );
+				$this->generate_folder_zip_async( $group_folder_id, true );
 			} else {
 				$response[ 'error' ] = __( 'Error when trying to move folder.', 'filebox' );
 			}
@@ -2122,7 +2159,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 
 		if( wp_delete_term( $args[ 'folder_id' ], 'fileboxfolders' ) ) {
 			$response[ 'folder_id' ] = $args[ 'folder_id' ];
-			$this->generate_folder_zip_async( $group_folder_id );
+			$this->generate_folder_zip_async( $group_folder_id, true );
 		} else {
 			$response[ 'error' ] = __( 'Error when trying to delete folder.', 'filebox' );
 		}

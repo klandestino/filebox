@@ -1278,7 +1278,9 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				symlink( $filename, $target );
 			}
 
-			unlink( $lock );
+			if( file_exists( $lock ) ) {
+				unlink( $lock );
+			}
 
 			foreach( glob( preg_match(
 				'/\.zip$/', '.*.zip', $this->get_folder_zip_path( $folder_id )
@@ -1719,6 +1721,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 					__( 'Moved to folder', 'filebox' )
 				);
 
+				$old_folder_id = $this->get_folder_by_file( $args[ 'file_id' ] );
+
 				if( wp_set_object_terms(
 					$args[ 'file_id' ],
 					( int ) $args[ 'folder_id' ],
@@ -1733,6 +1737,7 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 						'filebox_move_file',
 						$this->get_file( $args[ 'file_id' ] ),
 						$this->get_folder( $args[ 'folder_id' ] ),
+						$old_folder_id,
 						groups_get_group( array( 'group_id' => $group_id ) )
 					);
 

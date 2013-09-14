@@ -14,6 +14,9 @@ class Filebox_Notifier {
 		// Listen for uploads
 		add_action( 'filebox_file_upload', array( Filebox_Notifier, 'notify_file_upload' ), 10, 4 );
 
+		// Listen for file moving
+		add_action( 'filebox_move_file', array( Filebox_Notifier, 'notify_file_move' ), 10, 4 );
+
 		// Listen for file removal
 		#add_action( 'trash_post', array( Filebox_Notifier, 'handle_file_removal' ) );
 		#add_action( 'wp_trash_post', array( Filebox_Notifier, 'handle_file_removal' ) );
@@ -124,6 +127,37 @@ class Filebox_Notifier {
 			);
 		}
 	}
+
+	/**
+	 * Corrects file-upload notifications folder-id when moving files.
+	 * @param object $file
+	 * @param object $folder
+	 * @param int $old_folder_id
+	 * @param object $group
+	 * @return boolean
+	 */
+	public static function notify_file_move( $file, $folder, $old_folder_id, $group ) {
+		global $wpdb, $bp;
+
+		foreach( array(
+			'file_upload_' . $old_folder_id => 'file_upload_' . $folder->term_id,
+			'file_update_' . $old_folder_id => 'file_update_' . $folder->term_id
+		) as $from => $to ) {
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE {$bp->core->table_name_notifications}
+					SET component_action = %s
+					WHERE item_id = %d
+						AND component_name = 'filebox_notifier'
+						AND component_action = %s",
+				$to,
+				$file->ID,
+				$from
+			) );
+		}
+	}
+
+	/**
+	 */
 
 	/**
 	 * Handles folder listning and deletes notifications by folder

@@ -94,15 +94,15 @@ class Filebox_Notifier_Mailer {
 					break;
 			}
 
-			if( count( $messages ) > 1 ) {
-				$subject = sprintf( $filebox->options[ 'multiple-mail-messages-subject' ], $blogname, count( $messages ) );
-			}
+		}
+		if( count( $messages ) > 1 ) {
+			$subject = sprintf( $filebox->options[ 'multiple-mail-messages-subject' ], $blogname, count( $messages ) );
+		}
 
-			$message = sprintf( $filebox->options[ 'mail-message-wrap' ], implode( "\n\n--------------------\n\n", $messages ) );
+		$message = sprintf( $filebox->options[ 'mail-message-wrap' ], implode( "\n\n--------------------\n\n", $messages ) );
 
-			if( wp_mail( $user->user_email, $subject, $message ) ) {
-				delete_user_meta( $user_id, 'filebox_notifier_emails' );
-			}
+		if( wp_mail( $user->user_email, $subject, $message ) ) {
+			delete_user_meta( $user_id, 'filebox_notifier_emails' );
 		}
 	}
 

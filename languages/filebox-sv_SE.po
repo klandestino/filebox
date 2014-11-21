@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-04 13:14+0100\n"
-"PO-Revision-Date: 2013-09-04 13:14+0100\n"
+"PO-Revision-Date: 2014-11-21 14:31+0100\n"
 "Last-Translator: Alexander Berthelsen <alexander.berthelsen@gmail.com>\n"
 "Language-Team: Klandestino\n"
 "Language: sv_SE\n"
@@ -550,7 +550,7 @@ msgstr "Nej"
 
 #: templates/filebox-notification-settings.php:15
 msgid "Files has been uploaded or updated"
-msgstr "Filer laddats upp eller uppdaterats"
+msgstr "Filer laddats upp eller uppdaterats i en grupp jag är med i"
 
 #: templates/filebox-upload-form.php:8
 msgid ""

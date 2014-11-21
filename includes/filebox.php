@@ -410,9 +410,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 	 * return string
 	 */
 	public function load_folder_zip( $template ) {
-		global $post;
 
-		if( ! $post && strpos( $_SERVER[ 'REQUEST_URI' ], $this->options[ 'slug-folders' ] ) ) {
+		if( strpos( $_SERVER[ 'REQUEST_URI' ], $this->options[ 'slug-folders' ] ) ) {
 			$folder = null;
 
 			if( preg_match( '/\/([0-9]+)\/[^\.]+\.zip$/', $_SERVER[ 'REQUEST_URI' ], $folder_id ) ) {

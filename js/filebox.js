@@ -143,7 +143,7 @@ jQuery( function( $ ) {
 
 		function submit() {
 			var error = form.data( 'error' );
-			
+
 			if( error.length > 0 ) {
 				button.removeClass( 'working' ).data( 'clicked', null );
 				form.data( 'clicked', null );
@@ -204,6 +204,12 @@ jQuery( function( $ ) {
 	$( '.filebox-action-delete' ).click( delete_file );
 	$( '.filebox-action-reset' ).click( reset_file );
 	$( '.filebox-iframe-form' ).submit( iframe_form );
+
+	/**
+	 * Fix issue where the thickbox wouldn't close when clicking the close icon
+	 */
+	$("#TB_closeAjaxWindow").click( tb_remove );
+	$(".tb-close-icon").click( tb_remove );
 
 	if( typeof( tb_position ) != 'undefined' ) {
 		tb_position();

@@ -92,9 +92,13 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 				<tr class="filebox-<?php echo $type; ?> <?php echo $even ? 'even' : 'odd'; ?> filebox-title filebox-<?php echo $type == 'folders' ? $doc->term_id : $doc->ID; ?>">
 					<td rowspan="3" class="filebox-icon">
 						<?php if( $type == 'folders' ): ?>
-							<img src="<?php echo FILEBOX_PLUGIN_URL . 'images/folder-' . ( $doc->count || $doc->childs ? 'files' : 'empty' ); ?>.png" width="46" height="60" />
+							<a href="<?php echo esc_url( $filebox->get_folder_url( $doc->term_id ) ); ?>">
+								<img src="<?php echo FILEBOX_PLUGIN_URL . 'images/folder-' . ( $doc->count || $doc->childs ? 'files' : 'empty' ); ?>.png" width="46" height="60" />
+							</a>
 						<?php else: $attachment = reset( $doc->attachments ); ?>
-							<?php echo wp_get_attachment_image( $attachment->ID, 'filebox-thumbnail', ! wp_attachment_is_image( $attachment->ID ) ); ?>
+							<a href="<?php echo esc_url( get_permalink( $doc->ID ) ); ?>">
+								<?php echo wp_get_attachment_image( $attachment->ID, 'filebox-thumbnail', ! wp_attachment_is_image( $attachment->ID ) ); ?>
+							</a>
 						<?php endif; ?>
 					</td>
 					<th class="filebox-title">

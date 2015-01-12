@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-12 14:55+0100\n"
-"PO-Revision-Date: 2015-01-12 14:56+0100\n"
+"PO-Revision-Date: 2015-01-12 15:06+0100\n"
 "Last-Translator: Alexander Berthelsen <alexander.berthelsen@gmail.com>\n"
 "Language-Team: Klandestino\n"
 "Language: sv_SE\n"
@@ -35,7 +35,7 @@ msgstr "Filarkiv"
 
 #: includes/filebox.php:27
 msgid "Imported forum attachments"
-msgstr "Importerade filer från forumet"
+msgstr "Filer som bifogats i gruppforumet"
 
 #: includes/filebox.php:28
 #, php-format
@@ -474,7 +474,7 @@ msgstr "Visa historik"
 #: templates/filebox-group-display.php:142
 #: templates/filebox-group-display.php:150
 msgid "Edit"
-msgstr "Ändra"
+msgstr "Byt namn"
 
 #: templates/filebox-group-display.php:143
 msgid "Upload new version"

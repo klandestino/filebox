@@ -53,13 +53,6 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 
 <?php if( ! array_key_exists( 'trash', $documents[ 'meta' ] ) ): ?>
 	<ul class="filebox-buttons">
-		<?php if( $documents[ 'meta' ][ 'current' ]->zip ): ?>
-			<li class="download">
-				<a href="<?php echo $documents[ 'meta' ][ 'current' ]->zip->url; ?>" class="button" title="<?php esc_attr_e( 'Download folder as a zip', 'filebox' ) ?>">
-					<?php printf( __( 'Download (zip, %s)', 'filebox' ), get_nice_size( $documents[ 'meta' ][ 'current' ]->zip->size ) ); ?>
-				</a>
-			</li>
-		<?php endif; ?>
 		<?php if( $filebox->is_allowed( $documents[ 'meta' ][ 'id' ], null, true ) ) : ?>
 			<li class="upload">
 				<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=upload&folder_id=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add files', 'filebox' ) ?>" onclick="return false;" >
@@ -69,6 +62,13 @@ $trash_count = $filebox->trash_count( $bp->groups->current_group->id );
 			<li class="folder">
 				<a href="<?php echo FILEBOX_PLUGIN_URL; ?>form.php?form=folder&folder_parent=<?php echo $documents[ 'meta' ][ 'id' ]; ?>" class="thickbox add_media button" title="<?php esc_attr_e( 'Add folder', 'filebox' ) ?>" onclick="return false;" >
 					<?php _e( 'Add folder', 'filebox' ); ?>
+				</a>
+			</li>
+		<?php endif; ?>
+		<?php if( $documents[ 'meta' ][ 'current' ]->zip ): ?>
+			<li class="download">
+				<a href="<?php echo $documents[ 'meta' ][ 'current' ]->zip->url; ?>" class="button" title="<?php esc_attr_e( 'Download folder as a zip', 'filebox' ) ?>">
+					<?php printf( __( 'Download all (zip, %s)', 'filebox' ), get_nice_size( $documents[ 'meta' ][ 'current' ]->zip->size ) ); ?>
 				</a>
 			</li>
 		<?php endif; ?>

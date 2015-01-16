@@ -242,6 +242,7 @@
 								} );
 
 								$( this ).addClass( 'working' );
+								$( this ).val( filebox.uploading );
 								//$( '#plupload-upload-ui' ).slideUp( 'fast' );
 								$( '#plupload-upload-ui' ).hide();
 								uploader.start();

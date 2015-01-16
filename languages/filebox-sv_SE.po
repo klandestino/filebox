@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Filebox\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-12 14:55+0100\n"
-"PO-Revision-Date: 2015-01-12 15:06+0100\n"
+"POT-Creation-Date: 2015-01-16 11:31+0100\n"
+"PO-Revision-Date: 2015-01-16 11:32+0100\n"
 "Last-Translator: Alexander Berthelsen <alexander.berthelsen@gmail.com>\n"
 "Language-Team: Klandestino\n"
 "Language: sv_SE\n"
@@ -98,7 +98,7 @@ msgstr ""
 msgid "Folders"
 msgstr "Mappar"
 
-#: includes/filebox.php:239 templates/filebox-file-history.php:14
+#: includes/filebox.php:239
 msgid "Folder"
 msgstr "Mapp"
 
@@ -143,36 +143,40 @@ msgstr "%s är obligatorisk"
 msgid "Unknown size"
 msgstr "Okänd storlek"
 
-#: includes/filebox.php:598
+#: includes/filebox.php:292
+msgid "Uploading"
+msgstr "Laddar upp"
+
+#: includes/filebox.php:599
 #, php-format
 msgid "%s group folder"
 msgstr "%s gruppmapp"
 
-#: includes/filebox.php:1156
+#: includes/filebox.php:1157
 msgid "Imported from group forum"
 msgstr "Importerad från gruppforum"
 
-#: includes/filebox.php:1646
+#: includes/filebox.php:1647
 msgid "Uploaded new file"
 msgstr "Laddade upp filen"
 
-#: includes/filebox.php:1653
+#: includes/filebox.php:1654
 msgid "Updated file"
-msgstr "Uppdaterade filen"
+msgstr "Laddade upp ny version"
 
-#: includes/filebox.php:1683
+#: includes/filebox.php:1684
 msgid "Wrong arguments. Could not save file."
 msgstr "Felaktiga argument. Kunde inte spara fil."
 
-#: includes/filebox.php:1720
+#: includes/filebox.php:1721
 msgid "Moved to folder"
-msgstr "Flyttad till mapp"
+msgstr "Flyttade filen till mappen"
 
-#: includes/filebox.php:1745
+#: includes/filebox.php:1746
 msgid "Error when trying to move file."
 msgstr "Fel vid försök att flytta fil."
 
-#: includes/filebox.php:1748
+#: includes/filebox.php:1749
 msgid ""
 "Error when trying to move file. Either you're moving an non-existing file or "
 "the folder doesn't exist."
@@ -180,19 +184,19 @@ msgstr ""
 "Fel vid försök att flytta fil. Antingen försökte du flytta en fil som inte "
 "finns eller till en mapp som inte finns."
 
-#: includes/filebox.php:1751
+#: includes/filebox.php:1752
 msgid "Wrong arguments. Could not move file."
 msgstr "Felaktiga argument. Kunde inte flytta fil."
 
-#: includes/filebox.php:1791
+#: includes/filebox.php:1792
 msgid "Renamed file"
 msgstr "Ändrade filnamn"
 
-#: includes/filebox.php:1807
+#: includes/filebox.php:1808
 msgid "Error when trying to rename file."
 msgstr "Fel vid försök att ändra filnamn."
 
-#: includes/filebox.php:1810
+#: includes/filebox.php:1811
 msgid ""
 "Error when trying to rename file. Either you're trying to rename a non-"
 "existing file. Or the new name is empty."
@@ -200,35 +204,35 @@ msgstr ""
 "Vid vid försök att ändra filnamn. Antingen försökte du ändra en fil som inte "
 "finns. Eller så är filnamnet tomt."
 
-#: includes/filebox.php:1919
+#: includes/filebox.php:1920
 msgid "Error when trying to trash file."
 msgstr "Fel vid försök att slänga fil."
 
-#: includes/filebox.php:1922
+#: includes/filebox.php:1923
 msgid "Wrong arguments. Could not trash file."
 msgstr "Felaktiga argument. Kunde inte slänga fil."
 
-#: includes/filebox.php:1950
+#: includes/filebox.php:1951
 msgid "Error when trying to reset file."
 msgstr "Fel vid försök att återställa fil."
 
-#: includes/filebox.php:1953
+#: includes/filebox.php:1954
 msgid "Wrong arguments. Could not reset file."
 msgstr "Felaktiga argument. Kunde inte återställa fil."
 
-#: includes/filebox.php:1985
+#: includes/filebox.php:1986
 msgid "Error when trying to delete file."
 msgstr "Fel vid försök att radera fil."
 
-#: includes/filebox.php:1988
+#: includes/filebox.php:1989
 msgid "Can not delete a non-existing file."
 msgstr "Kan inte radera en fil som inte finns."
 
-#: includes/filebox.php:1991
+#: includes/filebox.php:1992
 msgid "Wrong arguments. Could not delete file."
 msgstr "Felaktiga argument. Kunde inte radera fil."
 
-#: includes/filebox.php:2036
+#: includes/filebox.php:2037
 msgid ""
 "Error when trying to create folder. You're probably trying to create a "
 "folder with a name that is already taken."
@@ -236,23 +240,23 @@ msgstr ""
 "Fel vid försök att skapa en mapp. Du försök antagligen skapa en mapp med ett "
 "namn som redan är uppdaget."
 
-#: includes/filebox.php:2039
+#: includes/filebox.php:2040
 msgid "Error when trying to create folder. The name is probably empty."
 msgstr "Fel vid försök att skapa en mapp. Namnet är antagligen tomt."
 
-#: includes/filebox.php:2079 includes/filebox.php:2082
+#: includes/filebox.php:2080 includes/filebox.php:2083
 msgid "Error when trying to move folder."
 msgstr "Fel vid försök att flytta mapp."
 
-#: includes/filebox.php:2122
+#: includes/filebox.php:2123
 msgid "Error when trying to rename folder"
 msgstr "Fel vid försök att byta namn på mapp."
 
-#: includes/filebox.php:2125
+#: includes/filebox.php:2126
 msgid "Error when trying to rename a folder. Folder name is propably empty."
 msgstr "Fel vid försök att byta namn på mapp. Antagligen är namnet tomt."
 
-#: includes/filebox.php:2168
+#: includes/filebox.php:2169
 msgid "Error when trying to delete folder."
 msgstr "Fel vid försök att ta bort mapp."
 
@@ -379,9 +383,13 @@ msgstr "Obligatoriskt."
 msgid "Changed by"
 msgstr "Ändrad av"
 
+#: templates/filebox-file-history.php:14
+msgid "Change"
+msgstr "Händelse"
+
 #: templates/filebox-file-history.php:15
 msgid "Description"
-msgstr "Beskrivning"
+msgstr "Öppna"
 
 #: templates/filebox-folder-form.php:9
 msgid "Folder name"
@@ -411,7 +419,7 @@ msgid "Add folder"
 msgstr "Lägg till mapp"
 
 #: templates/filebox-group-display.php:70
-#: templates/filebox-group-display.php:153
+#: templates/filebox-group-display.php:157
 msgid "Download folder as a zip"
 msgstr "Ladda hem mapp som zip"
 
@@ -436,77 +444,77 @@ msgstr "Senast ändrad av"
 msgid "Size"
 msgstr "Storlek"
 
-#: templates/filebox-group-display.php:115
+#: templates/filebox-group-display.php:119
 #, php-format
 msgid "%1$d files / %2$d folders"
 msgstr "%1$d filer / %2$d mappar"
 
-#: templates/filebox-group-display.php:117
+#: templates/filebox-group-display.php:121
 #, php-format
 msgid "%1$d files"
 msgstr "%1$d filer"
 
-#: templates/filebox-group-display.php:119
+#: templates/filebox-group-display.php:123
 #, php-format
 msgid "%1$d folders"
 msgstr "%1$d mappar"
 
-#: templates/filebox-group-display.php:121
+#: templates/filebox-group-display.php:125
 msgid "Empty"
 msgstr "Tom"
 
-#: templates/filebox-group-display.php:136
+#: templates/filebox-group-display.php:140
 msgid "Reset"
 msgstr "Återställ"
 
-#: templates/filebox-group-display.php:137
+#: templates/filebox-group-display.php:141
 msgid "Delete permanently"
 msgstr "Ta bort permanent"
 
-#: templates/filebox-group-display.php:140
+#: templates/filebox-group-display.php:144
 msgid "File history"
 msgstr "Filhistorik"
 
-#: templates/filebox-group-display.php:140
+#: templates/filebox-group-display.php:144
 msgid "Show history"
 msgstr "Visa historik"
 
-#: templates/filebox-group-display.php:142
-#: templates/filebox-group-display.php:150
+#: templates/filebox-group-display.php:146
+#: templates/filebox-group-display.php:154
 msgid "Edit"
 msgstr "Byt namn"
 
-#: templates/filebox-group-display.php:143
+#: templates/filebox-group-display.php:147
 msgid "Upload new version"
 msgstr "Ladda upp ny version"
 
-#: templates/filebox-group-display.php:144
+#: templates/filebox-group-display.php:148
 msgid "Move file"
 msgstr "Flytta fil"
 
-#: templates/filebox-group-display.php:144
-#: templates/filebox-group-display.php:151 templates/filebox-move-form.php:74
+#: templates/filebox-group-display.php:148
+#: templates/filebox-group-display.php:155 templates/filebox-move-form.php:74
 msgid "Move"
 msgstr "Flytta"
 
-#: templates/filebox-group-display.php:145
+#: templates/filebox-group-display.php:149
 msgid "Trash"
 msgstr "Släng"
 
-#: templates/filebox-group-display.php:150
+#: templates/filebox-group-display.php:154
 msgid "Edit folder"
 msgstr "Ändra mapp"
 
-#: templates/filebox-group-display.php:151
+#: templates/filebox-group-display.php:155
 msgid "Move folder"
 msgstr "Flytta mapp"
 
-#: templates/filebox-group-display.php:153
+#: templates/filebox-group-display.php:157
 #, php-format
 msgid "Download (zip, %s)"
 msgstr "Ladda hem (zip, %s)"
 
-#: templates/filebox-group-display.php:155
+#: templates/filebox-group-display.php:159
 msgid "Delete"
 msgstr "Radera"
 
@@ -571,28 +579,28 @@ msgstr "Tillåtna filer"
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: templates/filebox-upload-form.php:255
+#: templates/filebox-upload-form.php:256
 msgid "Add files from your computer"
 msgstr "Lägg till filer från din dator"
 
-#: templates/filebox-upload-form.php:260
+#: templates/filebox-upload-form.php:261
 msgid "Drop files here"
 msgstr "Släpp filer här"
 
-#: templates/filebox-upload-form.php:261
+#: templates/filebox-upload-form.php:262
 msgid "or"
 msgstr "eller"
 
-#: templates/filebox-upload-form.php:263
+#: templates/filebox-upload-form.php:264
 msgid "Select Files"
 msgstr "Välj filer"
 
-#: templates/filebox-upload-form.php:270
+#: templates/filebox-upload-form.php:271
 #, php-format
 msgid "Maximum upload file size: %d%s."
 msgstr "Maxstorlek på filer: %d%s."
 
-#: templates/filebox-upload-form.php:275
+#: templates/filebox-upload-form.php:276
 msgid ""
 "Your browser has some limitations uploading large files with the multi-file "
 "uploader. Please use the browser uploader for files over 100MB."
@@ -601,11 +609,11 @@ msgstr ""
 "multi-fil-uppladdare. Använd istället webbläsarens egna uppladdar för filer "
 "över 100MB."
 
-#: templates/filebox-upload-form.php:280
+#: templates/filebox-upload-form.php:281
 msgid "Added files"
 msgstr "Tillagda filer"
 
-#: templates/filebox-upload-form.php:285
+#: templates/filebox-upload-form.php:286
 msgid "Start upload"
 msgstr "Starta uppladdning"
 
@@ -614,9 +622,6 @@ msgstr "Starta uppladdning"
 
 #~ msgid "Comment"
 #~ msgstr "Kommentar"
-
-#~ msgid "Uploaded by"
-#~ msgstr "Uppladdad av"
 
 #~ msgid "%s forum attachments folder"
 #~ msgstr "%s mapp för importerade filer från forumet"

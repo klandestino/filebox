@@ -288,7 +288,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 			'confirm_file_trash' => __( "You're about to trash this file and you can undo this. Do you want to continue?", 'filebox' ),
 			'confirm_file_delete' => __( "You're about to delete this file permanently and you can not undo this. Do you want to continue?", 'filebox' ),
 			'required_error_message' => __( '%s is required', 'filebox' ),
-			'unknown_size' => __( 'Unknown size', 'filebox' )
+			'unknown_size' => __( 'Unknown size', 'filebox' ),
+			'uploading' => __( 'Uploading', 'filebox' )
 		) );
 
 		// General style

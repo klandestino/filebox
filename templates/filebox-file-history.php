@@ -11,7 +11,7 @@
 		<thead>
 			<tr>
 				<th><?php _e( 'Changed by', 'filebox' ); ?></th>
-				<th><?php _e( 'Folder', 'filebox' ); ?></th>
+				<th><?php _e( 'Change', 'filebox' ); ?></th>
 				<th><?php _e( 'Description', 'filebox' ); ?></th>
 			</tr>
 		</thead>

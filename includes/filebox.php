@@ -1282,8 +1282,8 @@ Login and change you settings to unsubscribe from these emails.', 'filebox' )
 				unlink( $lock );
 			}
 
-			foreach( glob( preg_match(
-				'/\.zip$/', '.*.zip', $this->get_folder_zip_path( $folder_id )
+			foreach( glob( str_replace(
+				'.zip', '.*.zip', $this->get_folder_zip_path( $folder_id )
 			) ) as $symlink ) {
 				if( preg_match( '/\.([0-9]+)\.zip$/', $symlink, $time ) ) {
 					$time = ( int ) $time[ 0 ];
